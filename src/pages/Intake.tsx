@@ -14,16 +14,14 @@ const Intake = () => {
   const [searchParams] = useSearchParams();
   const state = location.state as { assessmentResult: any; freeFormData: any } | null;
 
-  if (!state) return <Navigate to="/" replace />;
-
-  const { freeFormData } = state;
+  const freeFormData = state?.freeFormData;
   const product = searchParams.get("product") || "report";
   const isEvidence = product === "evidence";
 
   const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
-  const [postcode, setPostcode] = useState(freeFormData.postcode || "");
-  const [voaRv, setVoaRv] = useState(freeFormData.voa_rv?.toString() || "");
+  const [postcode, setPostcode] = useState(freeFormData?.postcode || "");
+  const [voaRv, setVoaRv] = useState(freeFormData?.voa_rv?.toString() || "");
   const [floors, setFloors] = useState("");
   const [frontageM, setFrontageM] = useState("");
   const [depthM, setDepthM] = useState("");
