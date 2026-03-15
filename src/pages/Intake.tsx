@@ -49,6 +49,8 @@ const Intake = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
+  if (!state || !freeFormData) return <Navigate to="/" replace />;
+
   const showAreas = AREA_TYPES.includes(freeFormData.business_type);
   const isNursery = freeFormData.business_type === "nursery";
 
