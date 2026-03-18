@@ -5,7 +5,7 @@ import FormField from "@/components/FormField";
 import AreaBreakdown from "@/components/AreaBreakdown";
 import StatusBanner from "@/components/StatusBanner";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
 const AREA_TYPES = ["restaurant_cafe", "retail", "hair_beauty"];
 

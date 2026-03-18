@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import BrandMark from "@/components/BrandMark";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
 const Success = () => {
   const [searchParams] = useSearchParams();
