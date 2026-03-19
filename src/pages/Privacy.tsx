@@ -1,7 +1,7 @@
 import BrandMark from "@/components/BrandMark";
 
 const Privacy = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen bg-primary">
     <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
       <header className="mb-10"><BrandMark /></header>
       <h1 className="text-2xl font-bold text-foreground">Privacy Policy</h1>

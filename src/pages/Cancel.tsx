@@ -4,7 +4,7 @@ import BrandMark from "@/components/BrandMark";
 const Cancel = () => {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 text-center animate-fade-in">
         <header className="mb-10 text-left"><BrandMark /></header>
         <h1 className="text-2xl font-bold text-foreground">Payment cancelled</h1>
