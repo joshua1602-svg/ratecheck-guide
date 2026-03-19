@@ -124,23 +124,25 @@ const Landing = () => {
             <BrandMark variant="light" />
           </header>
 
-          <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
-            Find out if your 2026 business rates are too high
-          </h1>
-          <p className="mt-3 text-lg opacity-80">
-            A free 60-second check — no signup required
-          </p>
+          <div className="rounded-xl bg-primary-foreground/8 p-6 sm:p-8">
+            <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
+              Find out if your 2026 business rates are too high
+            </h1>
+            <p className="mt-3 text-lg opacity-80">
+              A free 60-second check — no signup required
+            </p>
 
-          <div className="mt-6 flex flex-wrap gap-4">
-            {TRUST_POINTS.map((tp) => (
-              <span
-                key={tp.text}
-                className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-4 py-1.5 text-sm font-medium"
-              >
-                <span>{tp.icon}</span>
-                {tp.text}
-              </span>
-            ))}
+            <div className="mt-6 flex flex-wrap gap-3">
+              {TRUST_POINTS.map((tp) => (
+                <span
+                  key={tp.text}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-4 py-1.5 text-sm font-medium"
+                >
+                  <span>{tp.icon}</span>
+                  {tp.text}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
