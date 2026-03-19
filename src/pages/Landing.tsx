@@ -148,7 +148,7 @@ const Landing = () => {
       {/* Form Section */}
       <section>
         <div className="mx-auto max-w-form px-5 -mt-1 pb-12">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-lg sm:p-8 animate-fade-in">
+          <div className="bg-card p-6 sm:p-8 animate-fade-in">
             <h2 className="text-xl font-semibold text-foreground mb-1">Your property details</h2>
             <p className="text-sm text-muted-foreground mb-6">
               Based on the Valuation Office Agency's published rating data
