@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Zap, Lock, BarChart3 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import FormField from "@/components/FormField";
 import StatusBanner from "@/components/StatusBanner";
@@ -25,9 +26,9 @@ declare global {
 }
 
 const TRUST_POINTS = [
-  { icon: "⚡", text: "60-second free check" },
-  { icon: "🔒", text: "No signup required" },
-  { icon: "📊", text: "Based on VOA data" },
+  { icon: <Zap size={16} />, text: "60-second free check" },
+  { icon: <Lock size={16} />, text: "No signup required" },
+  { icon: <BarChart3 size={16} />, text: "Based on VOA data" },
 ];
 
 const Landing = () => {
