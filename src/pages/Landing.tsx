@@ -116,9 +116,9 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section — navy background */}
-      <section className="bg-primary">
+    <div className="min-h-screen bg-primary">
+      {/* Hero Section */}
+      <section>
         <div className="mx-auto max-w-form px-5 pb-12 pt-8">
           <header className="mb-10">
             <BrandMark />
@@ -145,8 +145,8 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Form Section — light background with white card */}
-      <section className="bg-background">
+      {/* Form Section */}
+      <section>
         <div className="mx-auto max-w-form px-5 -mt-1 pb-12">
           <div className="rounded-xl border border-border bg-card p-6 shadow-lg sm:p-8 animate-fade-in">
             <h2 className="text-xl font-semibold text-foreground mb-1">Your property details</h2>
