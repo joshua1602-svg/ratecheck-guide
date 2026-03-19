@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Zap, Lock, BarChart3 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import FormField from "@/components/FormField";
 import StatusBanner from "@/components/StatusBanner";
