@@ -118,17 +118,17 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section — navy background */}
-      <section className="bg-primary text-primary-foreground">
+      <section className="bg-primary">
         <div className="mx-auto max-w-form px-5 pb-12 pt-8">
           <header className="mb-10">
-            <BrandMark variant="light" />
+            <BrandMark />
           </header>
 
-          <div className="rounded-xl bg-primary-foreground/8 p-6 sm:p-8">
-            <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
+          <div className="rounded-xl bg-primary-foreground/5 p-6 sm:p-8">
+            <h1 className="text-3xl font-bold leading-tight text-primary-foreground sm:text-4xl">
               Find out if your 2026 business rates are too high
             </h1>
-            <p className="mt-3 text-lg opacity-80">
+            <p className="mt-3 text-lg text-primary-foreground/70">
               A free 60-second check — no signup required
             </p>
 
@@ -136,7 +136,7 @@ const Landing = () => {
               {TRUST_POINTS.map((tp) => (
                 <span
                   key={tp.text}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-4 py-1.5 text-sm font-medium"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/8 px-4 py-1.5 text-sm font-medium text-primary-foreground"
                 >
                   <span>{tp.icon}</span>
                   {tp.text}
