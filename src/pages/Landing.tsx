@@ -24,6 +24,12 @@ declare global {
   }
 }
 
+const TRUST_POINTS = [
+  { icon: "⚡", text: "60-second free check" },
+  { icon: "🔒", text: "No signup required" },
+  { icon: "📊", text: "Based on VOA data" },
+];
+
 const Landing = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -69,8 +75,6 @@ const Landing = () => {
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
-    // Turnstile token is optional in preview/dev for testing
-    // if (!turnstileToken) return;
 
     setIsLoading(true);
     setApiError(null);
@@ -113,106 +117,128 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
-        <header className="mb-10">
-          <BrandMark />
-        </header>
+      {/* Hero Section — navy background */}
+      <section className="bg-primary text-primary-foreground">
+        <div className="mx-auto max-w-form px-5 pb-12 pt-8">
+          <header className="mb-10">
+            <BrandMark variant="light" />
+          </header>
 
-        <h1 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">
-          Find out if your 2026 business rates are too high
-        </h1>
-        <p className="mt-3 text-lg text-muted-foreground">
-          A free 60-second check — no signup required
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Based on the Valuation Office Agency's published rating data
-        </p>
+          <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
+            Find out if your 2026 business rates are too high
+          </h1>
+          <p className="mt-3 text-lg opacity-80">
+            A free 60-second check — no signup required
+          </p>
 
-        {apiError && <div className="mt-6"><StatusBanner message={apiError} onDismiss={() => setApiError(null)} /></div>}
-
-        {turnstileError && (
-          <div className="mt-6">
-            <StatusBanner message="Security check failed — please refresh and try again" onDismiss={() => setTurnstileError(false)} />
+          <div className="mt-6 flex flex-wrap gap-4">
+            {TRUST_POINTS.map((tp) => (
+              <span
+                key={tp.text}
+                className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-4 py-1.5 text-sm font-medium"
+              >
+                <span>{tp.icon}</span>
+                {tp.text}
+              </span>
+            ))}
           </div>
-        )}
+        </div>
+      </section>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
-          <FormField
-            id="email"
-            label="Email address"
-            type="email"
-            value={email}
-            onChange={setEmail}
-            error={errors.email}
-            helperText="We'll send your result here"
-            required
-            placeholder="you@business.co.uk"
-          />
+      {/* Form Section — light background with white card */}
+      <section className="bg-background">
+        <div className="mx-auto max-w-form px-5 -mt-1 pb-12">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-lg sm:p-8 animate-fade-in">
+            <h2 className="text-xl font-semibold text-foreground mb-1">Your property details</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              Based on the Valuation Office Agency's published rating data
+            </p>
 
-          <div
-            className="cf-turnstile"
-            data-sitekey={TURNSTILE_KEY}
-            data-callback="onTurnstileSuccess"
-            data-error-callback="onTurnstileError"
-          />
+            {apiError && <StatusBanner message={apiError} onDismiss={() => setApiError(null)} />}
 
-          <FormField
-            id="businessType"
-            label="Business type"
-            type="select"
-            value={businessType}
-            onChange={setBusinessType}
-            error={errors.businessType}
-            required
-            options={BUSINESS_TYPES}
-          />
+            {turnstileError && (
+              <StatusBanner message="Security check failed — please refresh and try again" onDismiss={() => setTurnstileError(false)} />
+            )}
 
-          <FormField
-            id="postcode"
-            label="Property postcode"
-            type="text"
-            value={postcode}
-            onChange={setPostcode}
-            onBlur={() => setPostcode(postcode.trim().toUpperCase())}
-            error={errors.postcode}
-            required
-            placeholder="E1 6AN"
-          />
+            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+              <FormField
+                id="email"
+                label="Email address"
+                type="email"
+                value={email}
+                onChange={setEmail}
+                error={errors.email}
+                helperText="We'll send your result here"
+                required
+                placeholder="you@business.co.uk"
+              />
 
-          <FormField
-            id="niaSqm"
-            label="Approximate floor area (sqm)"
-            type="number"
-            value={niaSqm}
-            onChange={setNiaSqm}
-            error={errors.niaSqm}
-            helperText="Your best estimate is fine"
-            required
-          />
+              <div
+                className="cf-turnstile"
+                data-sitekey={TURNSTILE_KEY}
+                data-callback="onTurnstileSuccess"
+                data-error-callback="onTurnstileError"
+              />
 
-          <FormField
-            id="voaRv"
-            label="Approximate annual rates bill (£)"
-            type="number"
-            value={voaRv}
-            onChange={setVoaRv}
-            helperText="Found on your rates demand notice from your local council — not required but improves accuracy"
-          />
+              <FormField
+                id="businessType"
+                label="Business type"
+                type="select"
+                value={businessType}
+                onChange={setBusinessType}
+                error={errors.businessType}
+                required
+                options={BUSINESS_TYPES}
+              />
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-md bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            {isLoading ? "Checking…" : "Check my rates →"}
-          </button>
-        </form>
+              <FormField
+                id="postcode"
+                label="Property postcode"
+                type="text"
+                value={postcode}
+                onChange={setPostcode}
+                onBlur={() => setPostcode(postcode.trim().toUpperCase())}
+                error={errors.postcode}
+                required
+                placeholder="E1 6AN"
+              />
 
-        <p className="mt-4 text-center text-xs text-muted-foreground">
-          Your data is used only to run your assessment. We do not share it with third parties.{" "}
-          <a href="/privacy" className="underline hover:text-foreground">Privacy policy</a>
-        </p>
-      </div>
+              <FormField
+                id="niaSqm"
+                label="Approximate floor area (sqm)"
+                type="number"
+                value={niaSqm}
+                onChange={setNiaSqm}
+                error={errors.niaSqm}
+                helperText="Your best estimate is fine"
+                required
+              />
+
+              <FormField
+                id="voaRv"
+                label="Approximate annual rates bill (£)"
+                type="number"
+                value={voaRv}
+                onChange={setVoaRv}
+                helperText="Found on your rates demand notice from your local council — not required but improves accuracy"
+              />
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full rounded-lg bg-accent px-4 py-3.5 text-sm font-semibold text-accent-foreground transition-all hover:opacity-90 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                {isLoading ? "Checking…" : "Check my rates →"}
+              </button>
+            </form>
+          </div>
+
+          <p className="mt-5 text-center text-xs text-muted-foreground">
+            Your data is used only to run your assessment. We do not share it with third parties.{" "}
+            <a href="/privacy" className="underline hover:text-foreground">Privacy policy</a>
+          </p>
+        </div>
+      </section>
     </div>
   );
 };

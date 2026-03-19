@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 25% 97%;
     --foreground: 213 68% 14%;
 
     --card: 0 0% 100%;
@@ -16,10 +16,10 @@
     --primary: 213 68% 14%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 96%;
+    --secondary: 210 20% 93%;
     --secondary-foreground: 213 68% 14%;
 
-    --muted: 210 20% 96%;
+    --muted: 210 18% 90%;
     --muted-foreground: 215 14% 46%;
 
     --accent: 38 82% 52%;
@@ -32,15 +32,18 @@
     --input: 214 20% 88%;
     --ring: 213 68% 14%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --signal-high: 38 82% 52%;
     --signal-medium: 48 90% 55%;
     --signal-low: 215 14% 72%;
     --signal-insufficient: 215 14% 72%;
 
-    --font-serif: 'Playfair Display', Georgia, serif;
-    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --hero-bg: 213 68% 14%;
+    --hero-foreground: 210 25% 97%;
+
+    --font-heading: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
   }
 }
 
@@ -51,11 +54,12 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
   }
 }
 
