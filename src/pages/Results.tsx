@@ -21,7 +21,7 @@ const Results = () => {
   const config = signalConfig[signal] || signalConfig.Low;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
         <header className="mb-10"><BrandMark /></header>
 
