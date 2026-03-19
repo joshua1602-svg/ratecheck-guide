@@ -122,7 +122,7 @@ const Landing = () => {
       <section>
         <div className="mx-auto max-w-form px-5 pb-12 pt-8">
           <header className="mb-10">
-            <BrandMark />
+            <BrandMark variant="light" />
           </header>
 
           <h1 className="text-3xl font-bold leading-tight text-primary-foreground sm:text-4xl">
