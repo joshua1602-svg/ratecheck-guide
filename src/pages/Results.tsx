@@ -59,7 +59,7 @@ const Results = () => {
               "PDF delivered within minutes",
             ]}
             ctaLabel="Get my report →"
-            variant="primary"
+            variant="accent"
             onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
           />
           <ProductCard
