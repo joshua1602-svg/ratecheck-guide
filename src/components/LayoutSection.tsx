@@ -61,14 +61,14 @@ const KITCHEN_ON_GROUND_OPTIONS = [
 interface LayoutSectionProps {
   layout: LayoutInputState;
   onChange: (layout: LayoutInputState) => void;
-  showKitchen: boolean; // true for restaurant/cafe
+  showKitchen: boolean;
+  errors?: Record<string, string>;
 }
 
-const LayoutSection = ({ layout, onChange, showKitchen }: LayoutSectionProps) => {
+const LayoutSection = ({ layout, onChange, showKitchen, errors }: LayoutSectionProps) => {
   const update = (field: keyof LayoutInputState, value: string) => {
     const next = { ...layout, [field]: value };
 
-    // Reset conditional fields when floor_config changes
     if (field === "floor_config") {
       const cfg = value as FloorConfig;
       const hasLower = cfg === "ground_lower_ground" || cfg === "ground_lower_ground_first";
@@ -91,7 +91,7 @@ const LayoutSection = ({ layout, onChange, showKitchen }: LayoutSectionProps) =>
   return (
     <fieldset className="space-y-4">
       <legend className="text-lg font-bold font-serif text-foreground">
-        Floor layout
+        Floor layout — required
       </legend>
       <p className="text-xs text-muted-foreground">
         Helps us match your property more accurately against comparables
