@@ -4,6 +4,7 @@ import BrandMark from "@/components/BrandMark";
 import FormField from "@/components/FormField";
 import AreaBreakdown from "@/components/AreaBreakdown";
 import StatusBanner from "@/components/StatusBanner";
+import LayoutSection, { LAYOUT_DEFAULTS, type LayoutInputState } from "@/components/LayoutSection";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
