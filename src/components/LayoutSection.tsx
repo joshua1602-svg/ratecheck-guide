@@ -104,6 +104,8 @@ const LayoutSection = ({ layout, onChange, showKitchen, errors }: LayoutSectionP
         value={layout.floor_config}
         onChange={(v) => update("floor_config", v)}
         options={FLOOR_CONFIG_OPTIONS}
+        error={errors?.floor_config}
+        required
       />
 
       <FormField
