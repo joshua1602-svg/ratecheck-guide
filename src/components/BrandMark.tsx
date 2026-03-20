@@ -3,7 +3,7 @@ interface BrandMarkProps {
 }
 
 const BrandMark = ({ variant = "dark" }: BrandMarkProps) => {
-  const fg = variant === "light" ? "text-primary-foreground" : "text-primary";
+  const fg = variant === "light" ? "text-primary-foreground" : "text-foreground";
   const accent = "text-accent";
 
   return (
