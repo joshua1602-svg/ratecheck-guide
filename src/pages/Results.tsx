@@ -74,7 +74,7 @@ const Results = () => {
               "PDF delivered within minutes",
             ]}
             ctaLabel="Build my evidence pack →"
-            variant="primary"
+            variant="accent"
             onClick={() => navigate("/intake?product=evidence", { state: { assessmentResult, freeFormData } })}
           />
         </div>
