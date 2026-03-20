@@ -94,6 +94,20 @@ const Intake = () => {
         depth_m: depthM ? parseFloat(depthM) : undefined,
         layout_notes: layoutNotes || undefined,
       },
+      layout: layoutSkipped
+        ? null
+        : {
+            floor_config: layoutInput.floor_config,
+            ground_floor_trading_sqm: layoutInput.ground_floor_trading_sqm
+              ? parseFloat(layoutInput.ground_floor_trading_sqm)
+              : 0,
+            ground_floor_storage_sqm: layoutInput.ground_floor_storage_sqm
+              ? parseFloat(layoutInput.ground_floor_storage_sqm)
+              : 0,
+            lower_ground_use: layoutInput.lower_ground_use,
+            upper_floor_use: layoutInput.upper_floor_use,
+            kitchen_on_ground: layoutInput.kitchen_on_ground,
+          },
       areas: showAreas
         ? {
             sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
