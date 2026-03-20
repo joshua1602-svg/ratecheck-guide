@@ -38,6 +38,9 @@ const Intake = () => {
     outdoor_seating: false,
   });
 
+  const [layoutInput, setLayoutInput] = useState<LayoutInputState>({ ...LAYOUT_DEFAULTS });
+  const [layoutSkipped, setLayoutSkipped] = useState(false);
+
   const [nurseryPurposeBuilt, setNurseryPurposeBuilt] = useState(false);
   const [nurseryOutdoorPlay, setNurseryOutdoorPlay] = useState(false);
 
