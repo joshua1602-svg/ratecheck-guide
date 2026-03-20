@@ -27,9 +27,9 @@ const Results = () => {
 
         {/* Verdict Card */}
         <div className="rounded-lg border-2 border-accent bg-card p-6">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          <span className="mb-3 inline-block rounded-sm bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
             Overassessment likelihood: {signal}
-          </p>
+          </span>
           <h2 className="mt-2 text-2xl font-bold text-card-foreground">{config.heading}</h2>
           {assessmentResult?.explanation && (
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{assessmentResult.explanation}</p>
