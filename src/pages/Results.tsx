@@ -26,7 +26,7 @@ const Results = () => {
         <header className="mb-10"><BrandMark /></header>
 
         {/* Verdict Card */}
-        <div className={`rounded-lg border ${config.border} border-l-4 bg-card p-6 shadow-sm`}>
+        <div className="rounded-lg border-2 border-accent bg-card p-6">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Overassessment likelihood: {signal}
           </p>
@@ -38,13 +38,6 @@ const Results = () => {
             <p className="mt-2 text-xs text-muted-foreground">
               Based on {assessmentResult.comparable_count} comparable properties in your area
             </p>
-          )}
-          {assessmentResult?.saving_estimate && (
-            <div className="mt-4 rounded-md bg-accent/10 px-4 py-3">
-              <p className="text-sm font-semibold text-foreground">
-                Potential saving: {assessmentResult.saving_estimate} per year
-              </p>
-            </div>
           )}
         </div>
 
