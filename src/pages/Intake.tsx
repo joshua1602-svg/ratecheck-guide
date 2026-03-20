@@ -4,6 +4,7 @@ import BrandMark from "@/components/BrandMark";
 import FormField from "@/components/FormField";
 import AreaBreakdown from "@/components/AreaBreakdown";
 import StatusBanner from "@/components/StatusBanner";
+import LayoutSection, { LAYOUT_DEFAULTS, type LayoutInputState } from "@/components/LayoutSection";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
@@ -36,6 +37,9 @@ const Intake = () => {
     upper_sqm: "",
     outdoor_seating: false,
   });
+
+  const [layoutInput, setLayoutInput] = useState<LayoutInputState>({ ...LAYOUT_DEFAULTS });
+  const [layoutSkipped, setLayoutSkipped] = useState(false);
 
   const [nurseryPurposeBuilt, setNurseryPurposeBuilt] = useState(false);
   const [nurseryOutdoorPlay, setNurseryOutdoorPlay] = useState(false);
@@ -90,6 +94,20 @@ const Intake = () => {
         depth_m: depthM ? parseFloat(depthM) : undefined,
         layout_notes: layoutNotes || undefined,
       },
+      layout: layoutSkipped
+        ? null
+        : {
+            floor_config: layoutInput.floor_config,
+            ground_floor_trading_sqm: layoutInput.ground_floor_trading_sqm
+              ? parseFloat(layoutInput.ground_floor_trading_sqm)
+              : 0,
+            ground_floor_storage_sqm: layoutInput.ground_floor_storage_sqm
+              ? parseFloat(layoutInput.ground_floor_storage_sqm)
+              : 0,
+            lower_ground_use: layoutInput.lower_ground_use,
+            upper_floor_use: layoutInput.upper_floor_use,
+            kitchen_on_ground: layoutInput.kitchen_on_ground,
+          },
       areas: showAreas
         ? {
             sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
@@ -188,6 +206,27 @@ const Intake = () => {
             helperText="Depth of your sales floor from front to back"
           />
           <FormField id="layoutNotes" label="Layout notes" type="textarea" value={layoutNotes} onChange={setLayoutNotes} helperText="Anything unusual — irregular shape, split levels, etc." />
+
+          {/* Layout section */}
+          <div className="border-t border-border pt-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-muted-foreground">Optional — improves estimate accuracy</span>
+              <button
+                type="button"
+                onClick={() => setLayoutSkipped(!layoutSkipped)}
+                className="text-xs text-accent hover:underline"
+              >
+                {layoutSkipped ? "Add layout details" : "Skip layout"}
+              </button>
+            </div>
+            {!layoutSkipped && (
+              <LayoutSection
+                layout={layoutInput}
+                onChange={setLayoutInput}
+                showKitchen={freeFormData.business_type === "restaurant_cafe"}
+              />
+            )}
+          </div>
 
           {showAreas && (
             <AreaBreakdown
