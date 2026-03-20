@@ -49,30 +49,29 @@ const Results = () => {
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           <ProductCard
             badge="MOST POPULAR"
-            title="Rates Assessment Report"
+            title="Rates Assessment"
             price="£99"
-            description="A full comparable analysis showing how your property compares to similar ones nearby, your estimated correct rateable value, and plain English instructions on how to file a Check with the VOA."
+            description="A full comparable analysis showing how your property compares to similar properties, estimated rateable value, and instructions on how to file a Check with the VOA."
             features={[
-              "Comparable evidence table (5–10 properties)",
-              "Estimated correct RV and annual saving",
+              "Estimated RV and annual saving",
+              "Select comparable evidence table",
               "Step-by-step filing guide",
               "PDF delivered within minutes",
             ]}
             ctaLabel="Get my report →"
-            variant="accent"
+            variant="primary"
             onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
           />
           <ProductCard
             badge="BEST FOR CHALLENGES"
-            title="Challenge Evidence Pack"
+            title="Evidence Pack"
             price="£249"
-            description="A complete submission-ready evidence pack for filing a formal Challenge with the VOA."
+            description="A detailed pack for filing outlining the basis for the estimated RV including comparables, property-specific adjustments, and model methodology."
             features={[
               "Everything in the Assessment Report",
-              "Zoning schedule with your measured areas",
-              "Formal grounds for challenge",
-              "Copy-paste VOA submission narrative",
-              "PDF formatted for VOA submission",
+              "Detailed valuation analysis",
+              "Valuation methodology supporting a VOA challenge",
+              "PDF delivered within minutes",
             ]}
             ctaLabel="Build my evidence pack →"
             variant="primary"
