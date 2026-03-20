@@ -2,8 +2,7 @@ import FormField from "./FormField";
 
 interface Areas {
   sales_area_sqm: string;
-  visible_kitchen_sqm: string;
-  non_visible_kitchen_sqm: string;
+  kitchen_sqm: string;
   storage_sqm: string;
   basement_sqm: string;
   upper_sqm: string;
@@ -17,10 +16,9 @@ interface AreaBreakdownProps {
   errors?: Record<string, string>;
 }
 
-const fields: { key: keyof Omit<Areas, "outdoor_seating">; label: string }[] = [
+const fields: { key: keyof Omit<Areas, "outdoor_seating">; label: string; helper?: string }[] = [
   { key: "sales_area_sqm", label: "Sales / dining area (sqm)" },
-  { key: "visible_kitchen_sqm", label: "Visible kitchen (sqm)" },
-  { key: "non_visible_kitchen_sqm", label: "Non-visible kitchen / prep (sqm)" },
+  { key: "kitchen_sqm", label: "Kitchen area (sqm)", helper: "Total kitchen and food prep space" },
   { key: "storage_sqm", label: "Storage / back-of-house (sqm)" },
   { key: "basement_sqm", label: "Basement storage (sqm)" },
   { key: "upper_sqm", label: "Upper floor / mezzanine (sqm)" },
@@ -28,7 +26,7 @@ const fields: { key: keyof Omit<Areas, "outdoor_seating">; label: string }[] = [
 
 const AreaBreakdown = ({ areas, onChange, niaSqm, errors }: AreaBreakdownProps) => {
   const total = fields.reduce((sum, f) => sum + (parseFloat(areas[f.key] as string) || 0), 0);
-  const diverges = niaSqm > 0 && total > 0 && Math.abs(total - niaSqm) / niaSqm > 0.25;
+  const diverges = niaSqm > 0 && total > 0 && Math.abs(total - niaSqm) / niaSqm > 0.20;
 
   return (
     <fieldset className="space-y-4">
@@ -47,6 +45,7 @@ const AreaBreakdown = ({ areas, onChange, niaSqm, errors }: AreaBreakdownProps) 
             value={areas[f.key] as string}
             onChange={(v) => onChange({ ...areas, [f.key]: v })}
             error={errors?.[f.key]}
+            helperText={f.helper}
           />
         ))}
       </div>
@@ -65,7 +64,7 @@ const AreaBreakdown = ({ areas, onChange, niaSqm, errors }: AreaBreakdownProps) 
 
       {diverges && (
         <p className="rounded-md border border-accent bg-accent/10 px-3 py-2 text-sm text-foreground">
-          Your breakdown adds up to {total} sqm but you entered {niaSqm} sqm above — worth double-checking.
+          Your breakdown doesn't quite match your total floor area — double check if you can, but you can still continue
         </p>
       )}
     </fieldset>

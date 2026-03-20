@@ -17,21 +17,16 @@ const Intake = () => {
 
   const freeFormData = state?.freeFormData;
   const product = searchParams.get("product") || "report";
-  const isEvidence = product === "evidence";
 
   const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
   const [postcode, setPostcode] = useState(freeFormData?.postcode || "");
   const [voaRv, setVoaRv] = useState(freeFormData?.voa_rv?.toString() || "");
-  const [floors, setFloors] = useState("");
-  const [frontageM, setFrontageM] = useState("");
-  const [depthM, setDepthM] = useState("");
-  const [layoutNotes, setLayoutNotes] = useState("");
+  const [totalFloorArea, setTotalFloorArea] = useState(freeFormData?.nia_sqm?.toString() || "");
 
   const [areas, setAreas] = useState({
     sales_area_sqm: "",
-    visible_kitchen_sqm: "",
-    non_visible_kitchen_sqm: "",
+    kitchen_sqm: "",
     storage_sqm: "",
     basement_sqm: "",
     upper_sqm: "",
@@ -39,7 +34,6 @@ const Intake = () => {
   });
 
   const [layoutInput, setLayoutInput] = useState<LayoutInputState>({ ...LAYOUT_DEFAULTS });
-  const [layoutSkipped, setLayoutSkipped] = useState(false);
 
   const [nurseryPurposeBuilt, setNurseryPurposeBuilt] = useState(false);
   const [nurseryOutdoorPlay, setNurseryOutdoorPlay] = useState(false);
@@ -62,13 +56,11 @@ const Intake = () => {
     const errs: Record<string, string> = {};
     if (!businessName.trim()) errs.businessName = "Business name is required";
     if (!address.trim()) errs.address = "Address is required";
-    if (!postcode.trim()) errs.postcode = "Postcode is required";
+    if (!postcode.trim()) errs.postcode = "Postcode is required — please re-enter";
+    if (!voaRv.trim()) errs.voaRv = "Rateable value is required — please re-enter";
+    if (!totalFloorArea.trim()) errs.totalFloorArea = "Total floor area is required";
+    if (!layoutInput.floor_config) errs.floor_config = "Floor configuration is required";
     if (!consentDisclaimer) errs.consentDisclaimer = "You must accept to continue";
-    if (isEvidence) {
-      if (!frontageM.trim()) errs.frontageM = "Required for evidence pack";
-      if (!depthM.trim()) errs.depthM = "Required for evidence pack";
-      if (showAreas && !areas.sales_area_sqm.trim()) errs.sales_area_sqm = "Required for evidence pack";
-    }
     return errs;
   };
 
@@ -86,33 +78,26 @@ const Intake = () => {
       property: {
         postcode: postcode.trim().toUpperCase(),
         business_type: freeFormData.business_type,
-        nia_sqm: freeFormData.nia_sqm,
+        nia_sqm: parseFloat(totalFloorArea) || freeFormData.nia_sqm,
         voa_rv: voaRv ? parseFloat(voaRv) : 0,
         address,
-        floors: floors ? parseInt(floors) : undefined,
-        frontage_m: frontageM ? parseFloat(frontageM) : undefined,
-        depth_m: depthM ? parseFloat(depthM) : undefined,
-        layout_notes: layoutNotes || undefined,
       },
-      layout: layoutSkipped
-        ? null
-        : {
-            floor_config: layoutInput.floor_config,
-            ground_floor_trading_sqm: layoutInput.ground_floor_trading_sqm
-              ? parseFloat(layoutInput.ground_floor_trading_sqm)
-              : 0,
-            ground_floor_storage_sqm: layoutInput.ground_floor_storage_sqm
-              ? parseFloat(layoutInput.ground_floor_storage_sqm)
-              : 0,
-            lower_ground_use: layoutInput.lower_ground_use,
-            upper_floor_use: layoutInput.upper_floor_use,
-            kitchen_on_ground: layoutInput.kitchen_on_ground,
-          },
+      layout: {
+        floor_config: layoutInput.floor_config,
+        ground_floor_trading_sqm: layoutInput.ground_floor_trading_sqm
+          ? parseFloat(layoutInput.ground_floor_trading_sqm)
+          : 0,
+        ground_floor_storage_sqm: layoutInput.ground_floor_storage_sqm
+          ? parseFloat(layoutInput.ground_floor_storage_sqm)
+          : 0,
+        lower_ground_use: layoutInput.lower_ground_use,
+        upper_floor_use: layoutInput.upper_floor_use,
+        kitchen_on_ground: layoutInput.kitchen_on_ground,
+      },
       areas: showAreas
         ? {
             sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
-            visible_kitchen_sqm: parseFloat(areas.visible_kitchen_sqm) || 0,
-            non_visible_kitchen_sqm: parseFloat(areas.non_visible_kitchen_sqm) || 0,
+            kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
             storage_sqm: parseFloat(areas.storage_sqm) || 0,
             basement_sqm: parseFloat(areas.basement_sqm) || 0,
             upper_sqm: parseFloat(areas.upper_sqm) || 0,
@@ -151,28 +136,17 @@ const Intake = () => {
       <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
         <header className="mb-8"><BrandMark /></header>
 
-        {/* Progress */}
-        <div className="mb-6">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-            <span className="font-semibold">Step 1 of 2</span> — Property details
-          </div>
-          <div className="h-1.5 w-full rounded-full bg-secondary">
-            <div className="h-1.5 w-1/2 rounded-full bg-accent transition-all" />
-          </div>
-        </div>
-
         <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
-          {isEvidence ? "Measure your property for your evidence pack" : "Tell us more about your property"}
+          Tell us more about your property
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {isEvidence
-            ? "We need your measured floor areas to run the zoning calculation. Use a tape measure or your lease plan if available."
-            : "This takes about 2 minutes. The more accurate your inputs, the better your report."}
+          This takes about 2 minutes. The more accurate your inputs, the better your report.
         </p>
 
         {apiError && <div className="mt-6"><StatusBanner message={apiError} onDismiss={() => setApiError(null)} /></div>}
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
+          {/* SECTION 1: Property Details */}
           <FormField id="businessName" label="Business name" value={businessName} onChange={setBusinessName} error={errors.businessName} required />
           <FormField id="address" label="Property address" type="textarea" value={address} onChange={setAddress} error={errors.address} required />
           <FormField id="postcode" label="Postcode" value={postcode} onChange={setPostcode} error={errors.postcode} required />
@@ -182,57 +156,35 @@ const Intake = () => {
             type="number"
             value={voaRv}
             onChange={setVoaRv}
+            error={errors.voaRv}
             helperText="Shown on your rates demand notice or at gov.uk/find-business-rates — different from your rates bill amount"
           />
-          <FormField id="floors" label="Number of floors" type="number" value={floors} onChange={setFloors} />
           <FormField
-            id="frontageM"
-            label="Frontage width (m)"
+            id="totalFloorArea"
+            label="Total floor area (sqm)"
             type="number"
-            value={frontageM}
-            onChange={setFrontageM}
-            error={errors.frontageM}
-            required={isEvidence}
-            helperText="Width of your shopfront — estimates are fine"
+            value={totalFloorArea}
+            onChange={setTotalFloorArea}
+            error={errors.totalFloorArea}
+            required
+            helperText="The net internal area of your property — shown on your VOA record or rates demand. Exclude external areas."
           />
-          <FormField
-            id="depthM"
-            label="Shop depth (m)"
-            type="number"
-            value={depthM}
-            onChange={setDepthM}
-            error={errors.depthM}
-            required={isEvidence}
-            helperText="Depth of your sales floor from front to back"
-          />
-          <FormField id="layoutNotes" label="Layout notes" type="textarea" value={layoutNotes} onChange={setLayoutNotes} helperText="Anything unusual — irregular shape, split levels, etc." />
 
-          {/* Layout section */}
+          {/* SECTION 2: Floor Layout */}
           <div className="border-t border-border pt-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Optional — improves estimate accuracy</span>
-              <button
-                type="button"
-                onClick={() => setLayoutSkipped(!layoutSkipped)}
-                className="text-xs text-accent hover:underline"
-              >
-                {layoutSkipped ? "Add layout details" : "Skip layout"}
-              </button>
-            </div>
-            {!layoutSkipped && (
-              <LayoutSection
-                layout={layoutInput}
-                onChange={setLayoutInput}
-                showKitchen={freeFormData.business_type === "restaurant_cafe"}
-              />
-            )}
+            <LayoutSection
+              layout={layoutInput}
+              onChange={setLayoutInput}
+              showKitchen={freeFormData.business_type === "restaurant_cafe"}
+              errors={errors}
+            />
           </div>
 
           {showAreas && (
             <AreaBreakdown
               areas={areas}
               onChange={setAreas}
-              niaSqm={freeFormData.nia_sqm}
+              niaSqm={parseFloat(totalFloorArea) || 0}
               errors={errors}
             />
           )}
@@ -249,15 +201,6 @@ const Intake = () => {
                 Has outdoor play area
               </label>
             </fieldset>
-          )}
-
-          {isEvidence && (
-            <div className="rounded-md border border-border bg-secondary/50 px-4 py-3">
-              <p className="text-sm font-semibold text-foreground">Measured dimensions</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                These are used to calculate your exact Zone A area. Accuracy here directly affects the quality of your evidence pack.
-              </p>
-            </div>
           )}
 
           {/* Confirmations */}
