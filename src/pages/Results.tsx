@@ -41,6 +41,23 @@ const Results = () => {
           )}
         </div>
 
+        {/* Layout indicator */}
+        {assessmentResult?.layout_adjustment_applied === true && (
+          <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+            Estimate refined using layout data
+          </p>
+        )}
+        {assessmentResult?.layout_adjustment_applied === false && (
+          <button
+            type="button"
+            onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
+            className="mt-3 text-xs text-accent hover:underline"
+          >
+            Add layout details to refine your estimate →
+          </button>
+        )}
+
         {/* Product Options */}
         <h2 className="mt-12 text-2xl font-bold text-foreground">
           To challenge your rates, you'll need evidence

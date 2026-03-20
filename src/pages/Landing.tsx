@@ -101,6 +101,7 @@ const Landing = () => {
             voa_rv: freeFormData.voa_rv || 0,
             address: "",
           },
+          layout: null,
           flags: { consent_disclaimer: true },
           captcha_token: turnstileToken,
         }),
