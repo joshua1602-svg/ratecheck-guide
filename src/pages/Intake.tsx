@@ -207,6 +207,27 @@ const Intake = () => {
           />
           <FormField id="layoutNotes" label="Layout notes" type="textarea" value={layoutNotes} onChange={setLayoutNotes} helperText="Anything unusual — irregular shape, split levels, etc." />
 
+          {/* Layout section */}
+          <div className="border-t border-border pt-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-muted-foreground">Optional — improves estimate accuracy</span>
+              <button
+                type="button"
+                onClick={() => setLayoutSkipped(!layoutSkipped)}
+                className="text-xs text-accent hover:underline"
+              >
+                {layoutSkipped ? "Add layout details" : "Skip layout"}
+              </button>
+            </div>
+            {!layoutSkipped && (
+              <LayoutSection
+                layout={layoutInput}
+                onChange={setLayoutInput}
+                showKitchen={freeFormData.business_type === "restaurant_cafe"}
+              />
+            )}
+          </div>
+
           {showAreas && (
             <AreaBreakdown
               areas={areas}
