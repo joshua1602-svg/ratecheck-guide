@@ -96,9 +96,9 @@ const Results = () => {
         </div>
 
         {/* Value reinforcement */}
-        <p className="mt-6 text-center text-sm text-muted-foreground">
+        <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-center text-sm font-medium text-foreground">
           A successful challenge may result in ongoing annual savings and potential backdated refunds.
-        </p>
+        </div>
 
         {/* Trust Footer */}
         <div className="mt-8 flex flex-wrap justify-center gap-8 border-t border-border pt-8 text-xs text-muted-foreground">
