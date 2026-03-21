@@ -300,15 +300,6 @@ const Intake = () => {
           >
             {isLoading ? "Preparing payment…" : "Continue to payment →"}
           </button>
-
-          <button
-            type="button"
-            disabled={isGenerating}
-            onClick={handleGenerateReport}
-            className="w-full rounded-md border border-accent bg-transparent px-4 py-3 text-sm font-semibold text-accent transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            {isGenerating ? "Generating report…" : "Generate Report →"}
-          </button>
         </form>
       </div>
     </div>
