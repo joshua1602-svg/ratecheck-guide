@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import BrandMark from "@/components/BrandMark";
 import ProductCard from "@/components/ProductCard";
+import { toast } from "sonner";
+
+const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
 const signalConfig: Record<string, { border: string; heading: string }> = {
   High: { border: "border-l-signal-high", heading: "There may be a case for overassessment" },
@@ -9,9 +13,48 @@ const signalConfig: Record<string, { border: string; heading: string }> = {
   "Insufficient Data": { border: "border-l-signal-insufficient", heading: "We couldn't find enough comparable data" },
 };
 
+/**
+ * TEMPORARY: generateReport bypasses the /purchase payment step
+ * and calls the report endpoint directly for testing.
+ * TODO: Restore /purchase flow when Stripe payment is implemented.
+ */
+const generateReport = async (
+  endpoint: "simplified" | "evidence",
+  data: { assessmentResult: any; freeFormData: any }
+) => {
+  const res = await fetch(`${API_URL}/report/${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/pdf",
+    },
+    body: JSON.stringify({
+      assessment: data.assessmentResult,
+      form_data: data.freeFormData,
+    }),
+  });
+
+  if (!res.ok) {
+    console.error(`Report generation failed: ${res.status} ${res.statusText}`);
+    throw new Error(`Report generation failed (${res.status})`);
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const opened = window.open(url, "_blank");
+  if (!opened) {
+    // Fallback: download if popup blocked
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ratechecker-${endpoint}.pdf`;
+    a.click();
+  }
+};
+
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<string | null>(null);
   const state = location.state as { assessmentResult: any; freeFormData: any } | null;
 
   if (!state) return <Navigate to="/" replace />;
@@ -19,6 +62,19 @@ const Results = () => {
   const { assessmentResult, freeFormData } = state;
   const signal = assessmentResult?.signal || "Low";
   const config = signalConfig[signal] || signalConfig.Low;
+
+  // TEMPORARY: Direct report generation bypassing payment
+  // TODO: Replace with /purchase → Stripe checkout → /report/{token} flow
+  const handleReport = async (endpoint: "simplified" | "evidence") => {
+    setLoading(endpoint);
+    try {
+      await generateReport(endpoint, { assessmentResult, freeFormData });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to generate report. Please try again.");
+    } finally {
+      setLoading(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-primary">
@@ -73,9 +129,9 @@ const Results = () => {
               "Snapshot of comparable evidence",
             ]}
             subtext="Start here to understand your opportunity."
-            ctaLabel="See my estimated saving →"
+            ctaLabel={loading === "simplified" ? "Generating…" : "See my estimated saving →"}
             variant="accent"
-            onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
+            onClick={() => handleReport("simplified")}
           />
           <ProductCard
             badge="READY TO CHALLENGE"
@@ -89,9 +145,9 @@ const Results = () => {
               "Pre-written challenge submission",
             ]}
             subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
-            ctaLabel="Prepare my challenge →"
+            ctaLabel={loading === "evidence" ? "Generating…" : "Prepare my challenge →"}
             variant="accent"
-            onClick={() => navigate("/intake?product=evidence", { state: { assessmentResult, freeFormData } })}
+            onClick={() => handleReport("evidence")}
           />
         </div>
 
