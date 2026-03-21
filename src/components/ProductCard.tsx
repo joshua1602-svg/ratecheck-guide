@@ -17,10 +17,12 @@ const ProductCard = ({ badge, title, price, description, features, ctaLabel, var
       {badge}
     </span>
     <h3 className="text-xl font-bold text-card-foreground">{title}</h3>
-    <p className="mt-1 text-2xl font-bold text-card-foreground">{price}</p>
-    {priceNote && (
-      <p className="mt-1 text-xs text-muted-foreground italic">{priceNote}</p>
-    )}
+    <div className="mt-1 flex items-baseline gap-2">
+      <span className="text-2xl font-bold text-card-foreground">{price}</span>
+      {priceNote && (
+        <span className="text-xs text-muted-foreground italic">{priceNote}</span>
+      )}
+    </div>
     <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{description}</p>
     <ul className="mt-4 flex-1 space-y-2">
       {features.map((f, i) => (
