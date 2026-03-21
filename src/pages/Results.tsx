@@ -97,7 +97,7 @@ const Results = () => {
 
         {/* Value reinforcement */}
         <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-center text-sm font-medium text-foreground">
-          A successful challenge may result in ongoing annual savings and potential backdated refunds.
+          If successful, a challenge may result in ongoing annual savings and potential backdated refunds.
         </div>
 
         {/* Trust Footer */}
