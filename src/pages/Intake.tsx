@@ -132,6 +132,74 @@ const Intake = () => {
     }
   };
 
+  const handleGenerateReport = async () => {
+    const errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setIsGenerating(true);
+    setApiError(null);
+
+    const formData = {
+      contact: { email: freeFormData.email, business_name: businessName },
+      property: {
+        postcode: postcode.trim().toUpperCase(),
+        business_type: freeFormData.business_type,
+        nia_sqm: parseFloat(totalFloorArea) || freeFormData.nia_sqm,
+        voa_rv: voaRv ? parseFloat(voaRv) : 0,
+        address,
+      },
+      layout: {
+        floor_config: layoutInput.floor_config,
+        ground_floor_trading_sqm: layoutInput.ground_floor_trading_sqm
+          ? parseFloat(layoutInput.ground_floor_trading_sqm)
+          : 0,
+        ground_floor_storage_sqm: layoutInput.ground_floor_storage_sqm
+          ? parseFloat(layoutInput.ground_floor_storage_sqm)
+          : 0,
+        lower_ground_use: layoutInput.lower_ground_use,
+        upper_floor_use: layoutInput.upper_floor_use,
+        kitchen_on_ground: layoutInput.kitchen_on_ground,
+      },
+      areas: showAreas
+        ? {
+            sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
+            kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
+            storage_sqm: parseFloat(areas.storage_sqm) || 0,
+            basement_sqm: parseFloat(areas.basement_sqm) || 0,
+            upper_sqm: parseFloat(areas.upper_sqm) || 0,
+            outdoor_seating: areas.outdoor_seating,
+          }
+        : undefined,
+      nursery: isNursery
+        ? { purpose_built: nurseryPurposeBuilt, outdoor_play: nurseryOutdoorPlay }
+        : undefined,
+      flags: {
+        layout_flag: layoutFlag,
+        cramped_flag: crampedFlag,
+        fitout_year: fitoutYear ? parseInt(fitoutYear) : undefined,
+        consent_disclaimer: true,
+      },
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/report/simplified`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product, form_data: formData }),
+      });
+
+      if (!res.ok) throw new Error("Request failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch {
+      setApiError("Something went wrong generating the report — please try again. If the problem persists, email hello@ratecheck.co.uk");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
