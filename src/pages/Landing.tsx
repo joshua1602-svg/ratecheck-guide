@@ -127,7 +127,7 @@ const Landing = () => {
           </header>
 
           <h1 className="text-3xl font-bold leading-tight text-primary-foreground sm:text-4xl">
-            Find out if your 2026 business rates are too high
+            Find out if you're overpaying business rates in 60 seconds
           </h1>
           <p className="mt-3 text-lg text-primary-foreground/70">
             A free 60-second check — no signup required
