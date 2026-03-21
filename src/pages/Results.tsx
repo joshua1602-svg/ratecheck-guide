@@ -78,7 +78,7 @@ const Results = () => {
             onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
           />
           <ProductCard
-            badge="BEST FOR CHALLENGES"
+            badge="READY TO CHALLENGE"
             title="Evidence Pack"
             price="£249"
             priceNote="£99 discount if you've already purchased Rates Assessment"
