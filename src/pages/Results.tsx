@@ -82,7 +82,7 @@ const Results = () => {
             title="Evidence Pack"
             price="£249"
             priceNote="£99 credited if you start with the Rates Assessment"
-            description="Everything you need to submit a challenge."
+            description="Everything you need to prepare and submit a challenge."
             features={[
               "Full comparable evidence",
               "Adjustment analysis",
