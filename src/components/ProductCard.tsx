@@ -17,7 +17,7 @@ const ProductCard = ({ badge, title, price, description, features, ctaLabel, var
       {badge}
     </span>
     <h3 className="text-xl font-bold text-card-foreground">{title}</h3>
-    <div className="mt-1 flex items-baseline gap-2">
+    <div className="mt-1 flex items-center gap-2">
       <span className="text-2xl font-bold text-card-foreground">{price}</span>
       {priceNote && (
         <span className="text-xs text-muted-foreground italic">{priceNote}</span>
