@@ -70,7 +70,7 @@ const Results = () => {
             features={[
               "Estimated fair rateable value",
               "Potential annual saving",
-              "Key comparable evidence",
+              "Snapshot of comparable evidence",
             ]}
             subtext="Start here to understand your opportunity."
             ctaLabel="See my estimated saving →"
