@@ -45,6 +45,7 @@ const Intake = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
   if (!state || !freeFormData) return <Navigate to="/" replace />;
@@ -128,6 +129,74 @@ const Intake = () => {
     } catch {
       setApiError("Something went wrong — please try again. If the problem persists, email hello@ratecheck.co.uk");
       setIsLoading(false);
+    }
+  };
+
+  const handleGenerateReport = async () => {
+    const errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setIsGenerating(true);
+    setApiError(null);
+
+    const formData = {
+      contact: { email: freeFormData.email, business_name: businessName },
+      property: {
+        postcode: postcode.trim().toUpperCase(),
+        business_type: freeFormData.business_type,
+        nia_sqm: parseFloat(totalFloorArea) || freeFormData.nia_sqm,
+        voa_rv: voaRv ? parseFloat(voaRv) : 0,
+        address,
+      },
+      layout: {
+        floor_config: layoutInput.floor_config,
+        ground_floor_trading_sqm: layoutInput.ground_floor_trading_sqm
+          ? parseFloat(layoutInput.ground_floor_trading_sqm)
+          : 0,
+        ground_floor_storage_sqm: layoutInput.ground_floor_storage_sqm
+          ? parseFloat(layoutInput.ground_floor_storage_sqm)
+          : 0,
+        lower_ground_use: layoutInput.lower_ground_use,
+        upper_floor_use: layoutInput.upper_floor_use,
+        kitchen_on_ground: layoutInput.kitchen_on_ground,
+      },
+      areas: showAreas
+        ? {
+            sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
+            kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
+            storage_sqm: parseFloat(areas.storage_sqm) || 0,
+            basement_sqm: parseFloat(areas.basement_sqm) || 0,
+            upper_sqm: parseFloat(areas.upper_sqm) || 0,
+            outdoor_seating: areas.outdoor_seating,
+          }
+        : undefined,
+      nursery: isNursery
+        ? { purpose_built: nurseryPurposeBuilt, outdoor_play: nurseryOutdoorPlay }
+        : undefined,
+      flags: {
+        layout_flag: layoutFlag,
+        cramped_flag: crampedFlag,
+        fitout_year: fitoutYear ? parseInt(fitoutYear) : undefined,
+        consent_disclaimer: true,
+      },
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/report/simplified`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product, form_data: formData }),
+      });
+
+      if (!res.ok) throw new Error("Request failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch {
+      setApiError("Something went wrong generating the report — please try again. If the problem persists, email hello@ratecheck.co.uk");
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -230,6 +299,15 @@ const Intake = () => {
             className="w-full rounded-md bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
             {isLoading ? "Preparing payment…" : "Continue to payment →"}
+          </button>
+
+          <button
+            type="button"
+            disabled={isGenerating}
+            onClick={handleGenerateReport}
+            className="w-full rounded-md border border-accent bg-transparent px-4 py-3 text-sm font-semibold text-accent transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
+            {isGenerating ? "Generating report…" : "Generate Report →"}
           </button>
         </form>
       </div>
