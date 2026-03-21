@@ -81,7 +81,7 @@ const Results = () => {
             badge="BEST FOR CHALLENGES"
             title="Evidence Pack"
             price="£249"
-            priceNote="£99 credited if you've already purchased the Assessment"
+            priceNote="£99 discount if you've already purchased Rates Assessment"
             description="Everything you need to submit a challenge."
             features={[
               "Full comparable evidence",
