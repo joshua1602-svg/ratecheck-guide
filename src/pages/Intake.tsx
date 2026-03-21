@@ -45,6 +45,7 @@ const Intake = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
   if (!state || !freeFormData) return <Navigate to="/" replace />;
