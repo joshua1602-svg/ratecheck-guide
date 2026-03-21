@@ -32,7 +32,7 @@ const Results = () => {
           </span>
           <h2 className="mt-2 text-2xl font-bold text-card-foreground">Your property may be over-assessed</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Based on nearby comparable properties, your current rateable value appears higher than the local range. This may support a review or challenge.
+            Your current rateable value appears higher than similar properties nearby. This may support a review or challenge.
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
             This is an initial indication based on available data — not a formal valuation.
