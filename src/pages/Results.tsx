@@ -30,15 +30,13 @@ const Results = () => {
           <span className="mb-3 inline-block rounded-sm bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
             Overassessment likelihood: {signal}
           </span>
-          <h2 className="mt-2 text-2xl font-bold text-card-foreground">{config.heading}</h2>
-          {assessmentResult?.explanation && (
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{assessmentResult.explanation}</p>
-          )}
-          {assessmentResult?.comparable_count && (
-            <p className="mt-2 text-xs text-muted-foreground">
-              Based on {assessmentResult.comparable_count} comparable properties in your area
-            </p>
-          )}
+          <h2 className="mt-2 text-2xl font-bold text-card-foreground">Your property may be over-assessed</h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Based on nearby comparable properties, your current rateable value appears higher than the local range. This may support a review or challenge.
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            This is an initial indication based on available data — not a formal valuation.
+          </p>
         </div>
 
         {/* Layout indicator */}
@@ -60,7 +58,7 @@ const Results = () => {
 
         {/* Product Options */}
         <h2 className="mt-12 text-2xl font-bold text-foreground">
-          To challenge your rates, you'll need evidence
+          Next step: understand your saving or prepare your challenge
         </h2>
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -68,14 +66,15 @@ const Results = () => {
             badge="MOST POPULAR"
             title="Rates Assessment"
             price="£99"
-            description="A full comparable analysis showing how your property compares to similar properties, estimated rateable value, and instructions on how to file a Check with the VOA."
+            description="See your estimated fair rateable value and potential annual saving based on comparable properties."
             features={[
-              "Estimated RV and annual saving",
-              "Select comparable evidence table",
-              "Step-by-step filing guide",
-              "PDF delivered within minutes",
+              "Estimated fair rateable value",
+              "Potential annual saving range",
+              "Key comparable benchmarks",
+              "Simple step-by-step guide to filing a Check",
             ]}
-            ctaLabel="Get my report →"
+            subtext="Many users start here before deciding to proceed with a full challenge."
+            ctaLabel="See my estimated saving →"
             variant="accent"
             onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
           />
@@ -83,25 +82,37 @@ const Results = () => {
             badge="BEST FOR CHALLENGES"
             title="Evidence Pack"
             price="£249"
-            description="A detailed pack for filing outlining the basis for the estimated RV including comparables, property-specific adjustments, and model methodology."
+            priceNote="If you purchase the Assessment first, the £99 is credited toward this."
+            description="A submission-ready evidence pack structured to support a business rates challenge."
             features={[
-              "Everything in the Assessment Report",
-              "Detailed valuation analysis",
-              "Valuation methodology supporting a VOA challenge",
-              "PDF delivered within minutes",
+              "Full comparable evidence table",
+              "Property-specific adjustment analysis",
+              "Pre-written challenge narrative aligned to VOA process",
+              "Step-by-step submission guidance",
             ]}
-            ctaLabel="Build my evidence pack →"
+            subtext="Designed to support a Check and Challenge submission (no guarantee of outcome)."
+            ctaLabel="Prepare my challenge →"
             variant="accent"
             onClick={() => navigate("/intake?product=evidence", { state: { assessmentResult, freeFormData } })}
           />
         </div>
 
+        {/* Value reinforcement */}
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          A successful challenge may result in ongoing annual savings and potential backdated refunds.
+        </p>
+
         {/* Trust Footer */}
-        <div className="mt-12 flex flex-wrap justify-center gap-8 border-t border-border pt-8 text-xs text-muted-foreground">
+        <div className="mt-8 flex flex-wrap justify-center gap-8 border-t border-border pt-8 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">🔒 Secure payment via Stripe</span>
           <span className="flex items-center gap-1.5">📄 PDF delivered within minutes</span>
           <span className="flex items-center gap-1.5">✓ Based on VOA published data</span>
         </div>
+
+        {/* Liability disclaimer */}
+        <p className="mt-4 text-center text-[10px] leading-relaxed text-muted-foreground">
+          This analysis is based on publicly available data and comparable property estimates. It does not constitute a formal valuation or guarantee a successful outcome.
+        </p>
       </div>
     </div>
   );
