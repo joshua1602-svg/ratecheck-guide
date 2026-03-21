@@ -66,14 +66,13 @@ const Results = () => {
             badge="MOST POPULAR"
             title="Rates Assessment"
             price="£99"
-            description="See your estimated fair rateable value and potential annual saving based on comparable properties."
+            description="See if it's worth challenging your rates."
             features={[
               "Estimated fair rateable value",
-              "Potential annual saving range",
-              "Key comparable benchmarks",
-              "Simple step-by-step guide to filing a Check",
+              "Potential annual saving",
+              "Key comparable evidence",
             ]}
-            subtext="Many users start here before deciding to proceed with a full challenge."
+            subtext="Start here to understand your opportunity."
             ctaLabel="See my estimated saving →"
             variant="accent"
             onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
@@ -82,15 +81,14 @@ const Results = () => {
             badge="BEST FOR CHALLENGES"
             title="Evidence Pack"
             price="£249"
-            priceNote="If you purchase the Assessment first, the £99 is credited toward this."
-            description="A submission-ready evidence pack structured to support a business rates challenge."
+            priceNote="£99 credited if you've already purchased the Assessment"
+            description="Everything you need to submit a challenge."
             features={[
-              "Full comparable evidence table",
-              "Property-specific adjustment analysis",
-              "Pre-written challenge narrative aligned to VOA process",
-              "Step-by-step submission guidance",
+              "Full comparable evidence",
+              "Adjustment analysis",
+              "Pre-written challenge submission",
             ]}
-            subtext="Designed to support a Check and Challenge submission (no guarantee of outcome)."
+            subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
             ctaLabel="Prepare my challenge →"
             variant="accent"
             onClick={() => navigate("/intake?product=evidence", { state: { assessmentResult, freeFormData } })}
