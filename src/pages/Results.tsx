@@ -63,7 +63,7 @@ const Results = () => {
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           <ProductCard
-            badge="MOST POPULAR"
+            badge="START HERE"
             title="Rates Assessment"
             price="£99"
             description="See if it's worth challenging your rates."
