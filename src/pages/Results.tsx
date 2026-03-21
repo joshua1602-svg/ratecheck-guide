@@ -32,7 +32,7 @@ const Results = () => {
           </span>
           <h2 className="mt-2 text-2xl font-bold text-card-foreground">Your property may be over-assessed</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Based on nearby comparable properties, your current rateable value appears higher than the local range. This may support a review or challenge.
+            Your current rateable value appears higher than similar properties nearby. This may support a review or challenge.
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
             This is an initial indication based on available data — not a formal valuation.
@@ -63,14 +63,14 @@ const Results = () => {
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           <ProductCard
-            badge="MOST POPULAR"
+            badge="START HERE"
             title="Rates Assessment"
             price="£99"
             description="See if it's worth challenging your rates."
             features={[
               "Estimated fair rateable value",
               "Potential annual saving",
-              "Key comparable evidence",
+              "Snapshot of comparable evidence",
             ]}
             subtext="Start here to understand your opportunity."
             ctaLabel="See my estimated saving →"
@@ -78,11 +78,11 @@ const Results = () => {
             onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
           />
           <ProductCard
-            badge="BEST FOR CHALLENGES"
+            badge="READY TO CHALLENGE"
             title="Evidence Pack"
             price="£249"
-            priceNote="£99 discount if you've already purchased Rates Assessment"
-            description="Everything you need to submit a challenge."
+            priceNote="£99 credited if you start with the Rates Assessment"
+            description="Everything you need to prepare and submit a challenge."
             features={[
               "Full comparable evidence",
               "Adjustment analysis",
@@ -97,7 +97,7 @@ const Results = () => {
 
         {/* Value reinforcement */}
         <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-center text-sm font-medium text-foreground">
-          A successful challenge may result in ongoing annual savings and potential backdated refunds.
+          If successful, a challenge may result in ongoing annual savings and potential backdated refunds.
         </div>
 
         {/* Trust Footer */}
