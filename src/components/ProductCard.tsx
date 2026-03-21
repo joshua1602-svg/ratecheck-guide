@@ -7,6 +7,8 @@ interface ProductCardProps {
   ctaLabel: string;
   variant: "accent" | "primary";
   onClick: () => void;
+  subtext?: string;
+  priceNote?: string;
 }
 
 const ProductCard = ({ badge, title, price, description, features, ctaLabel, variant, onClick }: ProductCardProps) => (
