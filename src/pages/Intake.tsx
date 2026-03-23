@@ -123,18 +123,40 @@ const Intake = () => {
       },
     };
 
+    // TEMPORARY: bypass Stripe, generate PDF directly for testing
+    const endpoint = product === "evidence" ? "evidence" : "simplified";
+    const reportPayload: Record<string, any> = {
+      assessment: state?.assessmentResult || {},
+      form_data: formData,
+    };
+
+    if (endpoint === "evidence" && state?.assessmentResult?.rated_comps?.length) {
+      reportPayload.comparables = state.assessmentResult.rated_comps;
+      reportPayload.comp_count = state.assessmentResult.comparable_count;
+      reportPayload.modelled_rv = state.assessmentResult.adjusted_estimated_rv;
+      reportPayload.final_tone_psm = state.assessmentResult.tone_rate;
+    }
+
     try {
-      const res = await fetch(`${API_URL}/purchase`, {
+      const res = await fetch(`${API_URL}/report/${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product, form_data: formData }),
+        headers: { "Content-Type": "application/json", Accept: "application/pdf" },
+        body: JSON.stringify(reportPayload),
       });
 
-      if (!res.ok) throw new Error("Request failed");
-      const { checkout_url } = await res.json();
-      window.location.href = checkout_url;
-    } catch {
-      setApiError("Something went wrong — please try again. If the problem persists, email hello@ratecheck.co.uk");
+      if (!res.ok) throw new Error(`Report generation failed (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const opened = window.open(url, "_blank");
+      if (!opened) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `ratechecker-${endpoint}.pdf`;
+        a.click();
+      }
+    } catch (err: any) {
+      setApiError(err.message || "Something went wrong — please try again.");
+    } finally {
       setIsLoading(false);
     }
   };
