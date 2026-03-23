@@ -125,16 +125,83 @@ const Intake = () => {
 
     // TEMPORARY: bypass Stripe, generate PDF directly for testing
     const endpoint = product === "evidence" ? "evidence" : "simplified";
+
+    // Replicate backend's build_report_payload_from_assess logic
+    const assess = state?.assessmentResult || {};
+    const voaRvNum = parseFloat(voaRv) || 0;
+    const toneRate = assess.tone_rate ?? null;
+    const baseRv = assess.base_estimated_rv ?? null;
+    const adjRv = assess.adjusted_estimated_rv ?? null;
+    const bestRv = adjRv ?? baseRv;
+    const SAVING_MARGIN = 0.05;
+
+    let rvLow: number | null = null;
+    let rvHigh: number | null = null;
+    if (bestRv != null) {
+      rvLow = Math.round(bestRv * (1 - SAVING_MARGIN) / 100) * 100;
+      rvHigh = Math.round(bestRv * (1 + SAVING_MARGIN) / 100) * 100;
+    }
+
+    let savingLow: number | null = null;
+    let savingHigh: number | null = null;
+    if (rvLow != null && voaRvNum > 0) {
+      savingLow = Math.max(0, Math.round(voaRvNum - rvHigh!));
+      savingHigh = Math.max(0, Math.round(voaRvNum - rvLow));
+    }
+
+    const signalMap: Record<string, string> = {
+      High: "Strong", Medium: "Moderate", Low: "Weak",
+      "Insufficient Data": "Insufficient Data",
+    };
+    const signal = assess.signal || "Low";
+
+    const now = new Date();
+    const datePrepared = now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
     const reportPayload: Record<string, any> = {
-      assessment: state?.assessmentResult || {},
-      form_data: formData,
+      business_name: businessName || address,
+      property_address: address,
+      postcode: postcode.trim().toUpperCase(),
+      business_type: safeFreeFormData.business_type,
+      date_prepared: datePrepared,
+      voa_rv: voaRvNum,
+      modelled_rv_low: rvLow,
+      modelled_rv_high: rvHigh,
+      annual_saving_low: savingLow,
+      annual_saving_high: savingHigh,
+      case_strength: signalMap[signal] || signal,
+      comparables: assess.rated_comps || [],
+      comp_count: assess.comparable_count || 0,
+      tone_rate: toneRate,
+      base_estimated_rv: baseRv,
+      adjusted_estimated_rv: adjRv,
+      layout_adjustment_applied: layoutInput.floor_config !== "ground_only" ? true : null,
     };
 
-    if (endpoint === "evidence" && state?.assessmentResult?.rated_comps?.length) {
-      reportPayload.comparables = state.assessmentResult.rated_comps;
-      reportPayload.comp_count = state.assessmentResult.comparable_count;
-      reportPayload.modelled_rv = state.assessmentResult.adjusted_estimated_rv;
-      reportPayload.final_tone_psm = state.assessmentResult.tone_rate;
+    // Evidence pack extra fields
+    if (endpoint === "evidence") {
+      const confidenceMap: Record<string, string> = {
+        High: "High", Medium: "Medium", Low: "Low",
+        "Insufficient Data": "Insufficient Data",
+      };
+      reportPayload.uprn = "";
+      reportPayload.voa_description = `${safeFreeFormData.business_type.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())} and Premises`;
+      reportPayload.nia_sqm = parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm;
+      reportPayload.modelled_rv = bestRv;
+      reportPayload.final_tone_psm = toneRate || 0;
+      reportPayload.tone_basis = "Weighted median";
+      reportPayload.confidence = confidenceMap[signal] || signal;
+      reportPayload.recommendation_text = signal === "High"
+        ? "The evidence supports a strong case for reduction. Proceed to Check and submit this pack as supporting evidence at Challenge stage if not resolved."
+        : signal === "Medium"
+        ? "There is a moderate case for reduction based on comparable evidence. Consider submitting a Check to explore further."
+        : "The comparable evidence does not currently support a strong case. Monitor for future revaluations or additional comparable data.";
+      reportPayload.zoning_rows = [];
+      reportPayload.nursery_adjustments = [];
+      reportPayload.floor_config = layoutInput.floor_config;
+      reportPayload.ground_floor_trading_sqm = layoutInput.ground_floor_trading_sqm ? parseFloat(layoutInput.ground_floor_trading_sqm) : 0;
+      reportPayload.ground_floor_storage_sqm = layoutInput.ground_floor_storage_sqm ? parseFloat(layoutInput.ground_floor_storage_sqm) : 0;
+      reportPayload.kitchen_on_ground = layoutInput.kitchen_on_ground;
     }
 
     try {
