@@ -55,6 +55,7 @@ const Intake = () => {
 
   const showAreas = AREA_TYPES.includes(freeFormData.business_type);
   const isNursery = freeFormData.business_type === "nursery";
+  const showParking = SHOW_PARKING.includes(freeFormData.business_type);
 
   const validate = () => {
     const errs: Record<string, string> = {};
