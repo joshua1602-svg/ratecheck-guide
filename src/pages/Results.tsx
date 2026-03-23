@@ -142,9 +142,9 @@ const Results = () => {
               "Snapshot of comparable evidence",
             ]}
             subtext="Start here to understand your opportunity."
-            ctaLabel={loading === "simplified" ? "Generating…" : "See my estimated saving →"}
+            ctaLabel="See my estimated saving →"
             variant="accent"
-            onClick={() => handleReport("simplified")}
+            onClick={() => navigate("/intake?product=simplified", { state: { assessmentResult, freeFormData, ratedComps } })}
           />
           <ProductCard
             badge="READY TO CHALLENGE"
@@ -158,9 +158,9 @@ const Results = () => {
               "Pre-written challenge submission",
             ]}
             subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
-            ctaLabel={loading === "evidence" ? "Generating…" : "Prepare my challenge →"}
+            ctaLabel="Prepare my challenge →"
             variant="accent"
-            onClick={() => handleReport("evidence")}
+            onClick={() => navigate("/intake?product=evidence", { state: { assessmentResult, freeFormData, ratedComps } })}
           />
         </div>
 
