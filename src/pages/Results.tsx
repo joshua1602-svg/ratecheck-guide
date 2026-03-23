@@ -20,18 +20,31 @@ const signalConfig: Record<string, { border: string; heading: string }> = {
  */
 const generateReport = async (
   endpoint: "simplified" | "evidence",
-  data: { assessmentResult: any; freeFormData: any }
+  data: { assessmentResult: any; freeFormData: any; ratedComps?: any[] }
 ) => {
+  // Build payload — for evidence reports, include rated_comps as comparables
+  const payload: Record<string, any> = {
+    assessment: data.assessmentResult,
+    form_data: data.freeFormData,
+  };
+
+  if (endpoint === "evidence" && data.ratedComps?.length) {
+    payload.comparables = data.ratedComps;
+    payload.comp_count = data.assessmentResult?.comparable_count;
+    payload.modelled_rv = data.assessmentResult?.adjusted_estimated_rv;
+    payload.final_tone_psm = data.assessmentResult?.tone_rate;
+    payload.layout_adjustment_applied = data.ratedComps.some(
+      (c: any) => c.adjusted_weight != null
+    );
+  }
+
   const res = await fetch(`${API_URL}/report/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/pdf",
     },
-    body: JSON.stringify({
-      assessment: data.assessmentResult,
-      form_data: data.freeFormData,
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
