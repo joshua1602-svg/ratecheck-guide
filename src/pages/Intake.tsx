@@ -128,6 +128,10 @@ const Intake = () => {
 
     // Replicate backend's build_report_payload_from_assess logic
     const assess = state?.assessmentResult || {};
+    const reportComparables = state?.ratedComps?.length
+      ? state.ratedComps
+      : assess.rated_comps || [];
+    const comparableCount = assess.comparable_count ?? reportComparables.length;
     const voaRvNum = parseFloat(voaRv) || 0;
     const toneRate = assess.tone_rate ?? null;
     const baseRv = assess.base_estimated_rv ?? null;
@@ -170,12 +174,12 @@ const Intake = () => {
       annual_saving_low: savingLow,
       annual_saving_high: savingHigh,
       case_strength: signalMap[signal] || signal,
-      comparables: assess.rated_comps || [],
-      comp_count: assess.comparable_count || 0,
+      comparables: reportComparables,
+      comp_count: comparableCount,
       tone_rate: toneRate,
       base_estimated_rv: baseRv,
       adjusted_estimated_rv: adjRv,
-      layout_adjustment_applied: layoutInput.floor_config !== "ground_only" ? true : null,
+      layout_adjustment_applied: reportComparables.some((comp: any) => comp.adjusted_weight != null),
     };
 
     // Evidence pack extra fields
