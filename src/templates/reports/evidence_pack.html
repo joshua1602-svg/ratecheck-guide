@@ -368,7 +368,7 @@ table { page-break-inside: avoid; }
     <tr><td class="label">Business:</td><td class="value">{{ business_name }}</td></tr>
     <tr><td class="label">Address:</td><td class="value">{{ property_address }}</td></tr>
     <tr><td class="label">UPRN:</td><td class="value">{{ uprn | default('Not available') }}</td></tr>
-    <tr><td class="label">Sector:</td><td class="value">{{ business_type }}</td></tr>
+    <tr><td class="label">Sector:</td><td class="value">{{ business_type | capitalize }}</td></tr>
     <tr><td class="label">Date:</td><td class="value">{{ date_prepared }}</td></tr>
     <tr>
       <td class="label">Case Strength:</td>
