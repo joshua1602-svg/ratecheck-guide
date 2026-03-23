@@ -9,6 +9,8 @@ import LayoutSection, { LAYOUT_DEFAULTS, type LayoutInputState } from "@/compone
 const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
 const AREA_TYPES = ["restaurant_cafe", "retail", "hair_beauty"];
+const SHOW_PARKING = ["nursery", "pub", "retail"];
+// hide parking for restaurant_cafe and hair_beauty
 
 const Intake = () => {
   const location = useLocation();
@@ -37,6 +39,7 @@ const Intake = () => {
 
   const [nurseryPurposeBuilt, setNurseryPurposeBuilt] = useState(false);
   const [nurseryOutdoorPlay, setNurseryOutdoorPlay] = useState(false);
+  const [hasParking, setHasParking] = useState(false);
 
   const [layoutFlag, setLayoutFlag] = useState(false);
   const [crampedFlag, setCrampedFlag] = useState(false);
@@ -52,6 +55,7 @@ const Intake = () => {
 
   const showAreas = AREA_TYPES.includes(freeFormData.business_type);
   const isNursery = freeFormData.business_type === "nursery";
+  const showParking = SHOW_PARKING.includes(freeFormData.business_type);
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -82,6 +86,7 @@ const Intake = () => {
         nia_sqm: parseFloat(totalFloorArea) || freeFormData.nia_sqm,
         voa_rv: voaRv ? parseFloat(voaRv) : 0,
         address,
+        has_parking: showParking ? hasParking : undefined,
       },
       layout: {
         floor_config: layoutInput.floor_config,
@@ -204,7 +209,14 @@ const Intake = () => {
                 <input type="checkbox" checked={nurseryOutdoorPlay} onChange={(e) => setNurseryOutdoorPlay(e.target.checked)} className="rounded border-input" />
                 Has outdoor play area
               </label>
-            </fieldset>
+          </fieldset>
+          )}
+
+          {showParking && (
+            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+              <input type="checkbox" checked={hasParking} onChange={(e) => setHasParking(e.target.checked)} className="h-4 w-4 rounded border-input" />
+              My property has dedicated car parking
+            </label>
           )}
 
           {/* Confirmations */}
