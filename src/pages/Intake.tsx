@@ -39,6 +39,7 @@ const Intake = () => {
 
   const [nurseryPurposeBuilt, setNurseryPurposeBuilt] = useState(false);
   const [nurseryOutdoorPlay, setNurseryOutdoorPlay] = useState(false);
+  const [hasParking, setHasParking] = useState(false);
 
   const [layoutFlag, setLayoutFlag] = useState(false);
   const [crampedFlag, setCrampedFlag] = useState(false);
