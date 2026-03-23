@@ -51,11 +51,13 @@ const Intake = () => {
   
   const [apiError, setApiError] = useState<string | null>(null);
 
-  if (!state || !freeFormData) return <Navigate to="/" replace />;
+  // TEMPORARY: allow preview without state — remove when done testing
+  // if (!state || !freeFormData) return <Navigate to="/" replace />;
+  const safeFreeFormData = freeFormData || { business_type: "retail", email: "", postcode: "", nia_sqm: 0, voa_rv: 0 };
 
-  const showAreas = AREA_TYPES.includes(freeFormData.business_type);
-  const isNursery = freeFormData.business_type === "nursery";
-  const showParking = SHOW_PARKING.includes(freeFormData.business_type);
+  const showAreas = AREA_TYPES.includes(safeFreeFormData.business_type);
+  const isNursery = safeFreeFormData.business_type === "nursery";
+  const showParking = SHOW_PARKING.includes(safeFreeFormData.business_type);
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -79,11 +81,11 @@ const Intake = () => {
     setApiError(null);
 
     const formData = {
-      contact: { email: freeFormData.email, business_name: businessName },
+      contact: { email: safeFreeFormData.email, business_name: businessName },
       property: {
         postcode: postcode.trim().toUpperCase(),
-        business_type: freeFormData.business_type,
-        nia_sqm: parseFloat(totalFloorArea) || freeFormData.nia_sqm,
+        business_type: safeFreeFormData.business_type,
+        nia_sqm: parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm,
         voa_rv: voaRv ? parseFloat(voaRv) : 0,
         address,
         has_parking: showParking ? hasParking : undefined,
@@ -184,7 +186,7 @@ const Intake = () => {
             <LayoutSection
               layout={layoutInput}
               onChange={setLayoutInput}
-              showKitchen={freeFormData.business_type === "restaurant_cafe"}
+              showKitchen={safeFreeFormData.business_type === "restaurant_cafe"}
               errors={errors}
             />
           </div>
