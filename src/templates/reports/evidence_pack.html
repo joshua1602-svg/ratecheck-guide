@@ -396,7 +396,7 @@ table { page-break-inside: avoid; }
     <tr><td class="label-cell">UPRN</td><td class="value-cell">{{ uprn }}</td></tr>
     {% endif %}
     {% if business_type %}
-    <tr><td class="label-cell">Sector</td><td class="value-cell">{{ business_type }}</td></tr>
+    <tr><td class="label-cell">Sector</td><td class="value-cell">{{ business_type | capitalize }}</td></tr>
     {% endif %}
     {% if voa_description %}
     <tr><td class="label-cell">VOA Description</td><td class="value-cell">{{ voa_description }}</td></tr>
