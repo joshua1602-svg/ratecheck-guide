@@ -9,6 +9,8 @@ import LayoutSection, { LAYOUT_DEFAULTS, type LayoutInputState } from "@/compone
 const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
 const AREA_TYPES = ["restaurant_cafe", "retail", "hair_beauty"];
+const SHOW_PARKING = ["nursery", "pub", "retail"];
+// hide parking for restaurant_cafe and hair_beauty
 
 const Intake = () => {
   const location = useLocation();
