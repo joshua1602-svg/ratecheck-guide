@@ -109,7 +109,9 @@ const Landing = () => {
 
       if (!res.ok) throw new Error("Request failed");
       const assessmentResult = await res.json();
-      navigate("/results", { state: { assessmentResult, freeFormData } });
+      // rated_comps is the authoritative post-fit comparable pool from /assess
+      const { rated_comps, ...restAssessment } = assessmentResult;
+      navigate("/results", { state: { assessmentResult: restAssessment, ratedComps: rated_comps || [], freeFormData } });
     } catch {
       setApiError("Something went wrong — please try again. If the problem persists, email hello@ratecheck.co.uk");
     } finally {

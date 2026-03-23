@@ -81,7 +81,7 @@ const Results = () => {
   const handleReport = async (endpoint: "simplified" | "evidence") => {
     setLoading(endpoint);
     try {
-      await generateReport(endpoint, { assessmentResult, freeFormData });
+      await generateReport(endpoint, { assessmentResult, freeFormData, ratedComps });
     } catch (err: any) {
       toast.error(err.message || "Failed to generate report. Please try again.");
     } finally {
