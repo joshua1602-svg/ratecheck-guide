@@ -269,7 +269,7 @@ const Intake = () => {
             disabled={isLoading}
             className="w-full rounded-md bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
-            {isLoading ? "Preparing payment…" : "Continue to payment →"}
+            {isLoading ? "Generating report…" : "Generate report →"}
           </button>
         </form>
       </div>
