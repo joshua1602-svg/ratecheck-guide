@@ -186,7 +186,7 @@ const Intake = () => {
             <LayoutSection
               layout={layoutInput}
               onChange={setLayoutInput}
-              showKitchen={freeFormData.business_type === "restaurant_cafe"}
+              showKitchen={safeFreeFormData.business_type === "restaurant_cafe"}
               errors={errors}
             />
           </div>
