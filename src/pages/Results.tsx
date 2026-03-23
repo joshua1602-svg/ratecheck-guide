@@ -68,11 +68,11 @@ const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
-  const state = location.state as { assessmentResult: any; freeFormData: any } | null;
+  const state = location.state as { assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
 
   if (!state) return <Navigate to="/" replace />;
 
-  const { assessmentResult, freeFormData } = state;
+  const { assessmentResult, freeFormData, ratedComps = [] } = state;
   const signal = assessmentResult?.signal || "Low";
   const config = signalConfig[signal] || signalConfig.Low;
 
