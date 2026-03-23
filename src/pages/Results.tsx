@@ -118,7 +118,7 @@ const Results = () => {
         {assessmentResult?.layout_adjustment_applied === false && (
           <button
             type="button"
-            onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
+            onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData, ratedComps } })}
             className="mt-3 text-xs text-accent hover:underline"
           >
             Add layout details to refine your estimate →
