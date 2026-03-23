@@ -8,6 +8,11 @@
 @page {
   size: A4;
   margin: 16mm 18mm 20mm 18mm;
+  @bottom-right {
+    content: "Page " counter(page) " of " counter(pages);
+    font-size: 8pt;
+    color: #666666;
+  }
 }
 
 /* ── Reset ── */
@@ -91,18 +96,20 @@ table { page-break-inside: avoid; }
   border: 1.5px solid #D4956A;
 }
 .banner-label {
-  font-size: 7pt;
+  font-size: 6.5pt;
   color: #7A8A9A;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   font-weight: 600;
   margin-bottom: 3px;
+  white-space: nowrap;
 }
 .banner-value {
   font-size: 16pt;
   font-weight: 700;
   color: #2B4360;
   line-height: 1.15;
+  white-space: nowrap;
 }
 
 /* ── Summary paragraph ── */
@@ -210,7 +217,7 @@ table { page-break-inside: avoid; }
     </div>
     <div class="banner-box banner-box-accent">
       <div class="banner-label">Estimated Fair RV</div>
-      <div class="banner-value">&pound;{{ modelled_rv_low }}&ndash;{{ modelled_rv_high }}</div>
+      <div class="banner-value">&pound;{{ modelled_rv_low }}&ndash;&pound;{{ modelled_rv_high }}</div>
     </div>
     <div class="banner-box banner-box-accent">
       <div class="banner-label">Potential Annual Saving</div>
@@ -302,7 +309,6 @@ table { page-break-inside: avoid; }
 <div class="page-footer">
   <div class="footer-row">
     <span>Prepared by RateChecker&nbsp;&nbsp;|&nbsp;&nbsp;ratechecker.co.uk</span>
-    <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
   </div>
   <div class="footer-disclaimer">This report is based on publicly available VOA data and does not constitute professional surveying or legal advice.</div>
 </div>
