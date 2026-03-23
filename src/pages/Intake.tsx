@@ -86,6 +86,7 @@ const Intake = () => {
         nia_sqm: parseFloat(totalFloorArea) || freeFormData.nia_sqm,
         voa_rv: voaRv ? parseFloat(voaRv) : 0,
         address,
+        has_parking: showParking ? hasParking : undefined,
       },
       layout: {
         floor_config: layoutInput.floor_config,
