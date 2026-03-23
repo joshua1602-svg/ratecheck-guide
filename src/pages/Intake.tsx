@@ -51,7 +51,9 @@ const Intake = () => {
   
   const [apiError, setApiError] = useState<string | null>(null);
 
-  if (!state || !freeFormData) return <Navigate to="/" replace />;
+  // TEMPORARY: allow preview without state — remove when done testing
+  // if (!state || !freeFormData) return <Navigate to="/" replace />;
+  const safeFreeFormData = freeFormData || { business_type: "retail", email: "", postcode: "", nia_sqm: 0, voa_rv: 0 };
 
   const showAreas = AREA_TYPES.includes(freeFormData.business_type);
   const isNursery = freeFormData.business_type === "nursery";
