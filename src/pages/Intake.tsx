@@ -81,11 +81,11 @@ const Intake = () => {
     setApiError(null);
 
     const formData = {
-      contact: { email: freeFormData.email, business_name: businessName },
+      contact: { email: safeFreeFormData.email, business_name: businessName },
       property: {
         postcode: postcode.trim().toUpperCase(),
-        business_type: freeFormData.business_type,
-        nia_sqm: parseFloat(totalFloorArea) || freeFormData.nia_sqm,
+        business_type: safeFreeFormData.business_type,
+        nia_sqm: parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm,
         voa_rv: voaRv ? parseFloat(voaRv) : 0,
         address,
         has_parking: showParking ? hasParking : undefined,
