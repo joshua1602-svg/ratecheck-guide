@@ -209,7 +209,14 @@ const Intake = () => {
                 <input type="checkbox" checked={nurseryOutdoorPlay} onChange={(e) => setNurseryOutdoorPlay(e.target.checked)} className="rounded border-input" />
                 Has outdoor play area
               </label>
-            </fieldset>
+          </fieldset>
+          )}
+
+          {showParking && (
+            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+              <input type="checkbox" checked={hasParking} onChange={(e) => setHasParking(e.target.checked)} className="h-4 w-4 rounded border-input" />
+              My property has dedicated car parking
+            </label>
           )}
 
           {/* Confirmations */}
