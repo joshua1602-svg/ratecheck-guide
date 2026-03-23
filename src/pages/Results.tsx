@@ -20,18 +20,31 @@ const signalConfig: Record<string, { border: string; heading: string }> = {
  */
 const generateReport = async (
   endpoint: "simplified" | "evidence",
-  data: { assessmentResult: any; freeFormData: any }
+  data: { assessmentResult: any; freeFormData: any; ratedComps?: any[] }
 ) => {
+  // Build payload — for evidence reports, include rated_comps as comparables
+  const payload: Record<string, any> = {
+    assessment: data.assessmentResult,
+    form_data: data.freeFormData,
+  };
+
+  if (endpoint === "evidence" && data.ratedComps?.length) {
+    payload.comparables = data.ratedComps;
+    payload.comp_count = data.assessmentResult?.comparable_count;
+    payload.modelled_rv = data.assessmentResult?.adjusted_estimated_rv;
+    payload.final_tone_psm = data.assessmentResult?.tone_rate;
+    payload.layout_adjustment_applied = data.ratedComps.some(
+      (c: any) => c.adjusted_weight != null
+    );
+  }
+
   const res = await fetch(`${API_URL}/report/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/pdf",
     },
-    body: JSON.stringify({
-      assessment: data.assessmentResult,
-      form_data: data.freeFormData,
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
@@ -55,11 +68,11 @@ const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
-  const state = location.state as { assessmentResult: any; freeFormData: any } | null;
+  const state = location.state as { assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
 
   if (!state) return <Navigate to="/" replace />;
 
-  const { assessmentResult, freeFormData } = state;
+  const { assessmentResult, freeFormData, ratedComps = [] } = state;
   const signal = assessmentResult?.signal || "Low";
   const config = signalConfig[signal] || signalConfig.Low;
 
@@ -68,7 +81,7 @@ const Results = () => {
   const handleReport = async (endpoint: "simplified" | "evidence") => {
     setLoading(endpoint);
     try {
-      await generateReport(endpoint, { assessmentResult, freeFormData });
+      await generateReport(endpoint, { assessmentResult, freeFormData, ratedComps });
     } catch (err: any) {
       toast.error(err.message || "Failed to generate report. Please try again.");
     } finally {
@@ -105,7 +118,7 @@ const Results = () => {
         {assessmentResult?.layout_adjustment_applied === false && (
           <button
             type="button"
-            onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData } })}
+            onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData, ratedComps } })}
             className="mt-3 text-xs text-accent hover:underline"
           >
             Add layout details to refine your estimate →
