@@ -488,7 +488,7 @@ table { page-break-inside: avoid; }
       {% for comp in comparables[:20] %}
       <tr>
         <td>{{ comp.address }}</td>
-        <td>{{ comp.uarn }}</td>
+        <td style="white-space:nowrap;">{{ comp.uarn }}</td>
         <td class="num">{{ comp.nia_sqm }}</td>
         <td class="num">&pound;{{ comp.rv }}</td>
         <td class="num">&pound;{{ comp.rate_psm }}</td>
