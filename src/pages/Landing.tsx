@@ -177,12 +177,14 @@ const Landing = () => {
                 placeholder="you@business.co.uk"
               />
 
-              <div
+              {/* Turnstile disabled — widget fails in preview/sandbox.
+                  Re-enable when deploying to production domain. */}
+              {/* <div
                 className="cf-turnstile"
                 data-sitekey={TURNSTILE_KEY}
                 data-callback="onTurnstileSuccess"
                 data-error-callback="onTurnstileError"
-              />
+              /> */}
 
               <FormField
                 id="businessType"

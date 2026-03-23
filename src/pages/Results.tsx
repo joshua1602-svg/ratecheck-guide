@@ -92,7 +92,7 @@ const Results = () => {
   return (
     <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
-        <header className="mb-10"><BrandMark /></header>
+        <header className="mb-10 text-center sm:text-left"><BrandMark /></header>
 
         {/* Verdict Card */}
         <div className="rounded-lg border-2 border-accent bg-card p-6">
