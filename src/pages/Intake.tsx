@@ -55,9 +55,9 @@ const Intake = () => {
   // if (!state || !freeFormData) return <Navigate to="/" replace />;
   const safeFreeFormData = freeFormData || { business_type: "retail", email: "", postcode: "", nia_sqm: 0, voa_rv: 0 };
 
-  const showAreas = AREA_TYPES.includes(freeFormData.business_type);
-  const isNursery = freeFormData.business_type === "nursery";
-  const showParking = SHOW_PARKING.includes(freeFormData.business_type);
+  const showAreas = AREA_TYPES.includes(safeFreeFormData.business_type);
+  const isNursery = safeFreeFormData.business_type === "nursery";
+  const showParking = SHOW_PARKING.includes(safeFreeFormData.business_type);
 
   const validate = () => {
     const errs: Record<string, string> = {};
