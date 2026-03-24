@@ -16,7 +16,7 @@ const Results = () => {
 
   if (!state) return <Navigate to="/" replace />;
 
-  const { assessmentResult, freeFormData, ratedComps = [] } = state;
+  const { assessRequest, assessmentResult, freeFormData, ratedComps = [] } = state;
   const signal = assessmentResult?.signal || "Low";
   const config = signalConfig[signal] || signalConfig.Low;
 
