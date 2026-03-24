@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.
 
 const Success = () => {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token") || "";
+  const sessionId = searchParams.get("session_id") || "";
   const [status, setStatus] = useState<"polling" | "ready" | "error">("polling");
   const [downloadUrl, setDownloadUrl] = useState("");
   const [email, setEmail] = useState("");
@@ -14,36 +14,34 @@ const Success = () => {
   const startRef = useRef(Date.now());
 
   useEffect(() => {
-    if (!token) { setStatus("error"); return; }
+    if (!sessionId) { setStatus("error"); return; }
 
     const poll = async () => {
-      if (Date.now() - startRef.current > 120_000) {
+      if (Date.now() - startRef.current > 180_000) {
         clearInterval(intervalRef.current);
         setStatus("error");
         return;
       }
       try {
-        const res = await fetch(`${API_URL}/report/${token}`);
+        const res = await fetch(`${API_URL}/report/download/${sessionId}`);
+        if (res.status === 202) return; // still generating, keep polling
         if (!res.ok) throw new Error();
         const data = await res.json();
         if (data.email) setEmail(data.email);
-        if (data.status === "ready") {
+        if (data.download_url) {
           setDownloadUrl(data.download_url);
           setStatus("ready");
           clearInterval(intervalRef.current);
-        } else if (data.status === "error") {
-          setStatus("error");
-          clearInterval(intervalRef.current);
         }
       } catch {
-        // keep polling
+        // keep polling on transient errors
       }
     };
 
     poll();
     intervalRef.current = setInterval(poll, 5000);
     return () => clearInterval(intervalRef.current);
-  }, [token]);
+  }, [sessionId]);
 
   return (
     <div className="min-h-screen bg-primary">
@@ -87,7 +85,7 @@ const Success = () => {
             <div className="mt-8 rounded-md border border-border bg-secondary px-4 py-4 text-sm text-foreground">
               Something went wrong generating your report. Please email{" "}
               <a href="mailto:hello@ratecheck.co.uk" className="underline">hello@ratecheck.co.uk</a>{" "}
-              with your order reference: <strong>{token}</strong>
+              with your order reference: <strong>{sessionId}</strong>
             </div>
           )}
         </div>

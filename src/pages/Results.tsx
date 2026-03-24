@@ -12,11 +12,11 @@ const signalConfig: Record<string, { border: string; heading: string }> = {
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as { assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
+  const state = location.state as { assessRequest?: any; assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
 
   if (!state) return <Navigate to="/" replace />;
 
-  const { assessmentResult, freeFormData, ratedComps = [] } = state;
+  const { assessRequest, assessmentResult, freeFormData, ratedComps = [] } = state;
   const signal = assessmentResult?.signal || "Low";
   const config = signalConfig[signal] || signalConfig.Low;
 
@@ -49,7 +49,7 @@ const Results = () => {
         {assessmentResult?.layout_adjustment_applied === false && (
           <button
             type="button"
-            onClick={() => navigate("/intake?product=report", { state: { assessmentResult, freeFormData, ratedComps } })}
+            onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
             className="mt-3 text-xs text-accent hover:underline"
           >
             Add layout details to refine your estimate →
@@ -75,7 +75,7 @@ const Results = () => {
             subtext="Start here to understand your opportunity."
             ctaLabel="See my estimated saving →"
             variant="accent"
-            onClick={() => navigate("/intake?product=simplified", { state: { assessmentResult, freeFormData, ratedComps } })}
+            onClick={() => navigate("/intake?product=simplified", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
           <ProductCard
             badge="READY TO CHALLENGE"
@@ -91,7 +91,7 @@ const Results = () => {
             subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
             ctaLabel="Prepare my challenge →"
             variant="accent"
-            onClick={() => navigate("/intake?product=evidence", { state: { assessmentResult, freeFormData, ratedComps } })}
+            onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
         </div>
 
