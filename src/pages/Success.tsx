@@ -4,43 +4,71 @@ import BrandMark from "@/components/BrandMark";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://ratechecker-production.up.railway.app";
 
+type Status = "polling" | "ready" | "rate-limited" | "error";
+
 const Success = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id") || "";
-  const [status, setStatus] = useState<"polling" | "ready" | "error">("polling");
+  const [status, setStatus] = useState<Status>("polling");
   const [downloadUrl, setDownloadUrl] = useState("");
   const [email, setEmail] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
   const startRef = useRef(Date.now());
+  const resolvedRef = useRef(false); // gate: true once 200 received
+
+  const stopPolling = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = undefined;
+    }
+  };
 
   useEffect(() => {
     if (!sessionId) { setStatus("error"); return; }
 
     const poll = async () => {
+      // Hard gate: never poll after success
+      if (resolvedRef.current) { stopPolling(); return; }
+
       if (Date.now() - startRef.current > 180_000) {
-        clearInterval(intervalRef.current);
-        setStatus("error");
+        stopPolling();
+        if (!resolvedRef.current) setStatus("error");
         return;
       }
+
       try {
         const res = await fetch(`${API_URL}/report/download/${sessionId}`);
-        if (res.status === 202) return; // still generating, keep polling
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        if (data.email) setEmail(data.email);
-        if (data.download_url) {
-          setDownloadUrl(data.download_url);
-          setStatus("ready");
-          clearInterval(intervalRef.current);
+
+        // Re-check gate after await — another tick may have resolved
+        if (resolvedRef.current) return;
+
+        if (res.status === 202 || res.status === 402) return; // still processing
+
+        if (res.status === 429) {
+          stopPolling();
+          if (!resolvedRef.current) setStatus("rate-limited");
+          return;
         }
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+
+        // SUCCESS — set gate immediately before any async state updates
+        resolvedRef.current = true;
+        stopPolling();
+
+        if (data.email) setEmail(data.email);
+        setDownloadUrl(data.download_url || "");
+        setStatus("ready");
       } catch {
-        // keep polling on transient errors
+        // transient error — keep polling unless already resolved
       }
     };
 
     poll();
     intervalRef.current = setInterval(poll, 5000);
-    return () => clearInterval(intervalRef.current);
+    return () => stopPolling();
   }, [sessionId]);
 
   return (
@@ -53,7 +81,7 @@ const Success = () => {
           <p className="text-sm font-semibold text-accent uppercase tracking-wider">Payment confirmed</p>
 
           <h1 className="mt-4 text-2xl font-bold text-foreground sm:text-3xl">
-            Your report is being prepared
+            {status === "ready" ? "Your report is ready" : "Your report is being prepared"}
           </h1>
 
           {status === "polling" && (
@@ -62,10 +90,10 @@ const Success = () => {
                 We're running your assessment now. This usually takes less than 2 minutes.
                 {email && <> We'll also email it to <strong>{email}</strong>.</>}
               </p>
-              <div className="dot-pulse mt-8 flex justify-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-accent inline-block" />
-                <span className="h-2.5 w-2.5 rounded-full bg-accent inline-block" />
-                <span className="h-2.5 w-2.5 rounded-full bg-accent inline-block" />
+              <div className="mt-8 flex justify-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-accent inline-block animate-pulse" />
+                <span className="h-2.5 w-2.5 rounded-full bg-accent inline-block animate-pulse [animation-delay:0.2s]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-accent inline-block animate-pulse [animation-delay:0.4s]" />
               </div>
             </>
           )}
@@ -78,6 +106,15 @@ const Success = () => {
               >
                 Download your PDF →
               </a>
+            </div>
+          )}
+
+          {status === "rate-limited" && (
+            <div className="mt-8 rounded-md border border-border bg-secondary px-4 py-4 text-sm text-foreground">
+              We're preparing your report — please wait a moment and then{" "}
+              <button onClick={() => window.location.reload()} className="underline font-medium">
+                refresh this page
+              </button>.
             </div>
           )}
 
