@@ -52,14 +52,21 @@ const Success = () => {
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const data = await res.json();
-
-        // SUCCESS — set gate immediately before any async state updates
+        // SUCCESS — backend returns PDF directly, not JSON
         resolvedRef.current = true;
         stopPolling();
 
-        if (data.email) setEmail(data.email);
-        setDownloadUrl(data.download_url || "");
+        // Download the PDF blob
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `RateCheck-Report-${sessionId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
         setStatus("ready");
       } catch {
         // transient error — keep polling unless already resolved
