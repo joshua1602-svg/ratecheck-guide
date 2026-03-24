@@ -509,6 +509,7 @@ table { page-break-inside: avoid; }
           {% else %}Standard{% endif %}
         </td>
         {% endif %}
+        <td>{{ comp.fit_class | capitalize if comp.fit_class else "—" }}</td>
         <td class="num">{{ comp.weight_pct }}</td>
       </tr>
       {% endfor %}
