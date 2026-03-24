@@ -15,7 +15,7 @@ const SHOW_PARKING = ["nursery", "pub", "retail"];
 const Intake = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const state = location.state as { assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
+  const state = location.state as { assessRequest?: any; assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
 
   const freeFormData = state?.freeFormData;
   const product = searchParams.get("product") || "report";
