@@ -12,7 +12,7 @@ const signalConfig: Record<string, { border: string; heading: string }> = {
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as { assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
+  const state = location.state as { assessRequest?: any; assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
 
   if (!state) return <Navigate to="/" replace />;
 
