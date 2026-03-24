@@ -188,7 +188,7 @@ const Intake = () => {
         High: "High", Medium: "Medium", Low: "Low",
         "Insufficient Data": "Insufficient Data",
       };
-      reportPayload.uprn = "";
+      reportPayload.uprn = "Not available";
       reportPayload.voa_description = `${safeFreeFormData.business_type.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())} and Premises`;
       reportPayload.nia_sqm = parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm;
       reportPayload.modelled_rv = bestRv;
