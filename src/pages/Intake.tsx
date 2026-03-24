@@ -80,195 +80,58 @@ const Intake = () => {
     setIsLoading(true);
     setApiError(null);
 
-    const formData = {
-      contact: { email: safeFreeFormData.email, business_name: businessName },
-      property: {
-        postcode: postcode.trim().toUpperCase(),
-        business_type: safeFreeFormData.business_type,
-        nia_sqm: parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm,
-        voa_rv: voaRv ? parseFloat(voaRv) : 0,
-        address,
-        has_parking: showParking ? hasParking : undefined,
-      },
-      layout: {
-        floor_config: layoutInput.floor_config,
-        ground_floor_trading_sqm: layoutInput.ground_floor_trading_sqm
-          ? parseFloat(layoutInput.ground_floor_trading_sqm)
-          : 0,
-        ground_floor_storage_sqm: layoutInput.ground_floor_storage_sqm
-          ? parseFloat(layoutInput.ground_floor_storage_sqm)
-          : 0,
-        lower_ground_use: layoutInput.lower_ground_use,
-        upper_floor_use: layoutInput.upper_floor_use,
-        kitchen_on_ground: layoutInput.kitchen_on_ground,
-      },
-      areas: showAreas
-        ? {
-            sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
-            kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
-            storage_sqm: parseFloat(areas.storage_sqm) || 0,
-            basement_sqm: parseFloat(areas.basement_sqm) || 0,
-            upper_sqm: parseFloat(areas.upper_sqm) || 0,
-            outdoor_seating: areas.outdoor_seating,
-          }
-        : undefined,
-      nursery: isNursery
-        ? { purpose_built: nurseryPurposeBuilt, outdoor_play: nurseryOutdoorPlay }
-        : undefined,
-      flags: {
-        layout_flag: layoutFlag,
-        cramped_flag: crampedFlag,
-        fitout_year: fitoutYear ? parseInt(fitoutYear) : undefined,
-        consent_disclaimer: true,
-      },
-    };
-
-    // TEMPORARY: bypass Stripe, generate PDF directly for testing
     const endpoint = product === "evidence" ? "evidence" : "simplified";
 
-    // Replicate backend's build_report_payload_from_assess logic
-    const assess = state?.assessmentResult || {};
-    const reportComparables = state?.ratedComps?.length
-      ? state.ratedComps
-      : assess.rated_comps || [];
-    const comparableCount = assess.comparable_count ?? reportComparables.length;
-    const voaRvNum = parseFloat(voaRv) || 0;
-    const toneRate = assess.tone_rate ?? null;
-    const baseRv = assess.base_estimated_rv ?? null;
-    const adjRv = assess.adjusted_estimated_rv ?? null;
-    const bestRv = adjRv ?? baseRv;
-    const SAVING_MARGIN = 0.05;
-
-    let rvLow: number | null = null;
-    let rvHigh: number | null = null;
-    if (bestRv != null) {
-      rvLow = Math.round(bestRv * (1 - SAVING_MARGIN) / 100) * 100;
-      rvHigh = Math.round(bestRv * (1 + SAVING_MARGIN) / 100) * 100;
-    }
-
-    let savingLow: number | null = null;
-    let savingHigh: number | null = null;
-    if (rvLow != null && voaRvNum > 0) {
-      savingLow = Math.max(0, Math.round(voaRvNum - rvHigh!));
-      savingHigh = Math.max(0, Math.round(voaRvNum - rvLow));
-    }
-
-    const signalMap: Record<string, string> = {
-      High: "Strong", Medium: "Moderate", Low: "Weak",
-      "Insufficient Data": "Insufficient Data",
+    const purchasePayload = {
+      product: endpoint,
+      form_data: {
+        contact: { email: safeFreeFormData.email, business_name: businessName },
+        property: {
+          postcode: postcode.trim().toUpperCase(),
+          business_type: safeFreeFormData.business_type,
+          nia_sqm: parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm,
+          voa_rv: voaRv ? parseFloat(voaRv) : 0,
+          address,
+        },
+        areas: showAreas
+          ? {
+              sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
+              visible_kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
+              non_visible_kitchen_sqm: 0,
+              storage_sqm: parseFloat(areas.storage_sqm) || 0,
+              basement_sqm: parseFloat(areas.basement_sqm) || 0,
+              upper_sqm: parseFloat(areas.upper_sqm) || 0,
+              outdoor_seating: areas.outdoor_seating,
+            }
+          : undefined,
+        nursery: isNursery
+          ? { purpose_built: nurseryPurposeBuilt, outdoor_play: nurseryOutdoorPlay }
+          : undefined,
+        flags: {
+          layout_flag: layoutFlag,
+          cramped_flag: crampedFlag,
+          fitout_year: fitoutYear ? parseInt(fitoutYear) : undefined,
+          consent_disclaimer: true,
+        },
+      },
     };
-    const signal = assess.signal || "Low";
-
-    const now = new Date();
-    const datePrepared = now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-
-    const reportPayload: Record<string, any> = {
-      business_name: businessName || address,
-      property_address: address,
-      postcode: postcode.trim().toUpperCase(),
-      business_type: safeFreeFormData.business_type,
-      date_prepared: datePrepared,
-      voa_rv: voaRvNum,
-      modelled_rv_low: rvLow,
-      modelled_rv_high: rvHigh,
-      annual_saving_low: savingLow,
-      annual_saving_high: savingHigh,
-      case_strength: signalMap[signal] || signal,
-      comparables: reportComparables,
-      comp_count: comparableCount,
-      tone_rate: toneRate,
-      base_estimated_rv: baseRv,
-      adjusted_estimated_rv: adjRv,
-      layout_adjustment_applied: reportComparables.some((comp: any) => comp.adjusted_weight != null),
-    };
-
-    // Evidence pack extra fields
-    if (endpoint === "evidence") {
-      const niaSqm = parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm;
-      const confidenceMap: Record<string, string> = {
-        High: "High", Medium: "Medium", Low: "Low",
-        "Insufficient Data": "Insufficient Data",
-      };
-      reportPayload.uprn = "";
-      reportPayload.voa_description = `${safeFreeFormData.business_type.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())} and Premises`;
-      reportPayload.nia_sqm = niaSqm;
-      reportPayload.modelled_rv = bestRv != null ? bestRv : 0;
-      reportPayload.final_tone_psm = toneRate != null ? toneRate : 0;
-      reportPayload.tone_basis = "Weighted median";
-      reportPayload.confidence = confidenceMap[signal] || signal;
-      reportPayload.recommendation_text = signal === "High"
-        ? "The evidence supports a strong case for reduction. Proceed to Check and submit this pack as supporting evidence at Challenge stage if not resolved."
-        : signal === "Medium"
-        ? "There is a moderate case for reduction based on comparable evidence. Consider submitting a Check to explore further."
-        : "The comparable evidence does not currently support a strong case. Monitor for future revaluations or additional comparable data.";
-
-      // Derived delta fields required by template
-      const rvDelta = bestRv != null ? Math.round(voaRvNum - bestRv) : 0;
-      const rvDeltaPct = bestRv != null && bestRv > 0 ? ((voaRvNum - bestRv) / bestRv * 100).toFixed(1) : "0.0";
-      reportPayload.rv_delta = rvDelta;
-      reportPayload.rv_delta_pct = rvDeltaPct;
-
-      // Rate per sqm for subject property
-      reportPayload.rate_psm = niaSqm > 0 ? (voaRvNum / niaSqm).toFixed(2) : "0.00";
-
-      // Kitchen area from area breakdown
-      if (showAreas && areas.kitchen_sqm) {
-        reportPayload.kitchen_area_sqm = parseFloat(areas.kitchen_sqm) || 0;
-      }
-
-      // Let backend populate these from its own logic; send empty defaults
-      reportPayload.zoning_rows = assess.zoning_rows ?? [];
-      reportPayload.nursery_adjustments = assess.nursery_adjustments ?? [];
-      reportPayload.allowances_summary = assess.allowances_summary ?? "None applied";
-      reportPayload.subtotal_pre = assess.subtotal_pre != null ? assess.subtotal_pre : (bestRv != null ? bestRv : 0);
-      reportPayload.submission_narrative = assess.submission_narrative ?? "";
-
-      // Layout fields
-      reportPayload.floor_config = layoutInput.floor_config;
-      reportPayload.ground_floor_trading_sqm = layoutInput.ground_floor_trading_sqm ? parseFloat(layoutInput.ground_floor_trading_sqm) : 0;
-      reportPayload.ground_floor_storage_sqm = layoutInput.ground_floor_storage_sqm ? parseFloat(layoutInput.ground_floor_storage_sqm) : 0;
-      reportPayload.kitchen_on_ground = layoutInput.kitchen_on_ground;
-    }
-
-    // Numeric fields that must never be sent as "" — define them for type-safe cleanup
-    const numericFields = new Set([
-      "voa_rv", "modelled_rv_low", "modelled_rv_high", "annual_saving_low",
-      "annual_saving_high", "comp_count", "nia_sqm", "modelled_rv",
-      "final_tone_psm", "rv_delta", "subtotal_pre", "tone_rate",
-      "base_estimated_rv", "adjusted_estimated_rv", "kitchen_area_sqm",
-      "ground_floor_trading_sqm", "ground_floor_storage_sqm",
-    ]);
-
-    // Replace null/undefined with type-correct defaults
-    const cleanedPayload = Object.fromEntries(
-      Object.entries(reportPayload).map(([k, v]) => {
-        if (v === null || v === undefined) {
-          return [k, numericFields.has(k) ? 0 : ""];
-        }
-        return [k, v];
-      })
-    );
 
     try {
-      const res = await fetch(`${API_URL}/report/${endpoint}`, {
+      const res = await fetch(`${API_URL}/purchase`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/pdf" },
-        body: JSON.stringify(cleanedPayload),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(purchasePayload),
       });
 
-      if (!res.ok) throw new Error(`Report generation failed (${res.status})`);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const opened = window.open(url, "_blank");
-      if (!opened) {
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `ratechecker-${endpoint}.pdf`;
-        a.click();
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        throw new Error(errBody?.detail || `Purchase failed (${res.status})`);
       }
+
+      const { checkout_url } = await res.json();
+      window.location.href = checkout_url;
     } catch (err: any) {
       setApiError(err.message || "Something went wrong — please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
