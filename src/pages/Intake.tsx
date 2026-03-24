@@ -213,26 +213,6 @@ const Intake = () => {
             />
           )}
 
-          {isNursery && (
-            <fieldset className="space-y-3">
-              <legend className="text-lg font-bold font-serif text-foreground">Nursery details</legend>
-              <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-                <input type="checkbox" checked={nurseryPurposeBuilt} onChange={(e) => setNurseryPurposeBuilt(e.target.checked)} className="rounded border-input" />
-                Purpose-built nursery
-              </label>
-              <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-                <input type="checkbox" checked={nurseryOutdoorPlay} onChange={(e) => setNurseryOutdoorPlay(e.target.checked)} className="rounded border-input" />
-                Has outdoor play area
-              </label>
-          </fieldset>
-          )}
-
-          {showParking && (
-            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-              <input type="checkbox" checked={hasParking} onChange={(e) => setHasParking(e.target.checked)} className="h-4 w-4 rounded border-input" />
-              My property has dedicated car parking
-            </label>
-          )}
 
           {/* Year of last fit-out */}
           <div className="border-t border-border pt-6">
