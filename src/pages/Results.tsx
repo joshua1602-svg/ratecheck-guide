@@ -91,7 +91,7 @@ const Results = () => {
             subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
             ctaLabel="Prepare my challenge →"
             variant="accent"
-            onClick={() => navigate("/intake?product=evidence", { state: { assessmentResult, freeFormData, ratedComps } })}
+            onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
         </div>
 
