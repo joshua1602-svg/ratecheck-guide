@@ -106,14 +106,12 @@ const Success = () => {
           )}
 
           {status === "ready" && (
-            <div className="mt-8">
-              <a
-                href={downloadUrl}
-                className="inline-block rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90"
-              >
-                Download your PDF →
-              </a>
-            </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Your PDF has been downloaded. If it didn't start automatically,{" "}
+              <button onClick={() => window.location.reload()} className="underline font-medium">
+                refresh this page
+              </button>.
+            </p>
           )}
 
           {status === "rate-limited" && (
