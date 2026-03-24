@@ -184,33 +184,55 @@ const Intake = () => {
 
     // Evidence pack extra fields
     if (endpoint === "evidence") {
+      const niaSqm = parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm;
       const confidenceMap: Record<string, string> = {
         High: "High", Medium: "Medium", Low: "Low",
         "Insufficient Data": "Insufficient Data",
       };
-      reportPayload.uprn = "Not available";
       reportPayload.voa_description = `${safeFreeFormData.business_type.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())} and Premises`;
-      reportPayload.nia_sqm = parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm;
-      reportPayload.modelled_rv = bestRv;
-      reportPayload.final_tone_psm = toneRate || 0;
+      reportPayload.nia_sqm = niaSqm;
+      reportPayload.modelled_rv = bestRv ?? 0;
+      reportPayload.final_tone_psm = toneRate ?? 0;
       reportPayload.tone_basis = "Weighted median";
       reportPayload.confidence = confidenceMap[signal] || signal;
+
+      // Derived delta fields required by template
+      const rvDelta = bestRv != null ? Math.round(voaRvNum - bestRv) : 0;
+      const rvDeltaPct = bestRv != null && bestRv > 0 ? ((voaRvNum - bestRv) / bestRv * 100).toFixed(1) : "0.0";
+      reportPayload.rv_delta = rvDelta;
+      reportPayload.rv_delta_pct = rvDeltaPct;
+
+      // Rate per sqm for subject property
+      reportPayload.rate_psm = niaSqm > 0 ? (voaRvNum / niaSqm).toFixed(2) : "0.00";
+
+      // Kitchen area from area breakdown
+      if (showAreas && areas.kitchen_sqm) {
+        reportPayload.kitchen_area_sqm = parseFloat(areas.kitchen_sqm) || 0;
+      }
+
       reportPayload.recommendation_text = signal === "High"
         ? "The evidence supports a strong case for reduction. Proceed to Check and submit this pack as supporting evidence at Challenge stage if not resolved."
         : signal === "Medium"
         ? "There is a moderate case for reduction based on comparable evidence. Consider submitting a Check to explore further."
         : "The comparable evidence does not currently support a strong case. Monitor for future revaluations or additional comparable data.";
-      reportPayload.zoning_rows = [];
-      reportPayload.nursery_adjustments = [];
+
+      // Let backend populate these from its own logic; send empty defaults
+      reportPayload.zoning_rows = assess.zoning_rows ?? [];
+      reportPayload.nursery_adjustments = assess.nursery_adjustments ?? [];
+      reportPayload.allowances_summary = assess.allowances_summary ?? "None applied";
+      reportPayload.subtotal_pre = assess.subtotal_pre ?? (bestRv ?? 0);
+      reportPayload.submission_narrative = assess.submission_narrative ?? "";
+
+      // Layout fields
       reportPayload.floor_config = layoutInput.floor_config;
       reportPayload.ground_floor_trading_sqm = layoutInput.ground_floor_trading_sqm ? parseFloat(layoutInput.ground_floor_trading_sqm) : 0;
       reportPayload.ground_floor_storage_sqm = layoutInput.ground_floor_storage_sqm ? parseFloat(layoutInput.ground_floor_storage_sqm) : 0;
       reportPayload.kitchen_on_ground = layoutInput.kitchen_on_ground;
     }
 
-    // Strip null/undefined values — backend cannot parse "null" as float
+    // Replace null/undefined with safe defaults rather than stripping — backend requires all fields
     const cleanedPayload = Object.fromEntries(
-      Object.entries(reportPayload).filter(([_, v]) => v !== null && v !== undefined)
+      Object.entries(reportPayload).map(([k, v]) => [k, v ?? (typeof v === "number" ? 0 : "")])
     );
 
     try {
