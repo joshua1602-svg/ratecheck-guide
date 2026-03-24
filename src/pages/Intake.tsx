@@ -189,12 +189,18 @@ const Intake = () => {
         High: "High", Medium: "Medium", Low: "Low",
         "Insufficient Data": "Insufficient Data",
       };
+      reportPayload.uprn = "";
       reportPayload.voa_description = `${safeFreeFormData.business_type.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())} and Premises`;
       reportPayload.nia_sqm = niaSqm;
-      reportPayload.modelled_rv = bestRv ?? 0;
-      reportPayload.final_tone_psm = toneRate ?? 0;
+      reportPayload.modelled_rv = bestRv != null ? bestRv : 0;
+      reportPayload.final_tone_psm = toneRate != null ? toneRate : 0;
       reportPayload.tone_basis = "Weighted median";
       reportPayload.confidence = confidenceMap[signal] || signal;
+      reportPayload.recommendation_text = signal === "High"
+        ? "The evidence supports a strong case for reduction. Proceed to Check and submit this pack as supporting evidence at Challenge stage if not resolved."
+        : signal === "Medium"
+        ? "There is a moderate case for reduction based on comparable evidence. Consider submitting a Check to explore further."
+        : "The comparable evidence does not currently support a strong case. Monitor for future revaluations or additional comparable data.";
 
       // Derived delta fields required by template
       const rvDelta = bestRv != null ? Math.round(voaRvNum - bestRv) : 0;
@@ -210,17 +216,11 @@ const Intake = () => {
         reportPayload.kitchen_area_sqm = parseFloat(areas.kitchen_sqm) || 0;
       }
 
-      reportPayload.recommendation_text = signal === "High"
-        ? "The evidence supports a strong case for reduction. Proceed to Check and submit this pack as supporting evidence at Challenge stage if not resolved."
-        : signal === "Medium"
-        ? "There is a moderate case for reduction based on comparable evidence. Consider submitting a Check to explore further."
-        : "The comparable evidence does not currently support a strong case. Monitor for future revaluations or additional comparable data.";
-
       // Let backend populate these from its own logic; send empty defaults
       reportPayload.zoning_rows = assess.zoning_rows ?? [];
       reportPayload.nursery_adjustments = assess.nursery_adjustments ?? [];
       reportPayload.allowances_summary = assess.allowances_summary ?? "None applied";
-      reportPayload.subtotal_pre = assess.subtotal_pre ?? (bestRv ?? 0);
+      reportPayload.subtotal_pre = assess.subtotal_pre != null ? assess.subtotal_pre : (bestRv != null ? bestRv : 0);
       reportPayload.submission_narrative = assess.submission_narrative ?? "";
 
       // Layout fields
@@ -230,9 +230,23 @@ const Intake = () => {
       reportPayload.kitchen_on_ground = layoutInput.kitchen_on_ground;
     }
 
-    // Replace null/undefined with safe defaults rather than stripping — backend requires all fields
+    // Numeric fields that must never be sent as "" — define them for type-safe cleanup
+    const numericFields = new Set([
+      "voa_rv", "modelled_rv_low", "modelled_rv_high", "annual_saving_low",
+      "annual_saving_high", "comp_count", "nia_sqm", "modelled_rv",
+      "final_tone_psm", "rv_delta", "subtotal_pre", "tone_rate",
+      "base_estimated_rv", "adjusted_estimated_rv", "kitchen_area_sqm",
+      "ground_floor_trading_sqm", "ground_floor_storage_sqm",
+    ]);
+
+    // Replace null/undefined with type-correct defaults
     const cleanedPayload = Object.fromEntries(
-      Object.entries(reportPayload).map(([k, v]) => [k, v ?? (typeof v === "number" ? 0 : "")])
+      Object.entries(reportPayload).map(([k, v]) => {
+        if (v === null || v === undefined) {
+          return [k, numericFields.has(k) ? 0 : ""];
+        }
+        return [k, v];
+      })
     );
 
     try {
