@@ -33,7 +33,7 @@ const BrandMark = ({ variant = "dark" }: BrandMarkProps) => {
           fill="none"
         />
       </svg>
-      <span>RateCheck</span>
+      <span>Rate<span className="font-normal">Check</span></span>
     </a>
   );
 };

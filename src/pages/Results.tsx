@@ -26,7 +26,7 @@ const Results = () => {
         <header className="mb-10 text-center sm:text-left"><BrandMark /></header>
 
         {/* Verdict Card */}
-        <div className="rounded-lg border-2 border-accent bg-card p-6">
+        <div className="rounded-lg border-2 border-accent bg-primary p-6">
           <span className="mb-3 inline-block rounded-sm bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
             Overassessment likelihood: {signal}
           </span>
