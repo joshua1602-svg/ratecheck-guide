@@ -127,6 +127,7 @@ const Intake = () => {
       assess_request: state?.assessRequest || null,
       assess_response: state?.assessmentResult || null,
       paid_intake: paidIntake,
+      rated_comps: state?.ratedComps || [],
     };
 
     try {
