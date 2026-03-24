@@ -52,14 +52,21 @@ const Success = () => {
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const data = await res.json();
-
-        // SUCCESS — set gate immediately before any async state updates
+        // SUCCESS — backend returns PDF directly, not JSON
         resolvedRef.current = true;
         stopPolling();
 
-        if (data.email) setEmail(data.email);
-        setDownloadUrl(data.download_url || "");
+        // Download the PDF blob
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `RateCheck-Report-${sessionId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
         setStatus("ready");
       } catch {
         // transient error — keep polling unless already resolved
@@ -99,14 +106,12 @@ const Success = () => {
           )}
 
           {status === "ready" && (
-            <div className="mt-8">
-              <a
-                href={downloadUrl}
-                className="inline-block rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90"
-              >
-                Download your PDF →
-              </a>
-            </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Your PDF has been downloaded. If it didn't start automatically,{" "}
+              <button onClick={() => window.location.reload()} className="underline font-medium">
+                refresh this page
+              </button>.
+            </p>
           )}
 
           {status === "rate-limited" && (
