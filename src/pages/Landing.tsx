@@ -89,29 +89,31 @@ const Landing = () => {
     };
 
     try {
+      const assessRequest = {
+        contact: { email: freeFormData.email, business_name: "" },
+        property: {
+          postcode: freeFormData.postcode,
+          business_type: freeFormData.business_type,
+          nia_sqm: freeFormData.nia_sqm,
+          voa_rv: freeFormData.voa_rv || 0,
+          address: "",
+        },
+        layout: null,
+        flags: { consent_disclaimer: true },
+        captcha_token: turnstileToken,
+      };
+
       const res = await fetch(`${API_URL}/assess`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contact: { email: freeFormData.email, business_name: "" },
-          property: {
-            postcode: freeFormData.postcode,
-            business_type: freeFormData.business_type,
-            nia_sqm: freeFormData.nia_sqm,
-            voa_rv: freeFormData.voa_rv || 0,
-            address: "",
-          },
-          layout: null,
-          flags: { consent_disclaimer: true },
-          captcha_token: turnstileToken,
-        }),
+        body: JSON.stringify(assessRequest),
       });
 
       if (!res.ok) throw new Error("Request failed");
       const assessmentResult = await res.json();
       // rated_comps is the authoritative post-fit comparable pool from /assess
       const { rated_comps, ...restAssessment } = assessmentResult;
-      navigate("/results", { state: { assessmentResult: restAssessment, ratedComps: rated_comps || [], freeFormData } });
+      navigate("/results", { state: { assessRequest, assessmentResult: restAssessment, ratedComps: rated_comps || [], freeFormData } });
     } catch {
       setApiError("Something went wrong — please try again. If the problem persists, email hello@ratecheck.co.uk");
     } finally {
