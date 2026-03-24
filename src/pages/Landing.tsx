@@ -126,16 +126,13 @@ const Landing = () => {
       {/* Hero Section */}
       <section>
         <div className="mx-auto max-w-form px-5 pb-12 pt-8">
-          <header className="mb-10 text-center sm:text-left">
+          <header className="mb-10 flex justify-center">
             <BrandMark variant="light" />
           </header>
 
           <h1 className="text-3xl font-bold leading-tight text-primary-foreground sm:text-4xl">
             Find out if you're overpaying business rates in 60 seconds
           </h1>
-          <p className="mt-3 text-lg text-primary-foreground/70">
-            A free 60-second check — no signup required
-          </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
             {TRUST_POINTS.map((tp) => (

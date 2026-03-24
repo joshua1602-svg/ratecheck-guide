@@ -7,35 +7,33 @@ const Privacy = () => (
       <h1 className="text-2xl font-bold text-foreground">Privacy Policy</h1>
       <div className="mt-6 space-y-6 text-sm leading-relaxed text-muted-foreground">
         <section>
-          <h2 className="text-base font-semibold text-foreground font-sans">Purpose of data collection</h2>
+          <h2 className="text-base font-semibold text-foreground font-sans">Purpose of Data Collection</h2>
           <p className="mt-2">
-            We collect property and contact information solely for the purpose of running business rates assessments and delivering reports. Your data is used to generate your personalised assessment and is not used for any other purpose.
+            We collect property information and your contact details (specifically your email address) to generate your business rates assessment and deliver your requested reports. If you do not purchase a premium report, we may also use this information to connect you with qualified professional partners who can assist with your business rates challenge, provided you have given us your explicit consent to do so.
           </p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground font-sans">Payment processing</h2>
+          <h2 className="text-base font-semibold text-foreground font-sans">Personal vs. Public Data</h2>
           <p className="mt-2">
-            All payments are processed securely by Stripe. We do not store, process, or have access to your card details at any time. Stripe's privacy policy applies to payment data.
+            While the property valuation data used in our reports is sourced from the Valuation Office Agency (VOA) public bulk dataset, the contact information you provide is treated as private personal data. We link this personal data to your property assessment to provide a tailored service.
           </p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground font-sans">Report delivery</h2>
+          <h2 className="text-base font-semibold text-foreground font-sans">Third-Party Sharing &amp; Referrals</h2>
           <p className="mt-2">
-            Reports are delivered by email to the address you provide during the assessment process. A download link is also available immediately after payment.
+            We do not sell your personal data to general marketing lists. Your information is only shared with third-party professional partners (such as Chartered Surveyors or rating agencies) if you explicitly opt-in to a referral or "No Win, No Fee" consultation on our results page. RateCheck may receive a referral fee or commission from these partners if you choose to engage their services.
           </p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground font-sans">Third-party sharing</h2>
+          <h2 className="text-base font-semibold text-foreground font-sans">Payment Processing</h2>
           <p className="mt-2">
-            We do not share your personal data or property information with any third parties. Your data is used exclusively for generating your assessment report.
+            All payments for our Rates Assessment (£99) and Evidence Pack (£249) are processed securely by Stripe. We do not store, process, or have access to your credit or debit card details at any time. Stripe's separate privacy policy applies to all payment data.
           </p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground font-sans">Data deletion</h2>
+          <h2 className="text-base font-semibold text-foreground font-sans">Report Delivery</h2>
           <p className="mt-2">
-            If you would like your data deleted, please email{" "}
-            <a href="mailto:hello@ratecheck.co.uk" className="underline hover:text-foreground">hello@ratecheck.co.uk</a>{" "}
-            and we will remove your records within 30 days.
+            Paid reports are delivered to the email address you provide and are available via a download link immediately following a successful transaction.
           </p>
         </section>
       </div>

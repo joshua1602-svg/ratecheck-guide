@@ -9,7 +9,7 @@ const BrandMark = ({ variant = "dark" }: BrandMarkProps) => {
   return (
     <a
       href="/"
-      className={`inline-flex items-center gap-1.5 text-lg sm:text-xl font-bold tracking-tight no-underline font-heading ${fg}`}
+      className={`inline-flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-tight no-underline font-heading ${fg}`}
     >
       {/* Logo icon: stylised check + bar chart */}
       <svg
@@ -33,7 +33,7 @@ const BrandMark = ({ variant = "dark" }: BrandMarkProps) => {
           fill="none"
         />
       </svg>
-      <span>RateCheck</span>
+      <span>Rate<span className="font-normal">Check</span></span>
     </a>
   );
 };
