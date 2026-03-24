@@ -81,39 +81,69 @@ const Intake = () => {
     setApiError(null);
 
     const endpoint = product === "evidence" ? "evidence" : "simplified";
+    const assess = state?.assessmentResult || {};
+    const comps = state?.ratedComps || [];
+    const niaSqm = parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm;
+    const voaRvNum = voaRv ? parseFloat(voaRv) : 0;
+
+    // Core form data shared by both products
+    const formData: Record<string, any> = {
+      contact: { email: safeFreeFormData.email, business_name: businessName },
+      property: {
+        postcode: postcode.trim().toUpperCase(),
+        business_type: safeFreeFormData.business_type,
+        nia_sqm: niaSqm,
+        voa_rv: voaRvNum,
+        address,
+      },
+      areas: showAreas
+        ? {
+            sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
+            visible_kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
+            non_visible_kitchen_sqm: 0,
+            storage_sqm: parseFloat(areas.storage_sqm) || 0,
+            basement_sqm: parseFloat(areas.basement_sqm) || 0,
+            upper_sqm: parseFloat(areas.upper_sqm) || 0,
+            outdoor_seating: areas.outdoor_seating,
+          }
+        : undefined,
+      nursery: isNursery
+        ? { purpose_built: nurseryPurposeBuilt, outdoor_play: nurseryOutdoorPlay }
+        : undefined,
+      flags: {
+        layout_flag: layoutFlag,
+        cramped_flag: crampedFlag,
+        fitout_year: fitoutYear ? parseInt(fitoutYear) : undefined,
+        consent_disclaimer: true,
+      },
+      // Assessment-derived fields (from /assess response)
+      assessment: {
+        modelled_rv: assess.modelled_rv ?? 0,
+        modelled_rv_low: assess.modelled_rv_low ?? 0,
+        modelled_rv_high: assess.modelled_rv_high ?? 0,
+        annual_saving_low: assess.annual_saving_low ?? 0,
+        annual_saving_high: assess.annual_saving_high ?? 0,
+        case_strength: assess.case_strength || assess.signal || "Low",
+        final_tone_psm: assess.final_tone_psm ?? 0,
+        tone_basis: assess.tone_basis || "NIA",
+        confidence: assess.confidence || assess.signal || "Low",
+        recommendation_text: assess.recommendation_text || assess.recommendation || "",
+        layout_adjustment_applied: assess.layout_adjustment_applied ?? false,
+      },
+      comparables: comps,
+      comp_count: comps.length,
+    };
+
+    // Evidence-specific fields — only include real uprn, omit if unavailable
+    if (endpoint === "evidence") {
+      if (assess.uprn) formData.uprn = assess.uprn;
+      formData.voa_description = assess.voa_description || safeFreeFormData.business_type || "";
+      // Do NOT send valuation-detail fields — backend derives them dynamically
+    }
 
     const purchasePayload = {
       product: endpoint,
-      form_data: {
-        contact: { email: safeFreeFormData.email, business_name: businessName },
-        property: {
-          postcode: postcode.trim().toUpperCase(),
-          business_type: safeFreeFormData.business_type,
-          nia_sqm: parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm,
-          voa_rv: voaRv ? parseFloat(voaRv) : 0,
-          address,
-        },
-        areas: showAreas
-          ? {
-              sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
-              visible_kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
-              non_visible_kitchen_sqm: 0,
-              storage_sqm: parseFloat(areas.storage_sqm) || 0,
-              basement_sqm: parseFloat(areas.basement_sqm) || 0,
-              upper_sqm: parseFloat(areas.upper_sqm) || 0,
-              outdoor_seating: areas.outdoor_seating,
-            }
-          : undefined,
-        nursery: isNursery
-          ? { purpose_built: nurseryPurposeBuilt, outdoor_play: nurseryOutdoorPlay }
-          : undefined,
-        flags: {
-          layout_flag: layoutFlag,
-          cramped_flag: crampedFlag,
-          fitout_year: fitoutYear ? parseInt(fitoutYear) : undefined,
-          consent_disclaimer: true,
-        },
-      },
+      form_data: formData,
     };
 
     try {
