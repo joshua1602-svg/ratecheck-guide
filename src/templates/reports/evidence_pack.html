@@ -521,9 +521,9 @@ table { page-break-inside: avoid; }
      SECTION 4 — VALUATION CALCULATION
      ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
-  <h1>Valuation Calculation</h1>
+  <h1>Valuation Estimate</h1>
 
-  {% if business_type in ['retail', 'restaurant'] %}
+  {% if valuation_method == 'zoning' and zoning_rows %}
   <h2>Zoning Schedule</h2>
   <table class="calc-table">
     <thead>
@@ -556,7 +556,7 @@ table { page-break-inside: avoid; }
   </div>
   {% endif %}
 
-  {% if business_type == 'nursery' %}
+  {% if valuation_method == 'nia_only' %}
   <h2>NIA Calculation</h2>
   <p>{{ nia_sqm }} sqm &times; &pound;{{ final_tone_psm }}/m&sup2; = &pound;{{ subtotal_pre | format_currency }}</p>
   <p><strong>Adjustments:</strong> {{ nursery_adjustments }}</p>
