@@ -75,7 +75,7 @@ const Results = () => {
             subtext="Start here to understand your opportunity."
             ctaLabel="See my estimated saving →"
             variant="accent"
-            onClick={() => navigate("/intake?product=simplified", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
           <ProductCard
             badge="READY TO CHALLENGE"

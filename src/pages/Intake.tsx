@@ -80,7 +80,7 @@ const Intake = () => {
     setIsLoading(true);
     setApiError(null);
 
-    const endpoint = product === "evidence" ? "evidence" : "simplified";
+    const endpoint = product === "evidence" ? "evidence" : "report";
     const niaSqm = parseFloat(totalFloorArea) || safeFreeFormData.nia_sqm;
     const voaRvNum = voaRv ? parseFloat(voaRv) : 0;
 
