@@ -208,11 +208,16 @@ const Intake = () => {
       reportPayload.kitchen_on_ground = layoutInput.kitchen_on_ground;
     }
 
+    // Strip null/undefined values — backend cannot parse "null" as float
+    const cleanedPayload = Object.fromEntries(
+      Object.entries(reportPayload).filter(([_, v]) => v !== null && v !== undefined)
+    );
+
     try {
       const res = await fetch(`${API_URL}/report/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/pdf" },
-        body: JSON.stringify(reportPayload),
+        body: JSON.stringify(cleanedPayload),
       });
 
       if (!res.ok) throw new Error(`Report generation failed (${res.status})`);
