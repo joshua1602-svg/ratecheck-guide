@@ -208,6 +208,8 @@ const Intake = () => {
               onChange={setAreas}
               niaSqm={parseFloat(totalFloorArea) || 0}
               errors={errors}
+              businessType={safeFreeFormData.business_type}
+              floorConfig={layoutInput.floor_config}
             />
           )}
 
