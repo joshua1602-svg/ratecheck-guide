@@ -9,6 +9,24 @@ const signalConfig: Record<string, { border: string; heading: string }> = {
   "Insufficient Data": { border: "border-l-signal-insufficient", heading: "We couldn't find enough comparable data" },
 };
 
+const voaRv = assessmentResult?.voa_rv ?? 0;
+const modelledLow = assessmentResult?.modelled_rv_low ?? 0;
+const modelledHigh = assessmentResult?.modelled_rv_high ?? 0;
+
+const verdictHeading =
+  voaRv > modelledHigh
+    ? "Your property may be over-assessed"
+    : voaRv < modelledLow
+    ? "Your property does not appear over-assessed"
+    : "Your rates appear broadly in line";
+
+const verdictBody =
+  voaRv > modelledHigh
+    ? "Your current rateable value appears higher than similar properties nearby. This may support a review or challenge."
+    : voaRv < modelledLow
+    ? "Your current rateable value appears lower than the level indicated by comparable properties. This is unlikely to support a challenge for reduction."
+    : "Your current rateable value appears broadly consistent with similar properties nearby on the available evidence.";
+
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
