@@ -23,7 +23,7 @@ const Results = () => {
   return (
     <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
-        <header className="mb-10 text-center sm:text-left"><BrandMark /></header>
+        <header className="mb-10 flex justify-center"><BrandMark /></header>
 
         {/* Verdict Card */}
         <div className="rounded-lg border-2 border-accent bg-primary p-6">
@@ -77,27 +77,39 @@ const Results = () => {
             variant="accent"
             onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
-          <ProductCard
-            badge="READY TO CHALLENGE"
-            title="Evidence Pack"
-            price="£249"
-            priceNote="£99 credited if you start with the Rates Assessment"
-            description="Everything you need to prepare and submit a challenge."
-            features={[
-              "Full comparable evidence",
-              "Adjustment analysis",
-              "Pre-written challenge submission",
-            ]}
-            subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
-            ctaLabel="Prepare my challenge →"
-            variant="accent"
-            onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-          />
+          <div className="flex flex-col">
+            <div className="rounded-t-lg bg-accent px-4 py-2 text-center text-xs font-semibold text-accent-foreground">
+              £99 credited if you start with the Rates Assessment
+            </div>
+            <div className="flex-1 [&>*]:rounded-t-none">
+              <ProductCard
+                badge="READY TO CHALLENGE"
+                title="Evidence Pack"
+                price="£249"
+                description="Everything you need to prepare and submit a challenge."
+                features={[
+                  "Full comparable evidence",
+                  "Adjustment analysis",
+                  "Pre-written challenge submission",
+                ]}
+                subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
+                ctaLabel="Start my challenge →"
+                variant="accent"
+                onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Value reinforcement */}
-        <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-center text-sm font-medium text-foreground">
-          If successful, a challenge may result in ongoing annual savings and potential backdated refunds.
+        <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground">
+          <p className="font-medium text-center mb-3">If successful, a challenge may result in ongoing annual savings and potential backdated refunds.</p>
+          <div className="flex items-start gap-2">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+            </svg>
+            <span>Agents charge &gt;30% of your saving annually. Our pack gives you the information you need to submit a Challenge yourself.</span>
+          </div>
         </div>
 
         {/* Trust Footer */}
