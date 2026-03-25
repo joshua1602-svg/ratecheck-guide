@@ -63,9 +63,11 @@ interface LayoutSectionProps {
   onChange: (layout: LayoutInputState) => void;
   showKitchen: boolean;
   errors?: Record<string, string>;
+  hideRequiredLabel?: boolean;
+  naOptionLabel?: string;
 }
 
-const LayoutSection = ({ layout, onChange, showKitchen, errors }: LayoutSectionProps) => {
+const LayoutSection = ({ layout, onChange, showKitchen, errors, hideRequiredLabel = false, naOptionLabel = "Not applicable" }: LayoutSectionProps) => {
   const update = (field: keyof LayoutInputState, value: string) => {
     const next = { ...layout, [field]: value };
 
@@ -91,7 +93,7 @@ const LayoutSection = ({ layout, onChange, showKitchen, errors }: LayoutSectionP
   return (
     <fieldset className="space-y-4">
       <legend className="text-lg font-bold font-serif text-foreground">
-        Floor layout — required
+        Floor layout{!hideRequiredLabel && " — required"}
       </legend>
       <p className="text-xs text-muted-foreground">
         Helps us match your property more accurately against comparables
@@ -133,7 +135,7 @@ const LayoutSection = ({ layout, onChange, showKitchen, errors }: LayoutSectionP
           type="select"
           value={layout.lower_ground_use}
           onChange={(v) => update("lower_ground_use", v)}
-          options={LOWER_GROUND_USE_OPTIONS}
+          options={LOWER_GROUND_USE_OPTIONS.map(o => o.value === "not_applicable" ? { ...o, label: naOptionLabel } : o)}
         />
       )}
 
@@ -144,7 +146,7 @@ const LayoutSection = ({ layout, onChange, showKitchen, errors }: LayoutSectionP
           type="select"
           value={layout.upper_floor_use}
           onChange={(v) => update("upper_floor_use", v)}
-          options={UPPER_FLOOR_USE_OPTIONS}
+          options={UPPER_FLOOR_USE_OPTIONS.map(o => o.value === "not_applicable" ? { ...o, label: naOptionLabel } : o)}
         />
       )}
 
