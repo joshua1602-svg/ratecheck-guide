@@ -9,10 +9,11 @@ interface ProductCardProps {
   onClick: () => void;
   subtext?: string;
   priceNote?: string;
+  className?: string;
 }
 
-const ProductCard = ({ badge, title, price, description, features, ctaLabel, variant, onClick, subtext, priceNote }: ProductCardProps) => (
-  <div className="flex flex-col rounded-lg border border-border bg-card p-6 shadow-sm">
+const ProductCard = ({ badge, title, price, description, features, ctaLabel, variant, onClick, subtext, priceNote, className }: ProductCardProps) => (
+  <div className={`flex flex-col rounded-lg border border-border bg-card p-6 shadow-sm ${className ?? ""}`}>
     <span className="mb-3 inline-block self-start rounded-sm bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
       {badge}
     </span>
