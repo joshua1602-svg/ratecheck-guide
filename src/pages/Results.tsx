@@ -48,9 +48,9 @@ const Results = () => {
           <span className="mb-3 inline-block rounded-sm bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
             Overassessment likelihood: {signal}
           </span>
-          <h2 className="mt-2 text-2xl font-bold text-card-foreground">Your property may be over-assessed</h2>
+          <h2 className="mt-2 text-2xl font-bold text-card-foreground">{verdictHeading}</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Your current rateable value appears higher than similar properties nearby. This may support a review or challenge.
+            {verdictBody}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
             This is an initial indication based on available data — not a formal valuation.
