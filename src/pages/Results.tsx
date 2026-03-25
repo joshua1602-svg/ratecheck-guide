@@ -14,7 +14,6 @@ const Results = () => {
   const navigate = useNavigate();
   const state = location.state as { assessRequest?: any; assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
 
-
   if (!state) return <Navigate to="/" replace />;
 
   const { assessRequest, assessmentResult, freeFormData, ratedComps = [] } = state;
@@ -70,7 +69,22 @@ const Results = () => {
               £99 credited if you start with the Rates Assessment
             </div>
             <ProductCard
-...
+              badge="START HERE"
+              title="Rates Assessment"
+              price="£99"
+              description="See if it's worth challenging your rates."
+              features={[
+                "Estimated fair rateable value",
+                "Potential annual saving",
+                "Snapshot of comparable evidence",
+              ]}
+              subtext="Start here to understand your opportunity."
+              ctaLabel="See my estimated saving →"
+              variant="accent"
+              onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            />
+          </div>
+
           {/* Evidence Pack — banner flush on top of card */}
           <div className="flex flex-col">
             <div className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight">
