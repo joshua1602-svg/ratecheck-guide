@@ -64,31 +64,16 @@ const Results = () => {
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2 items-start">
 
-          {/* Rates Assessment — top margin matches measured banner height */}
-          <div style={{ marginTop: bannerHeight }}>
-            <ProductCard
-              badge="START HERE"
-              title="Rates Assessment"
-              price="£99"
-              description="See if it's worth challenging your rates."
-              features={[
-                "Estimated fair rateable value",
-                "Potential annual saving",
-                "Snapshot of comparable evidence",
-              ]}
-              subtext="Start here to understand your opportunity."
-              ctaLabel="See my estimated saving →"
-              variant="accent"
-              onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-            />
-          </div>
-
-          {/* Evidence Pack — banner measured by ref, flush on top of card */}
+          {/* Rates Assessment — invisible spacer matches Evidence Pack banner */}
           <div className="flex flex-col">
-            <div
-              ref={bannerRef}
-              className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight"
-            >
+            <div className="rounded-t-lg px-3 py-2 text-center text-xs font-semibold leading-tight invisible" aria-hidden="true">
+              £99 credited if you start with the Rates Assessment
+            </div>
+            <ProductCard
+...
+          {/* Evidence Pack — banner flush on top of card */}
+          <div className="flex flex-col">
+            <div className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight">
               £99 credited if you start with the Rates Assessment
             </div>
             <ProductCard
