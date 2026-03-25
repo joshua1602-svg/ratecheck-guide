@@ -3,15 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <title>Rateable Value Evidence Pack — {{ business_name }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ── Page setup ── */
 @page {
   size: A4;
-  margin: 18mm 18mm 22mm 18mm;
+  margin: 16mm 18mm 28mm 18mm;
+  background: #FDF5EE;
   @bottom-right {
     content: "Page " counter(page) " of " counter(pages);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     font-size: 8pt;
     color: #666666;
+  }
+  @bottom-left {
+    content: "Prepared by RateCheck  |  ratecheck.uk";
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 7pt;
+    color: #7A8A9A;
+  }
+  @bottom-center {
+    content: "This report is based on publicly available VOA data and does not constitute professional surveying or legal advice.";
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 7pt;
+    color: #A0A8B0;
   }
 }
 
@@ -20,7 +37,7 @@
 
 /* ── Base ── */
 body {
-  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 9.5pt;
   line-height: 1.5;
   color: #2B4360;
@@ -31,6 +48,7 @@ body {
 
 /* ── Typography ── */
 h1 {
+  font-family: 'Outfit', system-ui, sans-serif;
   font-size: 14pt;
   font-weight: 700;
   color: #2B4360;
@@ -40,6 +58,7 @@ h1 {
   letter-spacing: -0.01em;
 }
 h2 {
+  font-family: 'Outfit', system-ui, sans-serif;
   font-size: 11pt;
   font-weight: 700;
   color: #2B4360;
@@ -48,8 +67,8 @@ h2 {
 p { margin: 0 0 6px 0; text-align: justify; }
 
 /* ── Page breaks ── */
-.section { page-break-inside: avoid; }
-.section + .section h1 { page-break-before: always; }
+.section { page-break-inside: avoid; margin-top: 28px; }
+.section:first-of-type { margin-top: 0; }
 .page-break { page-break-after: always; }
 table { page-break-inside: avoid; }
 .callout { page-break-inside: avoid; }
@@ -59,8 +78,15 @@ table { page-break-inside: avoid; }
   display: inline-block;
   vertical-align: middle;
   margin-right: 8px;
+  position: relative;
+  top: -2px;
+}
+.logo-header {
+  display: flex;
+  align-items: center;
 }
 .wordmark {
+  font-family: 'Outfit', system-ui, sans-serif;
   letter-spacing: -0.02em;
 }
 .wordmark-rate { font-weight: 700; color: #2B4360; }
@@ -89,6 +115,7 @@ table { page-break-inside: avoid; }
   margin-bottom: 16px;
 }
 .cover-title {
+  font-family: 'Outfit', system-ui, sans-serif;
   font-size: 24pt;
   font-weight: 700;
   color: #2B4360;
@@ -185,13 +212,14 @@ table { page-break-inside: avoid; }
 .banner-box {
   display: table-cell;
   width: 25%;
-  background: #E8EEF4;
-  border: 1px solid #CCCCCC;
+  background: #EAF0F7;
+  border: 1px solid #2B4360;
   border-radius: 4px;
   padding: 10px 8px;
   vertical-align: top;
 }
 .banner-box-accent {
+  background: #F5E6D8;
   border: 1.5px solid #D4956A;
 }
 .banner-label {
@@ -326,7 +354,7 @@ table { page-break-inside: avoid; }
 
 /* ── Preformatted narrative ── */
 .narrative-pre {
-  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 9.5pt;
   line-height: 1.6;
   white-space: pre-wrap;
@@ -372,7 +400,7 @@ table { page-break-inside: avoid; }
      COVER PAGE
      ═══════════════════════════════════════════════════════════════════ -->
 <div class="cover page-break">
-  <div>
+  <div class="logo-header">
     <svg class="logo-svg" width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="2" y="22" width="8" height="14" rx="2" fill="#D4956A"/>
       <rect x="14" y="14" width="8" height="22" rx="2" fill="#2B4360"/>
@@ -490,6 +518,10 @@ table { page-break-inside: avoid; }
     {% if rate_psm %}
     <tr><td class="label-cell">Current Rate per sqm</td><td class="value-cell">&pound;{{ rate_psm }} /sqm</td></tr>
     {% endif %}
+    <tr><td class="label-cell">VOA Record Match</td><td class="value-cell">{{ voa_record_match }}</td></tr>
+    {% for row in voa_reconciliation_no_rows %}
+    <tr><td class="label-cell">{{ row.label }}</td><td class="value-cell">{{ row.value }}</td></tr>
+    {% endfor %}
   </table>
 </div>
 
@@ -532,7 +564,6 @@ table { page-break-inside: avoid; }
      ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
   <h1>Comparable Evidence</h1>
-  <p class="intro-line">The following properties were identified from VOA bulk data as comparable to the subject property. {% if layout_adjustment_applied %}Properties with higher layout similarity have been given greater weight in deriving the estimated valuation range.{% else %}Properties were selected based on location, business type, and floor area.{% endif %}</p>
 
   <table class="comp-table">
     <thead>
@@ -542,23 +573,22 @@ table { page-break-inside: avoid; }
         <th style="width:10%;" class="num">Floor Area sqm</th>
         <th style="width:12%;" class="num">Rateable Value &pound;</th>
         <th style="width:10%;" class="num">Rate &pound;/sqm</th>
-        <th style="width:10%;">Floor Config</th>
         {% if layout_adjustment_applied %}
-        <th style="width:8%;">Similarity</th>
+        <th style="width:12%;">Similarity</th>
         {% endif %}
         <th style="width:6%;">Fit</th>
-        <th style="width:8%;" class="num">Weight %</th>
+        <th style="width:10%;" class="num">Weight %</th>
       </tr>
     </thead>
     <tbody>
       {% for comp in comparables[:20] %}
+      {% if comp.address | upper != property_address | upper %}
       <tr>
         <td>{{ comp.address }}</td>
         <td style="white-space:nowrap;">{{ comp.uarn }}</td>
         <td class="num">{{ comp.nia_sqm }}</td>
         <td class="num">&pound;{{ comp.rv | format_currency }}</td>
         <td class="num">&pound;{{ comp.rate_psm }}</td>
-        <td>{% if comp.floor_config == 'ground_only' %}Ground only{% elif comp.floor_config == 'ground_and_basement' %}Ground + Basement{% elif comp.floor_config == 'ground_and_first' %}Ground + First{% elif comp.floor_config == 'ground_basement_first' %}G + Basement + First{% else %}{{ comp.floor_config }}{% endif %}</td>
         {% if layout_adjustment_applied %}
         <td>
           {% if comp.layout_similarity_score >= 0.7 %}High
@@ -569,6 +599,7 @@ table { page-break-inside: avoid; }
         <td>{{ comp.fit_class | capitalize if comp.fit_class else "—" }}</td>
         <td class="num">{{ comp.weight_pct }}</td>
       </tr>
+      {% endif %}
       {% endfor %}
     </tbody>
   </table>
@@ -686,7 +717,23 @@ table { page-break-inside: avoid; }
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     SECTION 5 — METHODOLOGY
+     SECTION 5 — EVIDENCE INTERPRETATION & RECOMMENDED ACTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <h1>Evidence Interpretation &amp; Recommended Action</h1>
+
+  <h2>Evidence Interpretation</h2>
+  <p>{{ evidence_interpretation }}</p>
+
+  <h2>Case Assessment</h2>
+  <p>{{ case_assessment }}</p>
+
+  <h2>Recommended Action</h2>
+  <p>{{ recommended_action }}</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 6 — METHODOLOGY
      ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
   <h1>Valuation Methodology</h1>
@@ -751,7 +798,7 @@ table { page-break-inside: avoid; }
 
 </div>
 <!-- ═══════════════════════════════════════════════════════════════════
-     SECTION 6 — CONCLUSION AND RECOMMENDATION
+     SECTION 7 — CONCLUSION AND RECOMMENDATION
      ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
   <h1>Conclusion and Recommendation</h1>
@@ -774,7 +821,7 @@ table { page-break-inside: avoid; }
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     SECTION 7 — SUBMISSION-READY NARRATIVE
+     SECTION 8 — SUBMISSION-READY NARRATIVE
      ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
   <h1>Submission-Ready Narrative</h1>
@@ -786,15 +833,7 @@ Comparable evidence is set out on page 4 of this document.</pre>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     FOOTER
-     ═══════════════════════════════════════════════════════════════════ -->
-<div class="page-footer">
-  <div class="footer-row">
-    <span>Prepared by RateCheck&nbsp;&nbsp;|&nbsp;&nbsp;ratecheck.uk</span>
-  </div>
-  <div class="footer-disclaimer">This report is based on publicly available VOA data and does not constitute professional surveying or legal advice.</div>
-</div>
+<!-- footer handled by @page @bottom-left / @bottom-center / @bottom-right -->
 
 </body>
 </html>
