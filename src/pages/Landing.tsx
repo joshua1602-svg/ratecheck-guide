@@ -207,7 +207,7 @@ const Landing = () => {
                 value={niaSqm}
                 onChange={setNiaSqm}
                 error={errors.niaSqm}
-                helperText="Your best estimate is fine"
+                helperText="Your best estimate helps to improve accuracy"
                 required
               />
 
@@ -217,7 +217,7 @@ const Landing = () => {
                 type="number"
                 value={voaRv}
                 onChange={setVoaRv}
-                helperText="Found on your rates demand notice from your local council — not required but improves accuracy"
+                helperText="Found on your rates demand notice"
               />
 
               <FormField
