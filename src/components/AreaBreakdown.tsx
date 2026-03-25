@@ -16,15 +16,17 @@ interface AreaBreakdownProps {
   errors?: Record<string, string>;
   businessType?: string;
   floorConfig?: string;
+  salesAreaLabel?: string;
+  descriptionText?: string;
 }
 
-const AreaBreakdown = ({ areas, onChange, niaSqm, errors, businessType, floorConfig }: AreaBreakdownProps) => {
+const AreaBreakdown = ({ areas, onChange, niaSqm, errors, businessType, floorConfig, salesAreaLabel = "Sales / dining area (sqm)", descriptionText = "Break your total floor space into the areas below. These don't need to be exact — use your best estimate." }: AreaBreakdownProps) => {
   // Determine which fields to show based on floor config
   const hasBasement = floorConfig === "ground_lower_ground" || floorConfig === "ground_lower_ground_first";
   const hasUpper = floorConfig === "ground_first" || floorConfig === "ground_lower_ground_first";
 
   const fields: { key: keyof Omit<Areas, "outdoor_seating">; label: string; helper?: string; visible: boolean }[] = [
-    { key: "sales_area_sqm", label: "Sales / dining area (sqm)", visible: true },
+    { key: "sales_area_sqm", label: salesAreaLabel, visible: true },
     { key: "kitchen_sqm", label: "Kitchen area (sqm)", helper: "Total kitchen and food prep space", visible: true },
     { key: "storage_sqm", label: "Storage / back-of-house (sqm)", visible: true },
     { key: "basement_sqm", label: "Basement storage (sqm)", visible: hasBasement },
@@ -43,7 +45,7 @@ const AreaBreakdown = ({ areas, onChange, niaSqm, errors, businessType, floorCon
     <fieldset className="space-y-4">
       <legend className="text-lg font-bold font-serif text-foreground">Floor area breakdown</legend>
       <p className="text-sm text-muted-foreground">
-        Break your total floor space into the areas below. These don't need to be exact — use your best estimate.
+        {descriptionText}
       </p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
