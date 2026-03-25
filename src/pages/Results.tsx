@@ -18,9 +18,10 @@ const Results = () => {
   const signal = assessmentResult?.signal || "Low";
   const config = signalConfig[signal] || signalConfig.Low;
 
-  const voaRv = assessmentResult?.voa_rv ?? 0;
-  const modelledLow = assessmentResult?.modelled_rv_low ?? 0;
-  const modelledHigh = assessmentResult?.modelled_rv_high ?? 0;
+  const voaRv = assessRequest?.property?.voa_rv ?? 0;
+  const bestRv = assessmentResult?.adjusted_estimated_rv ?? assessmentResult?.base_estimated_rv ?? 0;
+  const modelledLow = bestRv > 0 ? Math.round((bestRv * 0.95) / 100) * 100 : 0;
+  const modelledHigh = bestRv > 0 ? Math.round((bestRv * 1.05) / 100) * 100 : 0;
 
   const verdictHeading =
     voaRv > modelledHigh
