@@ -1,4 +1,5 @@
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import { useRef, useEffect, useState } from "react";
 import BrandMark from "@/components/BrandMark";
 import ProductCard from "@/components/ProductCard";
 
@@ -13,6 +14,15 @@ const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as { assessRequest?: any; assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
+
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const [bannerHeight, setBannerHeight] = useState(0);
+
+  useEffect(() => {
+    if (bannerRef.current) {
+      setBannerHeight(bannerRef.current.offsetHeight);
+    }
+  }, []);
 
   if (!state) return <Navigate to="/" replace />;
 
@@ -63,8 +73,8 @@ const Results = () => {
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2 items-start">
 
-          {/* Rates Assessment — mt matches exact banner height on Evidence Pack side */}
-          <div className="mt-[52px]">
+          {/* Rates Assessment — top margin matches measured banner height */}
+          <div style={{ marginTop: bannerHeight }}>
             <ProductCard
               badge="START HERE"
               title="Rates Assessment"
@@ -82,9 +92,12 @@ const Results = () => {
             />
           </div>
 
-          {/* Evidence Pack — banner flush on top, card has no top radius */}
+          {/* Evidence Pack — banner measured by ref, flush on top of card */}
           <div className="flex flex-col">
-            <div className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight">
+            <div
+              ref={bannerRef}
+              className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight"
+            >
               £99 credited if you start with the Rates Assessment
             </div>
             <ProductCard
