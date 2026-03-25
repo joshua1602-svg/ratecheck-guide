@@ -58,53 +58,64 @@ const Results = () => {
 
         {/* Product Options */}
         <h2 className="mt-12 text-2xl font-bold text-foreground">
-          Next step: understand your saving or prepare your challenge
+          Next step: prepare your challenge
         </h2>
 
-        <div className="mt-6 grid gap-5 sm:grid-cols-2">
-          <ProductCard
-            badge="START HERE"
-            title="Rates Assessment"
-            price="£99"
-            description="See if it's worth challenging your rates."
-            features={[
-              "Estimated fair rateable value",
-              "Potential annual saving",
-              "Snapshot of comparable evidence",
-            ]}
-            subtext="Start here to understand your opportunity."
-            ctaLabel="See my estimated saving →"
-            variant="accent"
-            onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-          />
+        <div className="mt-6 grid gap-5 sm:grid-cols-2 items-start">
+          {/* Rates Assessment — spacer keeps badge row aligned with Evidence Pack */}
           <div className="flex flex-col">
-            <div className="rounded-t-lg bg-accent px-4 py-2 text-center text-xs font-semibold text-accent-foreground">
+            <div className="invisible self-center rounded-full px-4 py-1.5 text-xs font-semibold mb-2">
+              &nbsp;
+            </div>
+            <ProductCard
+              badge="START HERE"
+              title="Rates Assessment"
+              price="£99"
+              description="See if it's worth challenging your rates."
+              features={[
+                "Estimated fair rateable value",
+                "Potential annual saving",
+                "Snapshot of comparable evidence",
+              ]}
+              subtext="Start here to understand your opportunity."
+              ctaLabel="See my estimated saving →"
+              variant="accent"
+              onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            />
+          </div>
+
+          {/* Evidence Pack — credit banner floats above card */}
+          <div className="flex flex-col">
+            <div className="self-center rounded-full bg-accent px-4 py-1.5 text-center text-xs font-semibold text-accent-foreground mb-2 shadow-sm">
               £99 credited if you start with the Rates Assessment
             </div>
-            <div className="flex-1 [&>*]:rounded-t-none">
-              <ProductCard
-                badge="READY TO CHALLENGE"
-                title="Evidence Pack"
-                price="£249"
-                description="Everything you need to prepare and submit a challenge."
-                features={[
-                  "Full comparable evidence",
-                  "Adjustment analysis",
-                  "Pre-written challenge submission",
-                ]}
-                subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
-                ctaLabel="Start my challenge →"
-                variant="accent"
-                onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-              />
-            </div>
+            <ProductCard
+              badge="READY TO CHALLENGE"
+              title="Evidence Pack"
+              price="£249"
+              description="Everything you need to prepare and submit a challenge."
+              features={[
+                "Full comparable evidence",
+                "Adjustment analysis",
+                "Pre-written challenge submission",
+              ]}
+              subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
+              ctaLabel="Start my challenge →"
+              variant="accent"
+              onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            />
           </div>
         </div>
 
         {/* Value reinforcement */}
-        <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground">
-          <p className="font-medium text-center mb-3">If successful, a challenge may result in ongoing annual savings and potential backdated refunds.</p>
-          <div className="flex items-start gap-2">
+        <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
+          <div className="flex items-start gap-2 text-justify">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+            </svg>
+            <span>If successful, a challenge may result in ongoing annual savings and potential backdated refunds.</span>
+          </div>
+          <div className="flex items-start gap-2 text-justify">
             <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
             </svg>
