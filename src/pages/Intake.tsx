@@ -156,7 +156,7 @@ const Intake = () => {
   return (
     <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
-        <header className="mb-8"><BrandMark /></header>
+        <header className="mb-8 flex justify-center"><BrandMark /></header>
 
         <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
           Tell us more about your property
@@ -199,6 +199,8 @@ const Intake = () => {
               onChange={setLayoutInput}
               showKitchen={safeFreeFormData.business_type === "restaurant_cafe"}
               errors={errors}
+              hideRequiredLabel={true}
+              naOptionLabel="Other"
             />
           </div>
 
@@ -210,6 +212,8 @@ const Intake = () => {
               errors={errors}
               businessType={safeFreeFormData.business_type}
               floorConfig={layoutInput.floor_config}
+              salesAreaLabel="Commercial / customer-facing area"
+              descriptionText="Split total floor space into the areas below. These don't need to be exact but supports a more accurate assessment."
             />
           )}
 
@@ -223,11 +227,11 @@ const Intake = () => {
           <fieldset className="space-y-3 border-t border-border pt-6">
             <legend className="text-lg font-bold font-serif text-foreground mb-2">Property characteristics</legend>
             <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-              <input type="checkbox" checked={layoutFlag} onChange={(e) => setLayoutFlag(e.target.checked)} className="rounded border-input" />
+              <input type="checkbox" checked={layoutFlag} onChange={(e) => setLayoutFlag(e.target.checked)} className="h-4 w-4 rounded border-input" />
               The layout is awkward or irregular
             </label>
             <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-              <input type="checkbox" checked={crampedFlag} onChange={(e) => setCrampedFlag(e.target.checked)} className="rounded border-input" />
+              <input type="checkbox" checked={crampedFlag} onChange={(e) => setCrampedFlag(e.target.checked)} className="h-4 w-4 rounded border-input" />
               The space feels cramped relative to its size
             </label>
             {showParking && (
@@ -239,17 +243,17 @@ const Intake = () => {
             {isNursery && (
               <>
                 <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-                  <input type="checkbox" checked={nurseryPurposeBuilt} onChange={(e) => setNurseryPurposeBuilt(e.target.checked)} className="rounded border-input" />
+                  <input type="checkbox" checked={nurseryPurposeBuilt} onChange={(e) => setNurseryPurposeBuilt(e.target.checked)} className="h-4 w-4 rounded border-input" />
                   Purpose-built nursery
                 </label>
                 <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-                  <input type="checkbox" checked={nurseryOutdoorPlay} onChange={(e) => setNurseryOutdoorPlay(e.target.checked)} className="rounded border-input" />
+                  <input type="checkbox" checked={nurseryOutdoorPlay} onChange={(e) => setNurseryOutdoorPlay(e.target.checked)} className="h-4 w-4 rounded border-input" />
                   Has outdoor play area
                 </label>
               </>
             )}
             <label className="flex items-start gap-2 text-sm text-foreground cursor-pointer">
-              <input type="checkbox" checked={consentDisclaimer} onChange={(e) => setConsentDisclaimer(e.target.checked)} className="mt-0.5 rounded border-input" />
+              <input type="checkbox" checked={consentDisclaimer} onChange={(e) => setConsentDisclaimer(e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-input" />
               <span>
                 I understand this is an indicative assessment using VOA methods and not a guaranteed outcome
                 <span className="text-destructive ml-0.5">*</span>
