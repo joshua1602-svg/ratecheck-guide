@@ -62,11 +62,9 @@ const Results = () => {
         </h2>
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2 items-start">
-          {/* Rates Assessment — spacer keeps badge row aligned with Evidence Pack */}
-          <div className="flex flex-col">
-            <div className="invisible self-center rounded-full px-4 py-1.5 text-xs font-semibold mb-2">
-              &nbsp;
-            </div>
+
+          {/* Rates Assessment — mt matches exact banner height on Evidence Pack side */}
+          <div className="mt-[52px]">
             <ProductCard
               badge="START HERE"
               title="Rates Assessment"
@@ -84,9 +82,9 @@ const Results = () => {
             />
           </div>
 
-          {/* Evidence Pack — credit banner floats above card */}
+          {/* Evidence Pack — banner flush on top, card has no top radius */}
           <div className="flex flex-col">
-            <div className="self-center rounded-full bg-accent px-4 py-1.5 text-center text-xs font-semibold text-accent-foreground mb-2 shadow-sm">
+            <div className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight">
               £99 credited if you start with the Rates Assessment
             </div>
             <ProductCard
@@ -102,9 +100,11 @@ const Results = () => {
               subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
               ctaLabel="Start my challenge →"
               variant="accent"
+              className="rounded-t-none"
               onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
             />
           </div>
+
         </div>
 
         {/* Value reinforcement */}
