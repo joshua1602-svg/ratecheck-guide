@@ -130,11 +130,15 @@ const Landing = () => {
             <BrandMark variant="light" />
           </header>
 
-          <h1 className="text-3xl font-bold leading-tight text-primary-foreground sm:text-4xl">
-            Find out if you're overpaying business rates in 60 seconds
+          <h1 className="text-3xl font-bold leading-tight text-primary-foreground sm:text-4xl text-center">
+            Are you overpaying business rates? Check in 60 seconds
           </h1>
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <p className="mt-5 text-center text-sm text-primary-foreground/80">
+            If your bill is fair, we'll tell you for free. If it's too high, we give you the data to fix it.
+          </p>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             {TRUST_POINTS.map((tp) => (
               <span
                 key={tp.text}
@@ -164,18 +168,6 @@ const Landing = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-              <FormField
-                id="email"
-                label="Email address"
-                type="email"
-                value={email}
-                onChange={setEmail}
-                error={errors.email}
-                helperText="We'll send your result here"
-                required
-                placeholder="you@business.co.uk"
-              />
-
               {/* Turnstile disabled — widget fails in preview/sandbox.
                   Re-enable when deploying to production domain. */}
               {/* <div
@@ -228,6 +220,18 @@ const Landing = () => {
                 helperText="Found on your rates demand notice from your local council — not required but improves accuracy"
               />
 
+              <FormField
+                id="email"
+                label="Email address"
+                type="email"
+                value={email}
+                onChange={setEmail}
+                error={errors.email}
+                helperText="We'll send your result here"
+                required
+                placeholder="you@business.co.uk"
+              />
+
               <button
                 type="submit"
                 disabled={isLoading}
@@ -239,7 +243,7 @@ const Landing = () => {
           </div>
 
           <p className="mt-5 text-center text-xs text-muted-foreground">
-            Your data is used only to run your assessment. We do not share it with third parties.{" "}
+            We do not share your contact details with third parties unless consent is given.{" "}
             <a href="/privacy" className="underline hover:text-foreground">Privacy policy</a>
           </p>
         </div>
