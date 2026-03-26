@@ -6,7 +6,7 @@ const Cancel = () => {
   return (
     <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 text-center animate-fade-in">
-        <header className="mb-10 text-left"><BrandMark /></header>
+        <header className="mb-10 flex justify-center"><BrandMark /></header>
         <h1 className="text-2xl font-bold text-foreground">Payment cancelled</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Your payment was cancelled. You can restart your assessment at any time.

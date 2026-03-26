@@ -81,7 +81,7 @@ const Success = () => {
   return (
     <div className="min-h-screen bg-primary">
       <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
-        <header className="mb-10"><BrandMark /></header>
+        <header className="mb-10 flex justify-center"><BrandMark /></header>
 
         <div className="text-center">
           <p className="text-accent text-3xl mb-2">✓</p>
