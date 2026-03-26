@@ -126,7 +126,7 @@ const Success = () => {
           {status === "error" && (
             <div className="mt-8 rounded-md border border-border bg-secondary px-4 py-4 text-sm text-foreground">
               Something went wrong generating your report. Please email{" "}
-              <a href="mailto:hello@ratecheck.co.uk" className="underline">hello@ratecheck.co.uk</a>{" "}
+              <a href="mailto:admin@ratecheck.uk" className="underline">admin@ratecheck.uk</a>{" "}
               with your order reference: <strong>{sessionId}</strong>
             </div>
           )}
