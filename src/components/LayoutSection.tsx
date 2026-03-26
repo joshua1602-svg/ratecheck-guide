@@ -62,12 +62,37 @@ interface LayoutSectionProps {
   layout: LayoutInputState;
   onChange: (layout: LayoutInputState) => void;
   showKitchen: boolean;
+  showConsolidatedAreas?: boolean;
+  consolidatedAreas?: {
+    basement_sqm: string;
+    upper_sqm: string;
+    visible_kitchen_sqm: string;
+    outdoor_seating: boolean;
+  };
+  onConsolidatedAreasChange?: (areas: {
+    basement_sqm: string;
+    upper_sqm: string;
+    visible_kitchen_sqm: string;
+    outdoor_seating: boolean;
+  }) => void;
+  niaSqm?: number;
   errors?: Record<string, string>;
   hideRequiredLabel?: boolean;
   naOptionLabel?: string;
 }
 
-const LayoutSection = ({ layout, onChange, showKitchen, errors, hideRequiredLabel = false, naOptionLabel = "Not applicable" }: LayoutSectionProps) => {
+const LayoutSection = ({
+  layout,
+  onChange,
+  showKitchen,
+  showConsolidatedAreas = false,
+  consolidatedAreas,
+  onConsolidatedAreasChange,
+  niaSqm = 0,
+  errors,
+  hideRequiredLabel = false,
+  naOptionLabel = "Not applicable",
+}: LayoutSectionProps) => {
   const update = (field: keyof LayoutInputState, value: string) => {
     const next = { ...layout, [field]: value };
 
@@ -89,6 +114,15 @@ const LayoutSection = ({ layout, onChange, showKitchen, errors, hideRequiredLabe
   const hasUpperFloor =
     layout.floor_config === "ground_first" ||
     layout.floor_config === "ground_lower_ground_first";
+
+  const consolidatedTotal = showConsolidatedAreas && consolidatedAreas
+    ? (parseFloat(layout.ground_floor_trading_sqm) || 0) +
+      (parseFloat(layout.ground_floor_storage_sqm) || 0) +
+      (parseFloat(consolidatedAreas.visible_kitchen_sqm) || 0) +
+      (parseFloat(consolidatedAreas.basement_sqm) || 0) +
+      (parseFloat(consolidatedAreas.upper_sqm) || 0)
+    : 0;
+  const diverges = niaSqm > 0 && consolidatedTotal > 0 && Math.abs(consolidatedTotal - niaSqm) / niaSqm > 0.20;
 
   return (
     <fieldset className="space-y-4">
@@ -159,6 +193,69 @@ const LayoutSection = ({ layout, onChange, showKitchen, errors, hideRequiredLabe
           onChange={(v) => update("kitchen_on_ground", v)}
           options={KITCHEN_ON_GROUND_OPTIONS}
         />
+      )}
+
+      {showConsolidatedAreas && consolidatedAreas && onConsolidatedAreasChange && (
+        <>
+          <div className="border-t border-border pt-4">
+            <p className="text-sm text-muted-foreground">
+              Add any non-ground-floor or restaurant-specific areas below. We only ask for each area once, then map it to required backend fields.
+            </p>
+          </div>
+
+          {showKitchen && (
+            <FormField
+              id="visible_kitchen_sqm"
+              label="Kitchen area (sqm)"
+              type="number"
+              value={consolidatedAreas.visible_kitchen_sqm}
+              onChange={(v) => onConsolidatedAreasChange({ ...consolidatedAreas, visible_kitchen_sqm: v })}
+              helperText="Total visible / active kitchen and prep space"
+              error={errors?.visible_kitchen_sqm}
+            />
+          )}
+
+          {hasLowerGround && (
+            <FormField
+              id="basement_sqm"
+              label="Basement area (sqm)"
+              type="number"
+              value={consolidatedAreas.basement_sqm}
+              onChange={(v) => onConsolidatedAreasChange({ ...consolidatedAreas, basement_sqm: v })}
+              error={errors?.basement_sqm}
+            />
+          )}
+
+          {hasUpperFloor && (
+            <FormField
+              id="upper_sqm"
+              label="Upper floor / mezzanine area (sqm)"
+              type="number"
+              value={consolidatedAreas.upper_sqm}
+              onChange={(v) => onConsolidatedAreasChange({ ...consolidatedAreas, upper_sqm: v })}
+              error={errors?.upper_sqm}
+            />
+          )}
+
+          {showKitchen && (
+            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consolidatedAreas.outdoor_seating}
+                onChange={(e) => onConsolidatedAreasChange({ ...consolidatedAreas, outdoor_seating: e.target.checked })}
+                className="rounded border-input"
+              />
+              This property has outdoor seating
+            </label>
+          )}
+
+          <p className="text-sm font-medium text-foreground">Total entered: {consolidatedTotal} sqm</p>
+          {diverges && (
+            <p className="rounded-md border border-accent bg-accent/10 px-3 py-2 text-sm text-foreground">
+              Your breakdown doesn't quite match your total floor area — double check if you can, but you can still continue
+            </p>
+          )}
+        </>
       )}
     </fieldset>
   );
