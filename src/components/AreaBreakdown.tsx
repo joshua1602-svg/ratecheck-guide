@@ -43,7 +43,7 @@ const AreaBreakdown = ({ areas, onChange, niaSqm, errors, businessType, floorCon
 
   return (
     <fieldset className="space-y-4">
-      <legend className="text-lg font-bold font-serif text-foreground">Floor area breakdown</legend>
+      <legend className="text-lg font-bold font-heading text-foreground">Floor area breakdown</legend>
       <p className="text-sm text-muted-foreground">
         {descriptionText}
       </p>

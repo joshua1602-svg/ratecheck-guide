@@ -125,7 +125,7 @@ const Landing = () => {
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
       <section>
-        <div className="mx-auto max-w-form px-5 pb-12 pt-8">
+        <div className="mx-auto max-w-form px-5 pb-6 pt-8">
           <header className="mb-10 flex justify-center">
             <BrandMark variant="light" />
           </header>

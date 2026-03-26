@@ -3,9 +3,9 @@ import BrandMark from "@/components/BrandMark";
 const Privacy = () => (
   <div className="min-h-screen bg-primary">
     <div className="mx-auto max-w-form px-5 py-8 animate-fade-in">
-      <header className="mb-10"><BrandMark /></header>
+      <header className="mb-10 flex justify-center"><BrandMark /></header>
       <h1 className="text-2xl font-bold text-foreground">Privacy Policy</h1>
-      <div className="mt-6 space-y-6 text-sm leading-relaxed text-muted-foreground">
+      <div className="mt-6 space-y-6 text-sm leading-relaxed text-muted-foreground text-justify">
         <section>
           <h2 className="text-base font-semibold text-foreground font-sans">Purpose of Data Collection</h2>
           <p className="mt-2">

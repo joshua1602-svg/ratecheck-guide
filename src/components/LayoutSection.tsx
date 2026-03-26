@@ -92,7 +92,7 @@ const LayoutSection = ({ layout, onChange, showKitchen, errors, hideRequiredLabe
 
   return (
     <fieldset className="space-y-4">
-      <legend className="text-lg font-bold font-serif text-foreground">
+      <legend className="text-lg font-bold font-heading text-foreground">
         Floor layout{!hideRequiredLabel && " — required"}
       </legend>
       <p className="text-xs text-muted-foreground">

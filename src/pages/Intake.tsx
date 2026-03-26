@@ -225,7 +225,7 @@ const Intake = () => {
 
           {/* Property characteristic checkboxes */}
           <fieldset className="space-y-3 border-t border-border pt-6">
-            <legend className="text-lg font-bold font-serif text-foreground mb-2">Property characteristics</legend>
+            <legend className="text-lg font-bold font-heading text-foreground mb-2">Property characteristics</legend>
             <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
               <input type="checkbox" checked={layoutFlag} onChange={(e) => setLayoutFlag(e.target.checked)} className="h-4 w-4 rounded border-input" />
               The layout is awkward or irregular
