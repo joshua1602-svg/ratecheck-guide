@@ -115,7 +115,7 @@ const Landing = () => {
       const { rated_comps, ...restAssessment } = assessmentResult;
       navigate("/results", { state: { assessRequest, assessmentResult: restAssessment, ratedComps: rated_comps || [], freeFormData } });
     } catch {
-      setApiError("Something went wrong — please try again. If the problem persists, email hello@ratecheck.co.uk");
+      setApiError("Something went wrong — please try again. If the problem persists, email admin@ratecheck.uk");
     } finally {
       setIsLoading(false);
     }
