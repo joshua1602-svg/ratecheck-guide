@@ -253,7 +253,7 @@ const Intake = () => {
               </>
             )}
             <label className="flex items-start gap-2 text-sm text-foreground cursor-pointer">
-              <input type="checkbox" checked={consentDisclaimer} onChange={(e) => setConsentDisclaimer(e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-input" />
+              <input type="checkbox" checked={consentDisclaimer} onChange={(e) => setConsentDisclaimer(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-input" />
               <span>
                 I understand this is an indicative assessment using VOA methods and not a guaranteed outcome
                 <span className="text-destructive ml-0.5">*</span>
