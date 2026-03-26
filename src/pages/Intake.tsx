@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useLocation, useSearchParams, Navigate } from "react-router-dom";
 import BrandMark from "@/components/BrandMark";
 import FormField from "@/components/FormField";
-import AreaBreakdown from "@/components/AreaBreakdown";
 import StatusBanner from "@/components/StatusBanner";
 import LayoutSection, { LAYOUT_DEFAULTS, type LayoutInputState } from "@/components/LayoutSection";
 
@@ -26,10 +25,8 @@ const Intake = () => {
   const [voaRv, setVoaRv] = useState(freeFormData?.voa_rv?.toString() || "");
   const [totalFloorArea, setTotalFloorArea] = useState(freeFormData?.nia_sqm?.toString() || "");
 
-  const [areas, setAreas] = useState({
-    sales_area_sqm: "",
-    kitchen_sqm: "",
-    storage_sqm: "",
+  const [consolidatedAreas, setConsolidatedAreas] = useState({
+    visible_kitchen_sqm: "",
     basement_sqm: "",
     upper_sqm: "",
     outdoor_seating: false,
@@ -101,14 +98,27 @@ const Intake = () => {
     };
 
     if (showAreas) {
+      const tradingSqm = parseFloat(layoutInput.ground_floor_trading_sqm) || 0;
+      const storageSqm = parseFloat(layoutInput.ground_floor_storage_sqm) || 0;
+      const visibleKitchenSqm = safeFreeFormData.business_type === "restaurant_cafe"
+        ? parseFloat(consolidatedAreas.visible_kitchen_sqm) || 0
+        : 0;
+
+      // Intentional contract mapping: one user-entered value powers both layout + areas fields expected by backend.
+      paidIntake.layout = {
+        ...layoutInput,
+        ground_floor_trading_sqm: tradingSqm,
+        ground_floor_storage_sqm: storageSqm,
+      };
+
       paidIntake.areas = {
-        sales_area_sqm: parseFloat(areas.sales_area_sqm) || 0,
-        visible_kitchen_sqm: parseFloat(areas.kitchen_sqm) || 0,
+        sales_area_sqm: tradingSqm,
+        visible_kitchen_sqm: visibleKitchenSqm,
         non_visible_kitchen_sqm: 0,
-        storage_sqm: parseFloat(areas.storage_sqm) || 0,
-        basement_sqm: parseFloat(areas.basement_sqm) || 0,
-        upper_sqm: parseFloat(areas.upper_sqm) || 0,
-        outdoor_seating: areas.outdoor_seating,
+        storage_sqm: storageSqm,
+        basement_sqm: parseFloat(consolidatedAreas.basement_sqm) || 0,
+        upper_sqm: parseFloat(consolidatedAreas.upper_sqm) || 0,
+        outdoor_seating: safeFreeFormData.business_type === "restaurant_cafe" ? consolidatedAreas.outdoor_seating : false,
       };
     }
 
@@ -198,24 +208,15 @@ const Intake = () => {
               layout={layoutInput}
               onChange={setLayoutInput}
               showKitchen={safeFreeFormData.business_type === "restaurant_cafe"}
+              showConsolidatedAreas={showAreas}
+              consolidatedAreas={consolidatedAreas}
+              onConsolidatedAreasChange={setConsolidatedAreas}
+              niaSqm={parseFloat(totalFloorArea) || 0}
               errors={errors}
               hideRequiredLabel={true}
               naOptionLabel="Other"
             />
           </div>
-
-          {showAreas && (
-            <AreaBreakdown
-              areas={areas}
-              onChange={setAreas}
-              niaSqm={parseFloat(totalFloorArea) || 0}
-              errors={errors}
-              businessType={safeFreeFormData.business_type}
-              floorConfig={layoutInput.floor_config}
-              salesAreaLabel="Commercial / customer-facing area"
-              descriptionText="Split total floor space into the areas below. These don't need to be exact but supports a more accurate assessment."
-            />
-          )}
 
 
           {/* Year of last fit-out */}
