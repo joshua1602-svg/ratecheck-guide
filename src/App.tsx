@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Results from "./pages/Results";
+import ResultsPreview from "./pages/ResultsPreview";
 import Intake from "./pages/Intake";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
