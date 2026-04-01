@@ -137,7 +137,10 @@ const Intake = () => {
       assess_request: state?.assessRequest || null,
       assess_response: state?.assessmentResult || null,
       paid_intake: paidIntake,
-      rated_comps: state?.ratedComps || [],
+      // Do not forward pre-intake /assess comps into paid report generation.
+      // The initial free check is postcode-level and can predate address-aware
+      // same-street matching; backend should reselect comps from paid intake.
+      rated_comps: [],
     };
 
     try {
