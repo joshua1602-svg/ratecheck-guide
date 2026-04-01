@@ -41,11 +41,11 @@ const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
   slight: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: LOW–MEDIUM",
     heading: "Your rates may be slightly high",
-    body: "Your current rateable value appears marginally above similar properties nearby. There may be a limited case for review depending on the strength of comparable evidence.",
-    sectionHeading: "Understand if it's worth challenging.",
+    body: "Your current rateable value appears marginally above similar properties nearby. There may be a reasonable case for review depending on the strength of comparable evidence.",
+    sectionHeading: "Next step: prepare your challenge.",
     showEvidencePack: true,
-    assessmentCta: "See my estimated saving →",
-    assessmentDescription: "See if it's worth challenging your rates.",
+    assessmentCta: "Start my assessment →",
+    assessmentDescription: "Understand whether your valuation is worth challenging.",
   },
   over: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: HIGH",
@@ -53,8 +53,8 @@ const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
     body: "Your current rateable value is notably above comparable properties nearby. The evidence suggests a reasonable case for challenge.",
     sectionHeading: "Next step: prepare your challenge.",
     showEvidencePack: true,
-    assessmentCta: "See my estimated saving →",
-    assessmentDescription: "See if it's worth challenging your rates.",
+    assessmentCta: "Start my assessment →",
+    assessmentDescription: "Understand whether your valuation is worth challenging.",
   },
   insufficient: {
     badgeLabel: "INSUFFICIENT DATA",
