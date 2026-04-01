@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Results from "./pages/Results";
+import ResultsPreview from "./pages/ResultsPreview";
 import Intake from "./pages/Intake";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
@@ -19,6 +20,7 @@ const App = () => (
     <ScrollToTop />
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/results-preview" element={<ResultsPreview />} />
       <Route path="/results" element={<Results />} />
       <Route path="/intake" element={<Intake />} />
       <Route path="/success" element={<Success />} />
