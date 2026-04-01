@@ -133,57 +133,60 @@ const Results = () => {
           </button>
         )}
 
-        {/* Product Options */}
+        {/* Step-based journey */}
         <h2 className="mt-10 text-2xl font-bold text-foreground">
           {config.sectionHeading}
         </h2>
 
         {config.showEvidencePack ? (
-          /* Two-product layout — slight and over tiers */
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 items-start">
-            {/* Rates Assessment — invisible spacer matches Evidence Pack banner height */}
-            <div className="flex flex-col">
-              <div className="rounded-t-lg px-3 py-2 text-center text-xs font-semibold leading-tight invisible" aria-hidden="true">
-                £99 credited if you start with the Rates Assessment
-              </div>
-              <ProductCard
-                badge="START HERE"
-                title="Rates Assessment"
-                price="£99"
-                description={config.assessmentDescription}
-                features={[
-                  "Estimated fair rateable value",
-                  "Potential annual saving",
-                  "Snapshot of comparable evidence",
-                ]}
-                subtext="Start here to understand your opportunity."
-                ctaLabel={config.assessmentCta}
-                variant="accent"
-                onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-              />
+          /* Two-step journey — slight and over tiers */
+          <div className="mt-6 space-y-5">
+            {/* Step indicator */}
+            <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">1</span>
+                Assess
+              </span>
+              <span className="h-px flex-1 bg-border" />
+              <span className="flex items-center gap-1.5">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">2</span>
+                Challenge
+              </span>
             </div>
-            {/* Evidence Pack — banner flush on top of card */}
-            <div className="flex flex-col">
-              <div className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight">
-                £99 credited if you start with the Rates Assessment
-              </div>
-              <ProductCard
-                badge="READY TO CHALLENGE"
-                title="Evidence Pack"
-                price="£249"
-                description="Everything you need to prepare and submit a challenge."
-                features={[
-                  "Full comparable evidence",
-                  "Adjustment analysis",
-                  "Pre-written challenge submission",
-                ]}
-                subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
-                ctaLabel="Start my challenge →"
-                variant="accent"
-                className="rounded-t-none"
-                onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-              />
-            </div>
+
+            {/* Step 1 */}
+            <ProductCard
+              badge="STEP 1"
+              title="Assess your case"
+              price="£99"
+              description="Understand whether your valuation is worth challenging. Get a clear, evidence-based view before proceeding."
+              features={[
+                "Estimated fair rateable value range",
+                "Snapshot of comparable evidence",
+                "Clear recommendation — challenge or monitor",
+              ]}
+              ctaLabel="Start my assessment →"
+              variant="accent"
+              onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            />
+
+            {/* Step 2 */}
+            <ProductCard
+              badge="STEP 2"
+              title="Submit your challenge"
+              price="£249"
+              priceNote="£99 credited from Step 1"
+              description="Everything you need to prepare and submit your challenge."
+              features={[
+                "Full comparable evidence set",
+                "Adjustment analysis",
+                "Pre-written challenge submission",
+              ]}
+              subtext="Your £99 assessment is fully credited toward your full challenge."
+              ctaLabel="Continue to full challenge →"
+              variant="primary"
+              onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            />
           </div>
         ) : (
           /* Single-product layout — undervalued, inline and insufficient tiers */
@@ -194,9 +197,9 @@ const Results = () => {
               price="£99"
               description={config.assessmentDescription}
               features={[
-                "Estimated fair rateable value",
-                "Full comparable evidence",
-                "Snapshot of comparable properties",
+                "Estimated fair rateable value range",
+                "Snapshot of comparable evidence",
+                "Clear recommendation — challenge or monitor",
               ]}
               subtext="Understand your position with a full analysis."
               ctaLabel={config.assessmentCta}
