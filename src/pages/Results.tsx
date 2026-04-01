@@ -41,11 +41,11 @@ const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
   slight: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: LOW–MEDIUM",
     heading: "Your rates may be slightly high",
-    body: "Your current rateable value appears marginally above similar properties nearby. There may be a limited case for review depending on the strength of comparable evidence.",
-    sectionHeading: "Understand if it's worth challenging.",
+    body: "Your current rateable value appears marginally above similar properties nearby. There may be a reasonable case for review depending on the strength of comparable evidence.",
+    sectionHeading: "Next step: prepare your challenge.",
     showEvidencePack: true,
-    assessmentCta: "See my estimated saving →",
-    assessmentDescription: "See if it's worth challenging your rates.",
+    assessmentCta: "Start my assessment →",
+    assessmentDescription: "Understand whether your valuation is worth challenging.",
   },
   over: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: HIGH",
@@ -53,8 +53,8 @@ const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
     body: "Your current rateable value is notably above comparable properties nearby. The evidence suggests a reasonable case for challenge.",
     sectionHeading: "Next step: prepare your challenge.",
     showEvidencePack: true,
-    assessmentCta: "See my estimated saving →",
-    assessmentDescription: "See if it's worth challenging your rates.",
+    assessmentCta: "Start my assessment →",
+    assessmentDescription: "Understand whether your valuation is worth challenging.",
   },
   insufficient: {
     badgeLabel: "INSUFFICIENT DATA",
@@ -133,57 +133,60 @@ const Results = () => {
           </button>
         )}
 
-        {/* Product Options */}
+        {/* Step-based journey */}
         <h2 className="mt-10 text-2xl font-bold text-foreground">
           {config.sectionHeading}
         </h2>
 
         {config.showEvidencePack ? (
-          /* Two-product layout — slight and over tiers */
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 items-start">
-            {/* Rates Assessment — invisible spacer matches Evidence Pack banner height */}
-            <div className="flex flex-col">
-              <div className="rounded-t-lg px-3 py-2 text-center text-xs font-semibold leading-tight invisible" aria-hidden="true">
-                £99 credited if you start with the Rates Assessment
-              </div>
-              <ProductCard
-                badge="START HERE"
-                title="Rates Assessment"
-                price="£99"
-                description={config.assessmentDescription}
-                features={[
-                  "Estimated fair rateable value",
-                  "Potential annual saving",
-                  "Snapshot of comparable evidence",
-                ]}
-                subtext="Start here to understand your opportunity."
-                ctaLabel={config.assessmentCta}
-                variant="accent"
-                onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-              />
+          /* Two-step journey — slight and over tiers */
+          <div className="mt-6 space-y-5">
+            {/* Step indicator */}
+            <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">1</span>
+                Assess
+              </span>
+              <span className="h-px flex-1 bg-border" />
+              <span className="flex items-center gap-1.5">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">2</span>
+                Challenge
+              </span>
             </div>
-            {/* Evidence Pack — banner flush on top of card */}
-            <div className="flex flex-col">
-              <div className="rounded-t-lg bg-accent px-3 py-2 text-center text-xs font-semibold text-accent-foreground leading-tight">
-                £99 credited if you start with the Rates Assessment
-              </div>
-              <ProductCard
-                badge="READY TO CHALLENGE"
-                title="Evidence Pack"
-                price="£249"
-                description="Everything you need to prepare and submit a challenge."
-                features={[
-                  "Full comparable evidence",
-                  "Adjustment analysis",
-                  "Pre-written challenge submission",
-                ]}
-                subtext="Designed to support a Check & Challenge (no guarantee of outcome)."
-                ctaLabel="Start my challenge →"
-                variant="accent"
-                className="rounded-t-none"
-                onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-              />
-            </div>
+
+            {/* Step 1 */}
+            <ProductCard
+              badge="STEP 1"
+              title="Assess your case"
+              price="£99"
+              description="Understand whether your valuation is worth challenging. Get a clear, evidence-based view before proceeding."
+              features={[
+                "Estimated fair rateable value range",
+                "Snapshot of comparable evidence",
+                "Clear recommendation — challenge or monitor",
+              ]}
+              ctaLabel="Start my assessment →"
+              variant="accent"
+              onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            />
+
+            {/* Step 2 */}
+            <ProductCard
+              badge="STEP 2"
+              title="Submit your challenge"
+              price="£249"
+              priceNote="£99 credited from Step 1"
+              description="Everything you need to prepare and submit your challenge."
+              features={[
+                "Full comparable evidence set",
+                "Adjustment analysis",
+                "Pre-written challenge submission",
+              ]}
+              subtext="Your £99 assessment is fully credited toward your full challenge."
+              ctaLabel="Continue to full challenge →"
+              variant="primary"
+              onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            />
           </div>
         ) : (
           /* Single-product layout — undervalued, inline and insufficient tiers */
@@ -194,9 +197,9 @@ const Results = () => {
               price="£99"
               description={config.assessmentDescription}
               features={[
-                "Estimated fair rateable value",
-                "Full comparable evidence",
-                "Snapshot of comparable properties",
+                "Estimated fair rateable value range",
+                "Snapshot of comparable evidence",
+                "Clear recommendation — challenge or monitor",
               ]}
               subtext="Understand your position with a full analysis."
               ctaLabel={config.assessmentCta}
@@ -213,13 +216,13 @@ const Results = () => {
               <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
               </svg>
-              <span>If successful, a challenge may result in ongoing annual savings and potential backdated refunds.</span>
+              <span>A successful challenge may result in ongoing annual savings and potential backdated refunds.</span>
             </div>
             <div className="flex items-start gap-2">
               <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
               </svg>
-              <span>Agents charge &gt;30% of your saving annually. Our pack gives you the information you need to submit a Challenge yourself.</span>
+              <span>Agents charge &gt;30% of your saving annually. Our pack gives you the tools to submit a Challenge yourself.</span>
             </div>
           </div>
         )}
