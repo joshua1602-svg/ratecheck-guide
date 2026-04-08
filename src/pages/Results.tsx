@@ -124,6 +124,7 @@ const StepHeader = ({
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [openStep, setOpenStep] = useState<1 | 2>(1);
   const state = location.state as { assessRequest?: any; assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
   if (!state) return <Navigate to="/" replace />;
   const { assessRequest, assessmentResult, freeFormData, ratedComps = [] } = state;
@@ -136,8 +137,6 @@ const Results = () => {
 
   const tier = getVerdictTier(voaRv, modelledLow, modelledHigh, signal);
   const config = verdictConfigs[tier];
-
-  const [openStep, setOpenStep] = useState<1 | 2>(1);
 
   return (
     <div className="min-h-screen bg-primary">
