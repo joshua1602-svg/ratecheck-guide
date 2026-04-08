@@ -4,10 +4,6 @@ import BrandMark from "@/components/BrandMark";
 import ProductCard from "@/components/ProductCard";
 
 // Four-tier verdict config
-// Tier 1 — undervalued:  voaRv < modelledLow
-// Tier 2 — inline:       voaRv within modelled band (±5%)
-// Tier 3 — slight:       voaRv > modelledHigh, overage < 15%
-// Tier 4 — over:         voaRv > modelledHigh, overage >= 15%
 type VerdictTier = "undervalued" | "inline" | "slight" | "over" | "insufficient";
 
 interface VerdictConfig {
@@ -82,6 +78,49 @@ function getVerdictTier(
   return overage < 0.15 ? "slight" : "over";
 }
 
+/* ── Accordion step header ─────────────────────────────── */
+const StepHeader = ({
+  step,
+  title,
+  price,
+  isOpen,
+  onClick,
+}: {
+  step: number;
+  title: string;
+  price: string;
+  isOpen: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className="flex w-full items-center justify-between rounded-t-lg border border-border bg-card px-5 py-4 text-left transition-colors hover:bg-card/80 focus:outline-none focus:ring-2 focus:ring-ring"
+    style={!isOpen ? { borderRadius: "0.5rem" } : undefined}
+  >
+    <div className="flex items-center gap-3">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+        {step}
+      </span>
+      <span className="text-sm font-semibold text-card-foreground">{title}</span>
+    </div>
+    <div className="flex items-center gap-3">
+      <span className="text-sm font-bold text-card-foreground">{price}</span>
+      <svg
+        className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fillRule="evenodd"
+          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </div>
+  </button>
+);
+
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -97,6 +136,8 @@ const Results = () => {
 
   const tier = getVerdictTier(voaRv, modelledLow, modelledHigh, signal);
   const config = verdictConfigs[tier];
+
+  const [openStep, setOpenStep] = useState<1 | 2>(1);
 
   return (
     <div className="min-h-screen bg-primary">
@@ -140,58 +181,61 @@ const Results = () => {
         </h2>
 
         {config.showEvidencePack ? (
-          /* Two-step journey — slight and over tiers */
-          <div className="mt-6 space-y-5">
-            {/* Step indicator */}
-            <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">1</span>
-                Assess
-              </span>
-              <span className="h-px flex-1 bg-border" />
-              <span className="flex items-center gap-1.5">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">2</span>
-                Challenge
-              </span>
+          /* Accordion two-step journey — slight and over tiers */
+          <div className="mt-6 space-y-3">
+            {/* Step 1 */}
+            <div>
+              <StepHeader step={1} title="Assess your case" price="£99" isOpen={openStep === 1} onClick={() => setOpenStep(1)} />
+              {openStep === 1 && (
+                <div className="rounded-b-lg border border-t-0 border-border">
+                  <ProductCard
+                    badge="STEP 1"
+                    title="Assess your case"
+                    price="£99"
+                    description="Understand whether your valuation is worth challenging. Get a clear, evidence-based view before proceeding."
+                    features={[
+                      "Estimated fair rateable value range",
+                      "Snapshot of comparable evidence",
+                      "Clear recommendation — challenge or monitor",
+                    ]}
+                    ctaLabel="Start my assessment →"
+                    variant="accent"
+                    onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+                    className="border-0 shadow-none rounded-t-none"
+                  />
+                </div>
+              )}
             </div>
 
-            {/* Step 1 */}
-            <ProductCard
-              badge="STEP 1"
-              title="Assess your case"
-              price="£99"
-              description="Understand whether your valuation is worth challenging. Get a clear, evidence-based view before proceeding."
-              features={[
-                "Estimated fair rateable value range",
-                "Snapshot of comparable evidence",
-                "Clear recommendation — challenge or monitor",
-              ]}
-              ctaLabel="Start my assessment →"
-              variant="accent"
-              onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-            />
-
             {/* Step 2 */}
-            <ProductCard
-              badge="STEP 2"
-              title="Submit your challenge"
-              price="£249"
-              priceNote="£99 credited from Step 1"
-              description="Everything you need to prepare and submit your challenge."
-              features={[
-                "Full comparable evidence set",
-                "Adjustment analysis",
-                "Pre-written challenge submission",
-              ]}
-              subtext="Your £99 assessment is fully credited toward your full challenge."
-              ctaLabel="Continue to full challenge →"
-              variant="primary"
-              onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-            />
+            <div>
+              <StepHeader step={2} title="Submit your challenge" price="£249" isOpen={openStep === 2} onClick={() => setOpenStep(2)} />
+              {openStep === 2 && (
+                <div className="rounded-b-lg border border-t-0 border-border">
+                  <ProductCard
+                    badge="STEP 2"
+                    title="Submit your challenge"
+                    price="£249"
+                    priceNote="£99 credited from Step 1"
+                    description="Everything you need to prepare and submit your challenge."
+                    features={[
+                      "Full comparable evidence set",
+                      "Adjustment analysis",
+                      "Pre-written challenge submission",
+                    ]}
+                    subtext="Your £99 assessment is fully credited toward your full challenge."
+                    ctaLabel="Continue to full challenge →"
+                    variant="primary"
+                    onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+                    className="border-0 shadow-none rounded-t-none"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         ) : (
-          /* Single-product layout — undervalued, inline and insufficient tiers */
-          <div className="mt-6 max-w-sm">
+          /* Single-product layout — full width */
+          <div className="mt-6">
             <ProductCard
               badge="GET CERTAINTY"
               title="Rates Assessment"
