@@ -1,4 +1,5 @@
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import { useState } from "react";
 import BrandMark from "@/components/BrandMark";
 import ProductCard from "@/components/ProductCard";
 
