@@ -24,13 +24,7 @@ const Intake = () => {
   const [postcode, setPostcode] = useState(freeFormData?.postcode || "");
   const [voaRv, setVoaRv] = useState(freeFormData?.voa_rv?.toString() || "");
   const [totalFloorArea, setTotalFloorArea] = useState(freeFormData?.nia_sqm?.toString() || "");
-
-  const [consolidatedAreas, setConsolidatedAreas] = useState({
-    visible_kitchen_sqm: "",
-    basement_sqm: "",
-    upper_sqm: "",
-    outdoor_seating: false,
-  });
+  const [outdoorSeating, setOutdoorSeating] = useState(false);
 
   const [layoutInput, setLayoutInput] = useState<LayoutInputState>({ ...LAYOUT_DEFAULTS });
 
@@ -98,27 +92,50 @@ const Intake = () => {
     };
 
     if (showAreas) {
-      const tradingSqm = parseFloat(layoutInput.ground_floor_trading_sqm) || 0;
-      const storageSqm = parseFloat(layoutInput.ground_floor_storage_sqm) || 0;
-      const visibleKitchenSqm = safeFreeFormData.business_type === "restaurant_cafe"
-        ? parseFloat(consolidatedAreas.visible_kitchen_sqm) || 0
-        : 0;
+      const toNum = (value: string) => parseFloat(value) || 0;
+      const groundTradingSqm = toNum(layoutInput.ground_floor_trading_sqm);
+      const groundStorageSqm = toNum(layoutInput.ground_floor_storage_sqm);
+      const groundKitchenSqm = safeFreeFormData.business_type === "restaurant_cafe" ? toNum(layoutInput.ground_floor_kitchen_sqm) : 0;
+
+      const lowerTradingSqm = toNum(layoutInput.lower_ground_trading_sqm);
+      const lowerStorageSqm = toNum(layoutInput.lower_ground_storage_sqm);
+      const lowerKitchenSqm = safeFreeFormData.business_type === "restaurant_cafe" ? toNum(layoutInput.lower_ground_kitchen_sqm) : 0;
+
+      const upperTradingSqm = toNum(layoutInput.upper_floor_trading_sqm);
+      const upperStorageSqm = toNum(layoutInput.upper_floor_storage_sqm);
+      const upperKitchenSqm = safeFreeFormData.business_type === "restaurant_cafe" ? toNum(layoutInput.upper_floor_kitchen_sqm) : 0;
+
+      const totalTradingSqm = groundTradingSqm + lowerTradingSqm + upperTradingSqm;
+      const totalStorageSqm = groundStorageSqm + lowerStorageSqm + upperStorageSqm;
+      const totalKitchenSqm = groundKitchenSqm + lowerKitchenSqm + upperKitchenSqm;
+      const lowerOtherSqm = toNum(layoutInput.lower_ground_other_sqm);
+      const upperOtherSqm = toNum(layoutInput.upper_floor_other_sqm);
 
       // Intentional contract mapping: one user-entered value powers both layout + areas fields expected by backend.
       paidIntake.layout = {
         ...layoutInput,
-        ground_floor_trading_sqm: tradingSqm,
-        ground_floor_storage_sqm: storageSqm,
+        ground_floor_trading_sqm: groundTradingSqm,
+        ground_floor_storage_sqm: groundStorageSqm,
+        ground_floor_kitchen_sqm: groundKitchenSqm,
+        ground_floor_other_sqm: toNum(layoutInput.ground_floor_other_sqm),
+        lower_ground_trading_sqm: lowerTradingSqm,
+        lower_ground_storage_sqm: lowerStorageSqm,
+        lower_ground_kitchen_sqm: lowerKitchenSqm,
+        lower_ground_other_sqm: lowerOtherSqm,
+        upper_floor_trading_sqm: upperTradingSqm,
+        upper_floor_storage_sqm: upperStorageSqm,
+        upper_floor_kitchen_sqm: upperKitchenSqm,
+        upper_floor_other_sqm: upperOtherSqm,
       };
 
       paidIntake.areas = {
-        sales_area_sqm: tradingSqm,
-        visible_kitchen_sqm: visibleKitchenSqm,
+        sales_area_sqm: totalTradingSqm,
+        visible_kitchen_sqm: totalKitchenSqm,
         non_visible_kitchen_sqm: 0,
-        storage_sqm: storageSqm,
-        basement_sqm: parseFloat(consolidatedAreas.basement_sqm) || 0,
-        upper_sqm: parseFloat(consolidatedAreas.upper_sqm) || 0,
-        outdoor_seating: safeFreeFormData.business_type === "restaurant_cafe" ? consolidatedAreas.outdoor_seating : false,
+        storage_sqm: totalStorageSqm,
+        basement_sqm: lowerTradingSqm + lowerStorageSqm + lowerKitchenSqm + lowerOtherSqm,
+        upper_sqm: upperTradingSqm + upperStorageSqm + upperKitchenSqm + upperOtherSqm,
+        outdoor_seating: safeFreeFormData.business_type === "restaurant_cafe" ? outdoorSeating : false,
       };
     }
 
@@ -211,13 +228,11 @@ const Intake = () => {
               layout={layoutInput}
               onChange={setLayoutInput}
               showKitchen={safeFreeFormData.business_type === "restaurant_cafe"}
-              showConsolidatedAreas={showAreas}
-              consolidatedAreas={consolidatedAreas}
-              onConsolidatedAreasChange={setConsolidatedAreas}
+              outdoorSeating={outdoorSeating}
+              onOutdoorSeatingChange={setOutdoorSeating}
               niaSqm={parseFloat(totalFloorArea) || 0}
               errors={errors}
               hideRequiredLabel={true}
-              naOptionLabel="Other"
             />
           </div>
 
