@@ -7,26 +7,42 @@ type FloorConfig =
   | "ground_lower_ground_first"
   | "other";
 
-type LowerGroundUse = "trading" | "storage" | "kitchen" | "office" | "not_applicable";
-type UpperFloorUse = "trading" | "storage" | "office" | "not_applicable";
-type KitchenOnGround = "yes" | "no" | "no_kitchen";
-
 export interface LayoutInputState {
   floor_config: FloorConfig;
   ground_floor_trading_sqm: string;
   ground_floor_storage_sqm: string;
-  lower_ground_use: LowerGroundUse;
-  upper_floor_use: UpperFloorUse;
-  kitchen_on_ground: KitchenOnGround;
+  ground_floor_kitchen_sqm: string;
+  ground_floor_other_sqm: string;
+  ground_floor_other_label: string;
+  lower_ground_trading_sqm: string;
+  lower_ground_storage_sqm: string;
+  lower_ground_kitchen_sqm: string;
+  lower_ground_other_sqm: string;
+  lower_ground_other_label: string;
+  upper_floor_trading_sqm: string;
+  upper_floor_storage_sqm: string;
+  upper_floor_kitchen_sqm: string;
+  upper_floor_other_sqm: string;
+  upper_floor_other_label: string;
 }
 
 export const LAYOUT_DEFAULTS: LayoutInputState = {
   floor_config: "ground_only",
   ground_floor_trading_sqm: "",
   ground_floor_storage_sqm: "",
-  lower_ground_use: "not_applicable",
-  upper_floor_use: "not_applicable",
-  kitchen_on_ground: "no_kitchen",
+  ground_floor_kitchen_sqm: "",
+  ground_floor_other_sqm: "",
+  ground_floor_other_label: "",
+  lower_ground_trading_sqm: "",
+  lower_ground_storage_sqm: "",
+  lower_ground_kitchen_sqm: "",
+  lower_ground_other_sqm: "",
+  lower_ground_other_label: "",
+  upper_floor_trading_sqm: "",
+  upper_floor_storage_sqm: "",
+  upper_floor_kitchen_sqm: "",
+  upper_floor_other_sqm: "",
+  upper_floor_other_label: "",
 };
 
 const FLOOR_CONFIG_OPTIONS = [
@@ -37,61 +53,26 @@ const FLOOR_CONFIG_OPTIONS = [
   { value: "other", label: "Other" },
 ];
 
-const LOWER_GROUND_USE_OPTIONS = [
-  { value: "not_applicable", label: "Not applicable" },
-  { value: "trading", label: "Trading" },
-  { value: "storage", label: "Storage" },
-  { value: "kitchen", label: "Kitchen" },
-  { value: "office", label: "Office" },
-];
-
-const UPPER_FLOOR_USE_OPTIONS = [
-  { value: "not_applicable", label: "Not applicable" },
-  { value: "trading", label: "Trading" },
-  { value: "storage", label: "Storage" },
-  { value: "office", label: "Office" },
-];
-
-const KITCHEN_ON_GROUND_OPTIONS = [
-  { value: "no_kitchen", label: "No kitchen" },
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "No (kitchen is on another floor)" },
-];
-
 interface LayoutSectionProps {
   layout: LayoutInputState;
   onChange: (layout: LayoutInputState) => void;
   showKitchen: boolean;
-  showConsolidatedAreas?: boolean;
-  consolidatedAreas?: {
-    basement_sqm: string;
-    upper_sqm: string;
-    visible_kitchen_sqm: string;
-    outdoor_seating: boolean;
-  };
-  onConsolidatedAreasChange?: (areas: {
-    basement_sqm: string;
-    upper_sqm: string;
-    visible_kitchen_sqm: string;
-    outdoor_seating: boolean;
-  }) => void;
+  outdoorSeating?: boolean;
+  onOutdoorSeatingChange?: (value: boolean) => void;
   niaSqm?: number;
   errors?: Record<string, string>;
   hideRequiredLabel?: boolean;
-  naOptionLabel?: string;
 }
 
 const LayoutSection = ({
   layout,
   onChange,
   showKitchen,
-  showConsolidatedAreas = false,
-  consolidatedAreas,
-  onConsolidatedAreasChange,
+  outdoorSeating = false,
+  onOutdoorSeatingChange,
   niaSqm = 0,
   errors,
   hideRequiredLabel = false,
-  naOptionLabel = "Not applicable",
 }: LayoutSectionProps) => {
   const update = (field: keyof LayoutInputState, value: string) => {
     const next = { ...layout, [field]: value };
@@ -100,8 +81,20 @@ const LayoutSection = ({
       const cfg = value as FloorConfig;
       const hasLower = cfg === "ground_lower_ground" || cfg === "ground_lower_ground_first";
       const hasUpper = cfg === "ground_first" || cfg === "ground_lower_ground_first";
-      if (!hasLower) next.lower_ground_use = "not_applicable";
-      if (!hasUpper) next.upper_floor_use = "not_applicable";
+      if (!hasLower) {
+        next.lower_ground_trading_sqm = "";
+        next.lower_ground_storage_sqm = "";
+        next.lower_ground_kitchen_sqm = "";
+        next.lower_ground_other_sqm = "";
+        next.lower_ground_other_label = "";
+      }
+      if (!hasUpper) {
+        next.upper_floor_trading_sqm = "";
+        next.upper_floor_storage_sqm = "";
+        next.upper_floor_kitchen_sqm = "";
+        next.upper_floor_other_sqm = "";
+        next.upper_floor_other_label = "";
+      }
     }
 
     onChange(next);
@@ -115,13 +108,25 @@ const LayoutSection = ({
     layout.floor_config === "ground_first" ||
     layout.floor_config === "ground_lower_ground_first";
 
-  const consolidatedTotal = showConsolidatedAreas && consolidatedAreas
-    ? (parseFloat(layout.ground_floor_trading_sqm) || 0) +
-      (parseFloat(layout.ground_floor_storage_sqm) || 0) +
-      (parseFloat(consolidatedAreas.visible_kitchen_sqm) || 0) +
-      (parseFloat(consolidatedAreas.basement_sqm) || 0) +
-      (parseFloat(consolidatedAreas.upper_sqm) || 0)
+  const toNum = (value: string) => parseFloat(value) || 0;
+  const groundSubtotal =
+    toNum(layout.ground_floor_trading_sqm) +
+    toNum(layout.ground_floor_storage_sqm) +
+    (showKitchen ? toNum(layout.ground_floor_kitchen_sqm) : 0) +
+    toNum(layout.ground_floor_other_sqm);
+  const lowerSubtotal = hasLowerGround
+    ? toNum(layout.lower_ground_trading_sqm) +
+      toNum(layout.lower_ground_storage_sqm) +
+      (showKitchen ? toNum(layout.lower_ground_kitchen_sqm) : 0) +
+      toNum(layout.lower_ground_other_sqm)
     : 0;
+  const upperSubtotal = hasUpperFloor
+    ? toNum(layout.upper_floor_trading_sqm) +
+      toNum(layout.upper_floor_storage_sqm) +
+      (showKitchen ? toNum(layout.upper_floor_kitchen_sqm) : 0) +
+      toNum(layout.upper_floor_other_sqm)
+    : 0;
+  const consolidatedTotal = groundSubtotal + lowerSubtotal + upperSubtotal;
   const diverges = niaSqm > 0 && consolidatedTotal > 0 && Math.abs(consolidatedTotal - niaSqm) / niaSqm > 0.20;
 
   return (
@@ -146,116 +151,161 @@ const LayoutSection = ({
 
       <FormField
         id="ground_floor_trading_sqm"
-        label="Ground floor trading area (sqm)"
+        label="Ground floor — trading area (sqm)"
         type="number"
         value={layout.ground_floor_trading_sqm}
         onChange={(v) => update("ground_floor_trading_sqm", v)}
-        helperText="Customer-facing sales or service area on the ground floor"
+        helperText="Enter sqm for customer-facing trading/service use on this floor."
       />
 
       <FormField
         id="ground_floor_storage_sqm"
-        label="Ground floor storage area (sqm)"
+        label="Ground floor — storage area (sqm)"
         type="number"
         value={layout.ground_floor_storage_sqm}
         onChange={(v) => update("ground_floor_storage_sqm", v)}
-        helperText="Back-of-house storage on the ground floor"
+        helperText="Enter sqm for stock/storage/back-of-house use on this floor."
       />
-
-      {hasLowerGround && (
-        <FormField
-          id="lower_ground_use"
-          label="Lower ground floor use"
-          type="select"
-          value={layout.lower_ground_use}
-          onChange={(v) => update("lower_ground_use", v)}
-          options={LOWER_GROUND_USE_OPTIONS.map(o => o.value === "not_applicable" ? { ...o, label: naOptionLabel } : o)}
-        />
-      )}
-
-      {hasUpperFloor && (
-        <FormField
-          id="upper_floor_use"
-          label="Upper floor use"
-          type="select"
-          value={layout.upper_floor_use}
-          onChange={(v) => update("upper_floor_use", v)}
-          options={UPPER_FLOOR_USE_OPTIONS.map(o => o.value === "not_applicable" ? { ...o, label: naOptionLabel } : o)}
-        />
-      )}
 
       {showKitchen && (
         <FormField
-          id="kitchen_on_ground"
-          label="Kitchen on the ground floor?"
-          type="select"
-          value={layout.kitchen_on_ground}
-          onChange={(v) => update("kitchen_on_ground", v)}
-          options={KITCHEN_ON_GROUND_OPTIONS}
+          id="ground_floor_kitchen_sqm"
+          label="Ground floor — kitchen area (sqm)"
+          type="number"
+          value={layout.ground_floor_kitchen_sqm}
+          onChange={(v) => update("ground_floor_kitchen_sqm", v)}
+          helperText="Enter sqm for kitchen/prep/food-service use on this floor."
         />
       )}
 
-      {showConsolidatedAreas && consolidatedAreas && onConsolidatedAreasChange && (
+      <FormField
+        id="ground_floor_other_sqm"
+        label="Ground floor — other area (sqm)"
+        type="number"
+        value={layout.ground_floor_other_sqm}
+        onChange={(v) => update("ground_floor_other_sqm", v)}
+        helperText="Optional non-valued area (e.g., public toilets)."
+      />
+      <FormField
+        id="ground_floor_other_label"
+        label="Ground floor — other area description (optional)"
+        value={layout.ground_floor_other_label}
+        onChange={(v) => update("ground_floor_other_label", v)}
+      />
+
+      <p className="text-sm font-medium text-foreground">Ground floor subtotal: {groundSubtotal} sqm</p>
+
+      {hasLowerGround && (
         <>
           <div className="border-t border-border pt-4">
-            <p className="text-sm text-muted-foreground">
-              Add any non-ground-floor or restaurant-specific areas below. We only ask for each area once, then map it to required backend fields.
-            </p>
+            <p className="text-sm font-medium text-foreground">Lower ground floor breakdown</p>
+            <p className="text-xs text-muted-foreground">Enter sqm for each use on this floor (leave blank if none).</p>
           </div>
-
+          <FormField
+            id="lower_ground_trading_sqm"
+            label="Lower ground — trading area (sqm)"
+            type="number"
+            value={layout.lower_ground_trading_sqm}
+            onChange={(v) => update("lower_ground_trading_sqm", v)}
+          />
+          <FormField
+            id="lower_ground_storage_sqm"
+            label="Lower ground — storage area (sqm)"
+            type="number"
+            value={layout.lower_ground_storage_sqm}
+            onChange={(v) => update("lower_ground_storage_sqm", v)}
+          />
           {showKitchen && (
             <FormField
-              id="visible_kitchen_sqm"
-              label="Kitchen area (sqm)"
+              id="lower_ground_kitchen_sqm"
+              label="Lower ground — kitchen area (sqm)"
               type="number"
-              value={consolidatedAreas.visible_kitchen_sqm}
-              onChange={(v) => onConsolidatedAreasChange({ ...consolidatedAreas, visible_kitchen_sqm: v })}
-              helperText="Total visible / active kitchen and prep space"
-              error={errors?.visible_kitchen_sqm}
+              value={layout.lower_ground_kitchen_sqm}
+              onChange={(v) => update("lower_ground_kitchen_sqm", v)}
             />
           )}
-
-          {hasLowerGround && (
-            <FormField
-              id="basement_sqm"
-              label="Basement area (sqm)"
-              type="number"
-              value={consolidatedAreas.basement_sqm}
-              onChange={(v) => onConsolidatedAreasChange({ ...consolidatedAreas, basement_sqm: v })}
-              error={errors?.basement_sqm}
-            />
-          )}
-
-          {hasUpperFloor && (
-            <FormField
-              id="upper_sqm"
-              label="Upper floor / mezzanine area (sqm)"
-              type="number"
-              value={consolidatedAreas.upper_sqm}
-              onChange={(v) => onConsolidatedAreasChange({ ...consolidatedAreas, upper_sqm: v })}
-              error={errors?.upper_sqm}
-            />
-          )}
-
-          {showKitchen && (
-            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-              <input
-                type="checkbox"
-                checked={consolidatedAreas.outdoor_seating}
-                onChange={(e) => onConsolidatedAreasChange({ ...consolidatedAreas, outdoor_seating: e.target.checked })}
-                className="rounded border-input"
-              />
-              This property has outdoor seating
-            </label>
-          )}
-
-          <p className="text-sm font-medium text-foreground">Total entered: {consolidatedTotal} sqm</p>
-          {diverges && (
-            <p className="rounded-md border border-accent bg-accent/10 px-3 py-2 text-sm text-foreground">
-              Your breakdown doesn't quite match your total floor area — double check if you can, but you can still continue
-            </p>
-          )}
+          <FormField
+            id="lower_ground_other_sqm"
+            label="Lower ground — other area (sqm)"
+            type="number"
+            value={layout.lower_ground_other_sqm}
+            onChange={(v) => update("lower_ground_other_sqm", v)}
+          />
+          <FormField
+            id="lower_ground_other_label"
+            label="Lower ground — other area description (optional)"
+            value={layout.lower_ground_other_label}
+            onChange={(v) => update("lower_ground_other_label", v)}
+          />
+          <p className="text-sm font-medium text-foreground">Lower ground subtotal: {lowerSubtotal} sqm</p>
         </>
+      )}
+
+      {hasUpperFloor && (
+        <>
+          <div className="border-t border-border pt-4">
+            <p className="text-sm font-medium text-foreground">Upper floor breakdown</p>
+            <p className="text-xs text-muted-foreground">Enter sqm for each use on this floor (leave blank if none).</p>
+          </div>
+          <FormField
+            id="upper_floor_trading_sqm"
+            label="Upper floor — trading area (sqm)"
+            type="number"
+            value={layout.upper_floor_trading_sqm}
+            onChange={(v) => update("upper_floor_trading_sqm", v)}
+          />
+          <FormField
+            id="upper_floor_storage_sqm"
+            label="Upper floor — storage area (sqm)"
+            type="number"
+            value={layout.upper_floor_storage_sqm}
+            onChange={(v) => update("upper_floor_storage_sqm", v)}
+          />
+          {showKitchen && (
+            <FormField
+              id="upper_floor_kitchen_sqm"
+              label="Upper floor — kitchen area (sqm)"
+              type="number"
+              value={layout.upper_floor_kitchen_sqm}
+              onChange={(v) => update("upper_floor_kitchen_sqm", v)}
+            />
+          )}
+          <FormField
+            id="upper_floor_other_sqm"
+            label="Upper floor — other area (sqm)"
+            type="number"
+            value={layout.upper_floor_other_sqm}
+            onChange={(v) => update("upper_floor_other_sqm", v)}
+          />
+          <FormField
+            id="upper_floor_other_label"
+            label="Upper floor — other area description (optional)"
+            value={layout.upper_floor_other_label}
+            onChange={(v) => update("upper_floor_other_label", v)}
+          />
+          <p className="text-sm font-medium text-foreground">Upper floor subtotal: {upperSubtotal} sqm</p>
+        </>
+      )}
+
+      <div className="border-t border-border pt-4">
+        <p className="text-sm font-medium text-foreground">Total entered: {consolidatedTotal} sqm</p>
+      </div>
+      {diverges && (
+        <p className="rounded-md border border-accent bg-accent/10 px-3 py-2 text-sm text-foreground">
+          Your floor breakdown differs from your total floor area by more than 20% — please review if possible, but you can continue.
+        </p>
+      )}
+
+      {showKitchen && onOutdoorSeatingChange && (
+        <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={outdoorSeating}
+            onChange={(e) => onOutdoorSeatingChange(e.target.checked)}
+            className="rounded border-input"
+          />
+          This property has outdoor seating
+        </label>
       )}
     </fieldset>
   );
