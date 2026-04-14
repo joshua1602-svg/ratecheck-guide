@@ -198,7 +198,7 @@ const Results = () => {
             description="Refine this initial estimate using a tighter comparable set, fuller property-specific analysis, and a report designed to support review or challenge."
             features={[
               "Detailed breakdown of where your property sits versus local evidence",
-              "Comparable properties that may support a lower assessment",
+              "Calibrated list of comparable properties that may support a lower assessment",
               "Clear basis for review, Check, or Challenge",
             ]}
             ctaLabel="Get my Evidence Pack"
