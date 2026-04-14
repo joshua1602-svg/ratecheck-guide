@@ -155,13 +155,6 @@ const Results = () => {
           </div>
         )}
 
-        {/* Layout indicator */}
-        {assessmentResult?.layout_adjustment_applied === true && (
-          <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-            Estimate refined using layout data
-          </p>
-        )}
         {assessmentResult?.layout_adjustment_applied === false && (
           <button
             type="button"
@@ -192,7 +185,7 @@ const Results = () => {
             ]}
             ctaLabel="Get my Evidence Pack"
             variant="accent"
-            className="[&>p]:hidden"
+            className="[&>p]:hidden [&>div:nth-of-type(2)>div>span:first-child]:hidden [&>div:nth-of-type(2)>div>span:last-child]:text-justify"
             onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
         </div>
