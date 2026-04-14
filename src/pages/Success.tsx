@@ -95,7 +95,6 @@ const Success = () => {
             <>
               <p className="mt-4 text-sm text-muted-foreground">
                 We're running your assessment now. This usually takes less than 2 minutes.
-                {email && <> We'll also email it to <strong>{email}</strong>.</>}
               </p>
               <div className="mt-8 flex justify-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-accent inline-block animate-pulse" />
