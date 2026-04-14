@@ -141,8 +141,8 @@ const Results = () => {
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             {config.body}
           </p>
-          <p className="mt-2 text-xs text-muted-foreground">
-            This estimate uses broad comparable evidence without calibrated adjustments. The Evidence Pack applies ITZA zoning and property-specific analysis - the refined saving may be higher or lower, but it's the figure you can actually use.
+          <p className="mt-2 text-[11px] italic text-muted-foreground">
+            This estimate uses broad comparable evidence. The Evidence Pack applies ITZA zoning and property-specific analysis — the refined figure may be higher or lower.
           </p>
         </div>
 
@@ -151,9 +151,6 @@ const Results = () => {
             <p className="text-xs font-semibold uppercase tracking-wider text-accent">Estimated potential saving</p>
             <p className="mt-2 border-l-4 border-accent pl-3 text-3xl font-extrabold text-foreground sm:text-4xl">
               {currency.format(totalSavingsRange.low)}–{currency.format(totalSavingsRange.high)} over the current rating period
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Based on broad comparable evidence and current business rates assumptions. The Evidence Pack refines this estimate using tighter comparable selection and property-specific analysis.
             </p>
           </div>
         )}
@@ -176,12 +173,22 @@ const Results = () => {
         )}
 
         {/* Paid next step */}
-        <h2 className="mt-6 text-2xl font-bold text-foreground">
-          {config.sectionHeading}
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The Evidence Pack refines this initial screen using more detailed comparable analysis.
-        </p>
+        <h2 className="mt-6 text-2xl font-bold text-foreground">Next step: review your evidence</h2>
+
+        <div className="mt-3 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
+          <div className="flex items-start gap-2">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+            </svg>
+            <span>Agents charge &gt;30% of your saving annually — our pack gives you the tools to submit a Challenge yourself.</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+            </svg>
+            <span>A successful challenge may result in savings over the remaining rating period and potential backdated refunds.</span>
+          </div>
+        </div>
 
         <div className="mt-6">
           <ProductCard
@@ -191,32 +198,15 @@ const Results = () => {
             description="Refine this initial estimate using a tighter comparable set, fuller property-specific analysis, and a report designed to support review or challenge."
             features={[
               "Detailed breakdown of where your property sits versus local evidence",
-              "Calibrated list of comparable properties that may support a lower assessment",
+              "Comparable properties that may support a lower assessment",
               "Clear basis for review, Check, or Challenge",
             ]}
             ctaLabel="Get my Evidence Pack"
             variant="accent"
+            className="[&>p]:hidden"
             onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
         </div>
-
-        <div className="mt-3 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-foreground">
-          <div className="flex items-start gap-2">
-            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-            </svg>
-            <span>Agents charge &gt;30% of your saving annually. Our pack gives you the tools to submit a Challenge yourself.</span>
-          </div>
-        </div>
-
-        <div className="mt-3 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
-          <div className="flex items-start gap-2">
-            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-            </svg>
-              <span>A successful challenge may result in implied total savings over the remaining rating period and potential backdated refunds.</span>
-            </div>
-          </div>
 
         {/* Trust Footer */}
         <div className="mt-8 flex flex-wrap justify-center gap-8 border-t border-border pt-8 text-xs text-muted-foreground">
