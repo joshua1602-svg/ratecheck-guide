@@ -227,7 +227,7 @@ const Landing = () => {
                 value={email}
                 onChange={setEmail}
                 error={errors.email}
-                helperText="We'll send your result here"
+                helperText="To help keep you informed of updates / developments in business rates"
                 required
                 placeholder="you@business.co.uk"
               />
