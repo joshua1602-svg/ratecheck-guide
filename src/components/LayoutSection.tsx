@@ -13,17 +13,14 @@ export interface LayoutInputState {
   ground_floor_storage_sqm: string;
   ground_floor_kitchen_sqm: string;
   ground_floor_other_sqm: string;
-  ground_floor_other_label: string;
   lower_ground_trading_sqm: string;
   lower_ground_storage_sqm: string;
   lower_ground_kitchen_sqm: string;
   lower_ground_other_sqm: string;
-  lower_ground_other_label: string;
   upper_floor_trading_sqm: string;
   upper_floor_storage_sqm: string;
   upper_floor_kitchen_sqm: string;
   upper_floor_other_sqm: string;
-  upper_floor_other_label: string;
 }
 
 export const LAYOUT_DEFAULTS: LayoutInputState = {
@@ -32,17 +29,14 @@ export const LAYOUT_DEFAULTS: LayoutInputState = {
   ground_floor_storage_sqm: "",
   ground_floor_kitchen_sqm: "",
   ground_floor_other_sqm: "",
-  ground_floor_other_label: "",
   lower_ground_trading_sqm: "",
   lower_ground_storage_sqm: "",
   lower_ground_kitchen_sqm: "",
   lower_ground_other_sqm: "",
-  lower_ground_other_label: "",
   upper_floor_trading_sqm: "",
   upper_floor_storage_sqm: "",
   upper_floor_kitchen_sqm: "",
   upper_floor_other_sqm: "",
-  upper_floor_other_label: "",
 };
 
 const FLOOR_CONFIG_OPTIONS = [
@@ -79,7 +73,6 @@ const FloorBreakdown = ({ prefix, title, layout, showKitchen, subtotal, niaSqm, 
   const storageKey = `${prefix}_storage_sqm` as keyof LayoutInputState;
   const kitchenKey = `${prefix}_kitchen_sqm` as keyof LayoutInputState;
   const otherKey = `${prefix}_other_sqm` as keyof LayoutInputState;
-  const otherLabelKey = `${prefix}_other_label` as keyof LayoutInputState;
 
   return (
     <>
@@ -122,12 +115,6 @@ const FloorBreakdown = ({ prefix, title, layout, showKitchen, subtotal, niaSqm, 
         value={layout[otherKey]}
         onChange={(v) => onUpdate(otherKey, v)}
       />
-      <FormField
-        id={otherLabelKey}
-        label="Other area description (optional)"
-        value={layout[otherLabelKey]}
-        onChange={(v) => onUpdate(otherLabelKey, v)}
-      />
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">
           {title.replace(" breakdown", "")} subtotal: {subtotal} sqm
@@ -162,14 +149,12 @@ const LayoutSection = ({
         next.lower_ground_storage_sqm = "";
         next.lower_ground_kitchen_sqm = "";
         next.lower_ground_other_sqm = "";
-        next.lower_ground_other_label = "";
       }
       if (!hasUpper) {
         next.upper_floor_trading_sqm = "";
         next.upper_floor_storage_sqm = "";
         next.upper_floor_kitchen_sqm = "";
         next.upper_floor_other_sqm = "";
-        next.upper_floor_other_label = "";
       }
     }
 
@@ -272,12 +257,6 @@ const LayoutSection = ({
         value={layout.ground_floor_other_sqm}
         onChange={(v) => update("ground_floor_other_sqm", v)}
       />
-      <FormField
-        id="ground_floor_other_label"
-        label="Other area description (optional)"
-        value={layout.ground_floor_other_label}
-        onChange={(v) => update("ground_floor_other_label", v)}
-      />
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">Ground floor subtotal: {groundSubtotal} sqm</p>
         {niaSqm > 0 && groundSubtotal > niaSqm && (
@@ -285,7 +264,7 @@ const LayoutSection = ({
         )}
       </div>
 
-      {/* Non-ground floor intro copy */}
+      {/* Non-ground floor intro copy — shown once above all non-ground breakdowns */}
       {hasMultipleFloors && (
         <div className="border-t border-border pt-4">
           <p className="text-xs text-muted-foreground">
