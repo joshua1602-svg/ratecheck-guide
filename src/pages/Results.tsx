@@ -148,9 +148,9 @@ const Results = () => {
 
         {totalSavingsRange && (
           <div className="mt-4 rounded-lg border border-accent/40 bg-accent/10 p-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-accent">Estimated potential saving</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-accent">Estimated potential saving over the current rating period </p>
             <p className="mt-2 border-l-4 border-accent pl-3 text-3xl font-extrabold text-foreground sm:text-4xl">
-              {currency.format(totalSavingsRange.low)}–{currency.format(totalSavingsRange.high)} over the current rating period
+              {currency.format(totalSavingsRange.low)}–{currency.format(totalSavingsRange.high)}
             </p>
           </div>
         )}
