@@ -142,7 +142,7 @@ const Results = () => {
             {config.body}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            This is an initial indication based on broad comparable evidence and limited property inputs. Your full Evidence Pack uses more refined comparable selection and property-specific analysis, so the valuation range may change.
+            This is an initial indication based on broad comparable evidence and limited property inputs. The Evidence Pack uses more refined comparable selection and property-specific analysis, so the valuation range may change.
           </p>
         </div>
 
@@ -153,7 +153,7 @@ const Results = () => {
               {currency.format(totalSavingsRange.low)}–{currency.format(totalSavingsRange.high)} over the current rating period
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
-              Based on broad comparable evidence and current business rates assumptions. Your full Evidence Pack refines this estimate using tighter comparable selection and property-specific analysis.
+              Based on broad comparable evidence and current business rates assumptions. The Evidence Pack refines this estimate using tighter comparable selection and property-specific analysis.
             </p>
           </div>
         )}
@@ -180,7 +180,7 @@ const Results = () => {
           {config.sectionHeading}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your full Evidence Pack refines this initial screen using more detailed comparable analysis.
+          The Evidence Pack refines this initial screen using more detailed comparable analysis.
         </p>
 
         <div className="mt-6">
@@ -191,7 +191,7 @@ const Results = () => {
             description="Refine this initial estimate using a tighter comparable set, fuller property-specific analysis, and a report designed to support review or challenge."
             features={[
               "Detailed breakdown of where your property sits versus local evidence",
-              "Comparable properties that may support a lower assessment",
+              "Calibrated list of comparable properties that may support a lower assessment",
               "Clear basis for review, Check, or Challenge",
             ]}
             ctaLabel="Get my Evidence Pack"
