@@ -133,8 +133,8 @@ const Results = () => {
         <header className="mb-10 flex justify-center"><BrandMark /></header>
 
         {/* Verdict Card */}
-        <div className="rounded-lg border-2 border-accent bg-primary p-6">
-          <span className="mb-3 inline-block rounded-sm bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
+        <div className="rounded-lg border border-accent/40 bg-accent/10 p-6">
+          <span className="mb-3 inline-block rounded-sm bg-secondary px-4 py-1.5 text-sm font-semibold uppercase tracking-wider text-secondary-foreground">
             {config.badgeLabel}
           </span>
           <h2 className="mt-2 text-2xl font-bold text-card-foreground">{config.heading}</h2>
@@ -149,7 +149,7 @@ const Results = () => {
         {totalSavingsRange && (
           <div className="mt-4 rounded-lg border border-accent/40 bg-accent/10 p-5">
             <p className="text-xs font-semibold uppercase tracking-wider text-accent">Estimated potential saving</p>
-            <p className="mt-2 text-2xl font-bold text-foreground">
+            <p className="mt-2 border-l-4 border-accent pl-3 text-3xl font-extrabold text-foreground sm:text-4xl">
               {currency.format(totalSavingsRange.low)}–{currency.format(totalSavingsRange.high)} over the current rating period
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
@@ -176,7 +176,7 @@ const Results = () => {
         )}
 
         {/* Paid next step */}
-        <h2 className="mt-10 text-2xl font-bold text-foreground">
+        <h2 className="mt-6 text-2xl font-bold text-foreground">
           {config.sectionHeading}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -200,18 +200,21 @@ const Results = () => {
           />
         </div>
 
-        <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
+        <div className="mt-3 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-foreground">
+          <div className="flex items-start gap-2">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+            </svg>
+            <span>Agents charge &gt;30% of your saving annually. Our pack gives you the tools to submit a Challenge yourself.</span>
+          </div>
+        </div>
+
+        <div className="mt-3 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
           <div className="flex items-start gap-2">
             <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
             </svg>
               <span>A successful challenge may result in implied total savings over the remaining rating period and potential backdated refunds.</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-              </svg>
-              <span>Agents charge &gt;30% of your saving annually. Our pack gives you the tools to submit a Challenge yourself.</span>
             </div>
           </div>
 
