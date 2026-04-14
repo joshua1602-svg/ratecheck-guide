@@ -142,7 +142,7 @@ const Results = () => {
             {config.body}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            This is an initial indication based on broad comparable evidence and limited property inputs. The Evidence Pack uses more refined comparable selection and property-specific analysis, so the valuation range may change.
+            This estimate uses broad comparable evidence without calibrated adjustments. The Evidence Pack applies ITZA zoning and property-specific analysis - the refined saving may be higher or lower, but it's the figure you can actually use.
           </p>
         </div>
 
