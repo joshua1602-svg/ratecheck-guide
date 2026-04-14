@@ -17,31 +17,31 @@ const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
     badgeLabel: "POSITION: WITHIN TYPICAL RANGE",
     heading: "Your rates sit within the typical range — but some nearby properties may be lower",
     body: "Based on available data, your rateable value appears broadly consistent with similar properties nearby. However, some comparable properties may support a closer review.",
-    sectionHeading: "Next step: review your evidence",
+    sectionHeading: "Next step: confirm your position",
   },
   inline: {
     badgeLabel: "POSITION: WITHIN TYPICAL RANGE",
     heading: "Your rates sit within the typical range — but some nearby properties may be lower",
     body: "Based on available data, your rateable value appears broadly consistent with similar properties nearby. However, some comparable properties may support a closer review.",
-    sectionHeading: "Next step: review your evidence",
+    sectionHeading: "Next step: confirm your position",
   },
   slight: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: LOW–MEDIUM",
     heading: "Your rates may be slightly high",
     body: "Your current rateable value appears marginally above similar properties nearby. There may be a reasonable case for review depending on the strength of comparable evidence.",
-    sectionHeading: "Next step: review your evidence",
+    sectionHeading: "Next step: confirm your position",
   },
   over: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: HIGH",
     heading: "Your rates appear higher than similar properties nearby",
     body: "Several comparable properties appear to be assessed at lower levels, which may support a challenge.",
-    sectionHeading: "Next step: review your evidence",
+    sectionHeading: "Next step: confirm your position",
   },
   insufficient: {
     badgeLabel: "INSUFFICIENT DATA",
     heading: "We couldn't find enough comparable data",
     body: "There wasn't enough nearby comparable evidence to make a reliable indication from the free check. A fuller evidence review may still identify relevant comparables.",
-    sectionHeading: "Next step: review your evidence",
+    sectionHeading: "Next step: confirm your position",
   },
 };
 
