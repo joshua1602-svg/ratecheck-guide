@@ -64,6 +64,82 @@ interface LayoutSectionProps {
   hideRequiredLabel?: boolean;
 }
 
+interface FloorBreakdownProps {
+  prefix: string;
+  title: string;
+  layout: LayoutInputState;
+  showKitchen: boolean;
+  subtotal: number;
+  niaSqm: number;
+  onUpdate: (field: keyof LayoutInputState, value: string) => void;
+}
+
+const FloorBreakdown = ({ prefix, title, layout, showKitchen, subtotal, niaSqm, onUpdate }: FloorBreakdownProps) => {
+  const tradingKey = `${prefix}_trading_sqm` as keyof LayoutInputState;
+  const storageKey = `${prefix}_storage_sqm` as keyof LayoutInputState;
+  const kitchenKey = `${prefix}_kitchen_sqm` as keyof LayoutInputState;
+  const otherKey = `${prefix}_other_sqm` as keyof LayoutInputState;
+  const otherLabelKey = `${prefix}_other_label` as keyof LayoutInputState;
+
+  return (
+    <>
+      <div className="border-t border-border pt-4">
+        <p className="text-sm font-semibold text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          Enter the space on this floor by use (leave blank if none).
+        </p>
+      </div>
+      <FormField
+        id={tradingKey}
+        label="Trading area (sqm)"
+        type="number"
+        value={layout[tradingKey]}
+        onChange={(v) => onUpdate(tradingKey, v)}
+        helperText="Customer-facing trading or service area."
+      />
+      <FormField
+        id={storageKey}
+        label="Storage area (sqm)"
+        type="number"
+        value={layout[storageKey]}
+        onChange={(v) => onUpdate(storageKey, v)}
+        helperText="Stock, storage, or back-of-house area."
+      />
+      {showKitchen && (
+        <FormField
+          id={kitchenKey}
+          label="Kitchen / prep area (sqm)"
+          type="number"
+          value={layout[kitchenKey]}
+          onChange={(v) => onUpdate(kitchenKey, v)}
+          helperText="Kitchen, food prep, or food-service area."
+        />
+      )}
+      <FormField
+        id={otherKey}
+        label="Other (e.g., toilet) (sqm)"
+        type="number"
+        value={layout[otherKey]}
+        onChange={(v) => onUpdate(otherKey, v)}
+      />
+      <FormField
+        id={otherLabelKey}
+        label="Other area description (optional)"
+        value={layout[otherLabelKey]}
+        onChange={(v) => onUpdate(otherLabelKey, v)}
+      />
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-foreground">
+          {title.replace(" breakdown", "")} subtotal: {subtotal} sqm
+        </p>
+        {niaSqm > 0 && subtotal > niaSqm && (
+          <p className="text-xs text-destructive">Exceeds total floor area</p>
+        )}
+      </div>
+    </>
+  );
+};
+
 const LayoutSection = ({
   layout,
   onChange,
@@ -109,25 +185,31 @@ const LayoutSection = ({
     layout.floor_config === "ground_lower_ground_first";
 
   const toNum = (value: string) => parseFloat(value) || 0;
+
   const groundSubtotal =
     toNum(layout.ground_floor_trading_sqm) +
     toNum(layout.ground_floor_storage_sqm) +
     (showKitchen ? toNum(layout.ground_floor_kitchen_sqm) : 0) +
     toNum(layout.ground_floor_other_sqm);
+
   const lowerSubtotal = hasLowerGround
     ? toNum(layout.lower_ground_trading_sqm) +
       toNum(layout.lower_ground_storage_sqm) +
       (showKitchen ? toNum(layout.lower_ground_kitchen_sqm) : 0) +
       toNum(layout.lower_ground_other_sqm)
     : 0;
+
   const upperSubtotal = hasUpperFloor
     ? toNum(layout.upper_floor_trading_sqm) +
       toNum(layout.upper_floor_storage_sqm) +
       (showKitchen ? toNum(layout.upper_floor_kitchen_sqm) : 0) +
       toNum(layout.upper_floor_other_sqm)
     : 0;
+
   const consolidatedTotal = groundSubtotal + lowerSubtotal + upperSubtotal;
   const diverges = niaSqm > 0 && consolidatedTotal > 0 && Math.abs(consolidatedTotal - niaSqm) / niaSqm > 0.20;
+
+  const hasMultipleFloors = hasLowerGround || hasUpperFloor;
 
   return (
     <fieldset className="space-y-4">
@@ -135,7 +217,7 @@ const LayoutSection = ({
         Floor layout{!hideRequiredLabel && " — required"}
       </legend>
       <p className="text-xs text-muted-foreground">
-        Helps us match your property more accurately against comparables
+        Helps us match your property more accurately against comparables.
       </p>
 
       <FormField
@@ -149,144 +231,96 @@ const LayoutSection = ({
         required
       />
 
+      {/* Ground floor breakdown */}
+      <div className="border-t border-border pt-4">
+        <p className="text-sm font-semibold text-foreground">Ground floor breakdown</p>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          Enter the space on this floor by use (leave blank if none).
+        </p>
+      </div>
+
       <FormField
         id="ground_floor_trading_sqm"
-        label="Ground floor — trading area (sqm)"
+        label="Trading area (sqm)"
         type="number"
         value={layout.ground_floor_trading_sqm}
         onChange={(v) => update("ground_floor_trading_sqm", v)}
-        helperText="Enter sqm for customer-facing trading/service use on this floor."
+        helperText="Customer-facing trading or service area."
       />
-
       <FormField
         id="ground_floor_storage_sqm"
-        label="Ground floor — storage area (sqm)"
+        label="Storage area (sqm)"
         type="number"
         value={layout.ground_floor_storage_sqm}
         onChange={(v) => update("ground_floor_storage_sqm", v)}
-        helperText="Enter sqm for stock/storage/back-of-house use on this floor."
+        helperText="Stock, storage, or back-of-house area."
       />
-
       {showKitchen && (
         <FormField
           id="ground_floor_kitchen_sqm"
-          label="Ground floor — kitchen area (sqm)"
+          label="Kitchen / prep area (sqm)"
           type="number"
           value={layout.ground_floor_kitchen_sqm}
           onChange={(v) => update("ground_floor_kitchen_sqm", v)}
-          helperText="Enter sqm for kitchen/prep/food-service use on this floor."
+          helperText="Kitchen, food prep, or food-service area."
         />
       )}
-
       <FormField
         id="ground_floor_other_sqm"
-        label="Ground floor — other area (sqm)"
+        label="Other (e.g., toilet) (sqm)"
         type="number"
         value={layout.ground_floor_other_sqm}
         onChange={(v) => update("ground_floor_other_sqm", v)}
-        helperText="Optional non-valued area (e.g., public toilets)."
       />
       <FormField
         id="ground_floor_other_label"
-        label="Ground floor — other area description (optional)"
+        label="Other area description (optional)"
         value={layout.ground_floor_other_label}
         onChange={(v) => update("ground_floor_other_label", v)}
       />
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-foreground">Ground floor subtotal: {groundSubtotal} sqm</p>
+        {niaSqm > 0 && groundSubtotal > niaSqm && (
+          <p className="text-xs text-destructive">Exceeds total floor area</p>
+        )}
+      </div>
 
-      <p className="text-sm font-medium text-foreground">Ground floor subtotal: {groundSubtotal} sqm</p>
+      {/* Non-ground floor intro copy */}
+      {hasMultipleFloors && (
+        <div className="border-t border-border pt-4">
+          <p className="text-xs text-muted-foreground">
+            Enter each non-ground floor area by use so we can value the layout more accurately.
+          </p>
+        </div>
+      )}
 
+      {/* Lower ground floor breakdown */}
       {hasLowerGround && (
-        <>
-          <div className="border-t border-border pt-4">
-            <p className="text-sm font-medium text-foreground">Lower ground floor breakdown</p>
-            <p className="text-xs text-muted-foreground">Enter sqm for each use on this floor (leave blank if none).</p>
-          </div>
-          <FormField
-            id="lower_ground_trading_sqm"
-            label="Lower ground — trading area (sqm)"
-            type="number"
-            value={layout.lower_ground_trading_sqm}
-            onChange={(v) => update("lower_ground_trading_sqm", v)}
-          />
-          <FormField
-            id="lower_ground_storage_sqm"
-            label="Lower ground — storage area (sqm)"
-            type="number"
-            value={layout.lower_ground_storage_sqm}
-            onChange={(v) => update("lower_ground_storage_sqm", v)}
-          />
-          {showKitchen && (
-            <FormField
-              id="lower_ground_kitchen_sqm"
-              label="Lower ground — kitchen area (sqm)"
-              type="number"
-              value={layout.lower_ground_kitchen_sqm}
-              onChange={(v) => update("lower_ground_kitchen_sqm", v)}
-            />
-          )}
-          <FormField
-            id="lower_ground_other_sqm"
-            label="Lower ground — other area (sqm)"
-            type="number"
-            value={layout.lower_ground_other_sqm}
-            onChange={(v) => update("lower_ground_other_sqm", v)}
-          />
-          <FormField
-            id="lower_ground_other_label"
-            label="Lower ground — other area description (optional)"
-            value={layout.lower_ground_other_label}
-            onChange={(v) => update("lower_ground_other_label", v)}
-          />
-          <p className="text-sm font-medium text-foreground">Lower ground subtotal: {lowerSubtotal} sqm</p>
-        </>
+        <FloorBreakdown
+          prefix="lower_ground"
+          title="Lower ground floor breakdown"
+          layout={layout}
+          showKitchen={showKitchen}
+          subtotal={lowerSubtotal}
+          niaSqm={niaSqm}
+          onUpdate={update}
+        />
       )}
 
+      {/* Upper floor breakdown */}
       {hasUpperFloor && (
-        <>
-          <div className="border-t border-border pt-4">
-            <p className="text-sm font-medium text-foreground">Upper floor breakdown</p>
-            <p className="text-xs text-muted-foreground">Enter sqm for each use on this floor (leave blank if none).</p>
-          </div>
-          <FormField
-            id="upper_floor_trading_sqm"
-            label="Upper floor — trading area (sqm)"
-            type="number"
-            value={layout.upper_floor_trading_sqm}
-            onChange={(v) => update("upper_floor_trading_sqm", v)}
-          />
-          <FormField
-            id="upper_floor_storage_sqm"
-            label="Upper floor — storage area (sqm)"
-            type="number"
-            value={layout.upper_floor_storage_sqm}
-            onChange={(v) => update("upper_floor_storage_sqm", v)}
-          />
-          {showKitchen && (
-            <FormField
-              id="upper_floor_kitchen_sqm"
-              label="Upper floor — kitchen area (sqm)"
-              type="number"
-              value={layout.upper_floor_kitchen_sqm}
-              onChange={(v) => update("upper_floor_kitchen_sqm", v)}
-            />
-          )}
-          <FormField
-            id="upper_floor_other_sqm"
-            label="Upper floor — other area (sqm)"
-            type="number"
-            value={layout.upper_floor_other_sqm}
-            onChange={(v) => update("upper_floor_other_sqm", v)}
-          />
-          <FormField
-            id="upper_floor_other_label"
-            label="Upper floor — other area description (optional)"
-            value={layout.upper_floor_other_label}
-            onChange={(v) => update("upper_floor_other_label", v)}
-          />
-          <p className="text-sm font-medium text-foreground">Upper floor subtotal: {upperSubtotal} sqm</p>
-        </>
+        <FloorBreakdown
+          prefix="upper_floor"
+          title="Upper floor breakdown"
+          layout={layout}
+          showKitchen={showKitchen}
+          subtotal={upperSubtotal}
+          niaSqm={niaSqm}
+          onUpdate={update}
+        />
       )}
 
+      {/* Consolidated total */}
       <div className="border-t border-border pt-4">
         <p className="text-sm font-medium text-foreground">Total entered: {consolidatedTotal} sqm</p>
       </div>
