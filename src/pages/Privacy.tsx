@@ -27,7 +27,7 @@ const Privacy = () => (
         <section>
           <h2 className="text-base font-semibold text-foreground font-sans">Payment Processing</h2>
           <p className="mt-2">
-            All payments for our Rates Assessment (£99) and Evidence Pack (£249) are processed securely by Stripe. We do not store, process, or have access to your credit or debit card details at any time. Stripe's separate privacy policy applies to all payment data.
+            All payments for our Evidence Pack (£149) are processed securely by Stripe. We do not store, process, or have access to your credit or debit card details at any time. Stripe's separate privacy policy applies to all payment data.
           </p>
         </section>
         <section>
