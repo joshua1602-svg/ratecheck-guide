@@ -83,8 +83,9 @@ const Results = () => {
     return null;
   };
 
-  const getRange = (...pairs: Array<{ low?: unknown; high?: unknown }>) => {
+  const getRange = (...pairs: Array<{ low?: unknown; high?: unknown } | null | undefined>) => {
     for (const pair of pairs) {
+      if (!pair) continue;
       const low = typeof pair.low === "number" && Number.isFinite(pair.low) ? pair.low : null;
       const high = typeof pair.high === "number" && Number.isFinite(pair.high) ? pair.high : null;
       if (low !== null && high !== null) return { low, high };
@@ -105,8 +106,10 @@ const Results = () => {
     assessmentResult?.base_estimated_rv
   );
   const impliedTotalSavings = getNumber(
+    assessmentResult?.implied_total_saving_point,
     assessmentResult?.implied_total_savings,
     assessmentResult?.implied_total_saving,
+    assessmentResult?.indicative_total_saving_point,
     assessmentResult?.total_savings
   );
   const comparablesAnalysed = getNumber(
@@ -116,14 +119,20 @@ const Results = () => {
     ratedComps?.length
   );
   const totalSavingsRange = getRange(
+    assessmentResult?.implied_total_saving_range,
     assessmentResult?.implied_total_savings_range,
+    assessmentResult?.indicative_total_saving_range,
+    {
+      low: assessmentResult?.implied_total_saving_low,
+      high: assessmentResult?.implied_total_saving_high,
+    },
     {
       low: assessmentResult?.implied_total_savings_low,
       high: assessmentResult?.implied_total_savings_high,
     },
     {
-      low: assessmentResult?.implied_total_saving_low,
-      high: assessmentResult?.implied_total_saving_high,
+      low: assessmentResult?.indicative_total_saving_low,
+      high: assessmentResult?.indicative_total_saving_high,
     },
     {
       low: assessmentResult?.total_savings_low,
