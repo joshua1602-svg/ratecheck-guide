@@ -17,31 +17,31 @@ const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
     badgeLabel: "POSITION: WITHIN TYPICAL RANGE",
     heading: "Your rates sit within the typical range — but some nearby properties may be lower",
     body: "Based on available data, your rateable value appears broadly consistent with similar properties nearby. However, some comparable properties may support a closer review.",
-    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
+    sectionHeading: "Next step: review your evidence",
   },
   inline: {
     badgeLabel: "POSITION: WITHIN TYPICAL RANGE",
     heading: "Your rates sit within the typical range — but some nearby properties may be lower",
     body: "Based on available data, your rateable value appears broadly consistent with similar properties nearby. However, some comparable properties may support a closer review.",
-    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
+    sectionHeading: "Next step: review your evidence",
   },
   slight: {
-    badgeLabel: "POSITION: REVIEW RECOMMENDED",
-    heading: "Your property may warrant closer review",
-    body: "Some comparable evidence suggests there may be room to challenge, but the position is not yet definitive.",
-    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
+    badgeLabel: "OVERASSESSMENT LIKELIHOOD: LOW–MEDIUM",
+    heading: "Your rates may be slightly high",
+    body: "Your current rateable value appears marginally above similar properties nearby. There may be a reasonable case for review depending on the strength of comparable evidence.",
+    sectionHeading: "Next step: review your evidence",
   },
   over: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: HIGH",
     heading: "Your rates appear higher than similar properties nearby",
     body: "Several comparable properties appear to be assessed at lower levels, which may support a challenge.",
-    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
+    sectionHeading: "Next step: review your evidence",
   },
   insufficient: {
     badgeLabel: "INSUFFICIENT DATA",
     heading: "We couldn't find enough comparable data",
     body: "There wasn't enough nearby comparable evidence to make a reliable indication from the free check. A fuller evidence review may still identify relevant comparables.",
-    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
+    sectionHeading: "Next step: review your evidence",
   },
 };
 
@@ -111,7 +111,7 @@ const Results = () => {
           </button>
         )}
 
-        {/* Step-based journey */}
+        {/* Paid next step */}
         <h2 className="mt-10 text-2xl font-bold text-foreground">
           {config.sectionHeading}
         </h2>
