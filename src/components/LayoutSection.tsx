@@ -117,7 +117,7 @@ const FloorBreakdown = ({ prefix, title, layout, showKitchen, subtotal, niaSqm, 
       )}
       <FormField
         id={otherKey}
-        label="Other (e.g., toilet) (sqm)"
+        label={showKitchen ? "Other (e.g., toilet) (sqm)" : "Other (e.g., kitchen, toilet) (sqm)"}
         type="number"
         value={layout[otherKey]}
         onChange={(v) => onUpdate(otherKey, v)}
@@ -267,7 +267,7 @@ const LayoutSection = ({
       )}
       <FormField
         id="ground_floor_other_sqm"
-        label="Other (e.g., toilet) (sqm)"
+        label={showKitchen ? "Other (e.g., toilet) (sqm)" : "Other (e.g., kitchen, toilet) (sqm)"}
         type="number"
         value={layout.ground_floor_other_sqm}
         onChange={(v) => update("ground_floor_other_sqm", v)}

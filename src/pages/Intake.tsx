@@ -227,7 +227,7 @@ const Intake = () => {
             <LayoutSection
               layout={layoutInput}
               onChange={setLayoutInput}
-              showKitchen={safeFreeFormData.business_type === "restaurant_cafe"}
+              showKitchen={safeFreeFormData.business_type === "restaurant_cafe" || safeFreeFormData.business_type === "nursery"}
               outdoorSeating={outdoorSeating}
               onOutdoorSeatingChange={setOutdoorSeating}
               niaSqm={parseFloat(totalFloorArea) || 0}
