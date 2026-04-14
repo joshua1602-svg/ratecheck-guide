@@ -533,19 +533,29 @@ table { page-break-inside: avoid; }
      ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
   <h1>Assessment Result</h1>
+  {% set current_rv_display = current_rateable_value | default(current_rv) | default(voa_rv) %}
+  {% set modelled_rv_display = modelled_rateable_value | default(modelled_rv) %}
+  {% set implied_total_savings_display = implied_total_savings | default(implied_total_saving) | default(total_savings) %}
+  {% set implied_total_savings_low_display = implied_total_savings_low | default(implied_total_saving_low) | default(total_savings_low) %}
+  {% set implied_total_savings_high_display = implied_total_savings_high | default(implied_total_saving_high) | default(total_savings_high) %}
+  {% set implied_annual_saving_display = implied_annual_saving | default(implied_annual_savings) | default(annual_saving) %}
+  {% set implied_annual_saving_low_display = implied_annual_saving_low | default(implied_annual_savings_low) | default(annual_saving_low) %}
+  {% set implied_annual_saving_high_display = implied_annual_saving_high | default(implied_annual_savings_high) | default(annual_saving_high) %}
 
   <div class="banner">
     <div class="banner-box">
       <div class="banner-label">Current Rateable Value</div>
-      <div class="banner-value">&pound;{{ voa_rv | format_currency }}</div>
+      <div class="banner-value">&pound;{{ current_rv_display | format_currency }}</div>
     </div>
     <div class="banner-box banner-box-accent">
-      <div class="banner-label">Estimated Fair RV</div>
-      <div class="banner-value">&pound;{{ modelled_rv_low | format_currency }}&ndash;&pound;{{ modelled_rv_high | format_currency }}</div>
+      <div class="banner-label">Modelled Rateable Value</div>
+      <div class="banner-value">&pound;{{ modelled_rv_display | format_currency }}</div>
     </div>
     <div class="banner-box banner-box-accent">
-      <div class="banner-label">Potential Annual Saving</div>
-      <div class="banner-value">&pound;{{ annual_saving_low | format_currency }}&ndash;&pound;{{ annual_saving_high | format_currency }}</div>
+      <div class="banner-label">Implied Total Savings</div>
+      <div class="banner-value">
+        {% if implied_total_savings is defined or implied_total_saving is defined or total_savings is defined %}&pound;{{ implied_total_savings_display | format_currency }}{% else %}&pound;{{ implied_total_savings_low_display | format_currency }}&ndash;&pound;{{ implied_total_savings_high_display | format_currency }}{% endif %}
+      </div>
     </div>
     <div class="banner-box">
       <div class="banner-label">Comparables Analysed</div>
@@ -555,7 +565,13 @@ table { page-break-inside: avoid; }
 
   <p class="case-label">Case Strength: <span style="color:{% if case_strength == 'High' %}#2E7D32{% elif case_strength == 'Medium' %}#D4956A{% else %}#7A8A9A{% endif %};">{{ case_strength }}</span></p>
 
-  <p>This assessment analysed {{ comp_count }} comparable properties drawn from the VOA's published bulk data. The evidence suggests a fair rateable value in the range &pound;{{ modelled_rv_low | format_currency }}&ndash;&pound;{{ modelled_rv_high | format_currency }}, compared to the current assessment of &pound;{{ voa_rv | format_currency }} — a difference of &pound;{{ rv_delta | format_currency }} ({{ rv_delta_pct }}%).</p>
+  <p>This assessment analysed {{ comp_count }} comparable properties drawn from the VOA's published bulk data. It indicates a modelled rateable value of &pound;{{ modelled_rv_display | format_currency }} versus a current assessment of &pound;{{ current_rv_display | format_currency }}.</p>
+  <p>
+    Estimated annual saving:
+    {% if implied_annual_saving is defined or implied_annual_savings is defined or annual_saving is defined %}&pound;{{ implied_annual_saving_display | format_currency }}{% else %}&pound;{{ implied_annual_saving_low_display | format_currency }}&ndash;&pound;{{ implied_annual_saving_high_display | format_currency }}{% endif %}.
+    Implied total savings over the remaining rating period:
+    {% if implied_total_savings is defined or implied_total_saving is defined or total_savings is defined %}&pound;{{ implied_total_savings_display | format_currency }}{% else %}&pound;{{ implied_total_savings_low_display | format_currency }}&ndash;&pound;{{ implied_total_savings_high_display | format_currency }}{% endif %}{% if years_remaining_in_cycle is defined %} ({{ years_remaining_in_cycle }} years remaining){% elif years_remaining is defined %} ({{ years_remaining }} years remaining){% endif %}.
+  </p>
   {% if layout_adjustment_applied %}
   <p>Layout details provided by the ratepayer were used to prioritise structurally similar comparables.</p>
   {% endif %}
@@ -738,18 +754,25 @@ table { page-break-inside: avoid; }
   </table>
   {% endif %}
 
-  <!-- ── Annual saving calculation: always shown ── -->
-  <h2>Annual Saving Calculation</h2>
+  <!-- ── Savings summary: always shown ── -->
+  <h2>Savings Summary</h2>
   <table class="facts-table">
     <tr><td class="label-cell">Current VOA RV</td><td class="value-cell">&pound;{{ voa_rv | format_currency }}</td></tr>
     <tr><td class="label-cell">Modelled RV</td><td class="value-cell">&pound;{{ modelled_rv | format_currency }}</td></tr>
-    <tr><td class="label-cell">Annual Saving (point estimate)</td><td class="value-cell">&pound;{{ rv_delta | format_currency }}</td></tr>
-    <tr><td class="label-cell">Estimated Saving Range</td><td class="value-cell">&pound;{{ annual_saving_low | format_currency }}&ndash;&pound;{{ annual_saving_high | format_currency }}</td></tr>
+    <tr>
+      <td class="label-cell">Estimated annual saving</td>
+      <td class="value-cell">{% if implied_annual_saving is defined or implied_annual_savings is defined or annual_saving is defined %}&pound;{{ implied_annual_saving_display | format_currency }}{% else %}&pound;{{ implied_annual_saving_low_display | format_currency }}&ndash;&pound;{{ implied_annual_saving_high_display | format_currency }}{% endif %}</td>
+    </tr>
+    <tr>
+      <td class="label-cell">Implied total savings over remaining cycle</td>
+      <td class="value-cell">{% if implied_total_savings is defined or implied_total_saving is defined or total_savings is defined %}&pound;{{ implied_total_savings_display | format_currency }}{% else %}&pound;{{ implied_total_savings_low_display | format_currency }}&ndash;&pound;{{ implied_total_savings_high_display | format_currency }}{% endif %}</td>
+    </tr>
+    {% if years_remaining_in_cycle is defined or years_remaining is defined %}
+    <tr><td class="label-cell">Years remaining in rating cycle</td><td class="value-cell">{{ years_remaining_in_cycle | default(years_remaining) }}</td></tr>
+    {% endif %}
   </table>
   <p style="font-size:8pt; color:#7A8A9A; margin-top:4px;">
-    The point estimate is calculated as Current VOA RV minus Modelled RV.
-    The saving range reflects a &plusmn;5% confidence margin around the modelled RV.
-    Lower saving = VOA RV minus upper modelled estimate; upper saving = VOA RV minus lower modelled estimate.
+    Savings figures are shown directly from backend valuation outputs. Rateable value difference is shown separately where relevant and is not presented as a guaranteed cash outcome.
   </p>
 
   <!-- ── Layout weighting clarification ── -->
@@ -846,7 +869,8 @@ table { page-break-inside: avoid; }
   <table class="summary-table">
     <tr><td class="label-cell">VOA Rateable Value</td><td class="value-cell">&pound;{{ voa_rv | format_currency }}</td></tr>
     <tr><td class="label-cell">Modelled Rateable Value</td><td class="value-cell">&pound;{{ modelled_rv | format_currency }}</td></tr>
-    <tr><td class="label-cell">Difference</td><td class="value-cell">&pound;{{ rv_delta | format_currency }} ({{ rv_delta_pct }}%)</td></tr>
+    <tr><td class="label-cell">Rateable Value Difference</td><td class="value-cell">&pound;{{ rv_delta | format_currency }} ({{ rv_delta_pct }}%)</td></tr>
+    <tr><td class="label-cell">Implied Total Savings</td><td class="value-cell">{% if implied_total_savings is defined or implied_total_saving is defined or total_savings is defined %}&pound;{{ implied_total_savings_display | format_currency }}{% else %}&pound;{{ implied_total_savings_low_display | format_currency }}&ndash;&pound;{{ implied_total_savings_high_display | format_currency }}{% endif %}</td></tr>
     <tr>
       <td class="label-cell">Case Strength</td>
       <td class="value-cell" style="font-weight:700; color:{% if case_strength == 'High' %}#2E7D32{% elif case_strength == 'Medium' %}#D4956A{% else %}#7A8A9A{% endif %};">{{ case_strength }}</td>

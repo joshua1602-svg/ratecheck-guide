@@ -74,6 +74,62 @@ const Results = () => {
 
   const tier = getVerdictTier(voaRv, modelledLow, modelledHigh, signal);
   const config = verdictConfigs[tier];
+  const currency = new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 });
+
+  const getNumber = (...values: unknown[]) => {
+    for (const value of values) {
+      if (typeof value === "number" && Number.isFinite(value)) return value;
+    }
+    return null;
+  };
+
+  const getRange = (...pairs: Array<{ low?: unknown; high?: unknown }>) => {
+    for (const pair of pairs) {
+      const low = typeof pair.low === "number" && Number.isFinite(pair.low) ? pair.low : null;
+      const high = typeof pair.high === "number" && Number.isFinite(pair.high) ? pair.high : null;
+      if (low !== null && high !== null) return { low, high };
+    }
+    return null;
+  };
+
+  const currentRateableValue = getNumber(
+    assessmentResult?.current_rateable_value,
+    assessmentResult?.current_rv,
+    assessmentResult?.voa_rv,
+    assessRequest?.property?.voa_rv
+  );
+  const modelledRateableValue = getNumber(
+    assessmentResult?.modelled_rateable_value,
+    assessmentResult?.modelled_rv,
+    assessmentResult?.adjusted_estimated_rv,
+    assessmentResult?.base_estimated_rv
+  );
+  const impliedTotalSavings = getNumber(
+    assessmentResult?.implied_total_savings,
+    assessmentResult?.implied_total_saving,
+    assessmentResult?.total_savings
+  );
+  const comparablesAnalysed = getNumber(
+    assessmentResult?.comparables_analysed,
+    assessmentResult?.comparables_analyzed,
+    assessmentResult?.comp_count,
+    ratedComps?.length
+  );
+  const totalSavingsRange = getRange(
+    assessmentResult?.implied_total_savings_range,
+    {
+      low: assessmentResult?.implied_total_savings_low,
+      high: assessmentResult?.implied_total_savings_high,
+    },
+    {
+      low: assessmentResult?.implied_total_saving_low,
+      high: assessmentResult?.implied_total_saving_high,
+    },
+    {
+      low: assessmentResult?.total_savings_low,
+      high: assessmentResult?.total_savings_high,
+    }
+  );
 
   return (
     <div className="min-h-screen bg-primary">
@@ -92,6 +148,39 @@ const Results = () => {
           <p className="mt-2 text-xs text-muted-foreground">
             This is an initial indication based on available data, not a formal valuation.
           </p>
+        </div>
+
+        {totalSavingsRange && (
+          <div className="mt-4 rounded-lg border border-accent/40 bg-accent/10 p-5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-accent">Estimated potential saving</p>
+            <p className="mt-2 text-2xl font-bold text-foreground">
+              {currency.format(totalSavingsRange.low)}–{currency.format(totalSavingsRange.high)} over the current rating period
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Based on available comparable evidence and current business rates assumptions. A full Evidence Pack provides the detailed breakdown and supporting analysis.
+            </p>
+          </div>
+        )}
+
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-md border border-border bg-card px-3 py-3">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Current Rateable Value</p>
+            <p className="mt-1 text-sm font-semibold text-card-foreground">{currentRateableValue !== null ? currency.format(currentRateableValue) : "—"}</p>
+          </div>
+          <div className="rounded-md border border-border bg-card px-3 py-3">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Modelled Rateable Value</p>
+            <p className="mt-1 text-sm font-semibold text-card-foreground">{modelledRateableValue !== null ? currency.format(modelledRateableValue) : "—"}</p>
+          </div>
+          <div className="rounded-md border border-border bg-card px-3 py-3">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Implied Total Savings</p>
+            <p className="mt-1 text-sm font-semibold text-card-foreground">
+              {impliedTotalSavings !== null ? currency.format(impliedTotalSavings) : totalSavingsRange ? `${currency.format(totalSavingsRange.low)}–${currency.format(totalSavingsRange.high)}` : "—"}
+            </p>
+          </div>
+          <div className="rounded-md border border-border bg-card px-3 py-3">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Comparables Analysed</p>
+            <p className="mt-1 text-sm font-semibold text-card-foreground">{comparablesAnalysed !== null ? comparablesAnalysed.toLocaleString("en-GB") : "—"}</p>
+          </div>
         </div>
 
         {/* Layout indicator */}
@@ -138,7 +227,7 @@ const Results = () => {
             <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
             </svg>
-              <span>A successful challenge may result in ongoing annual savings and potential backdated refunds.</span>
+              <span>A successful challenge may result in implied total savings over the remaining rating period and potential backdated refunds.</span>
             </div>
             <div className="flex items-start gap-2">
               <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">

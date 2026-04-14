@@ -314,21 +314,29 @@ table { page-break-inside: avoid; }
 
 <!-- ═══ BANNER ═══ -->
 <div class="banner">
+  {% set current_rv_display = current_rateable_value | default(current_rv) | default(voa_rv) %}
+  {% set modelled_rv_display = modelled_rateable_value | default(modelled_rv) %}
+  {% set implied_total_savings_display = implied_total_savings | default(implied_total_saving) | default(total_savings) %}
+  {% set implied_total_savings_low_display = implied_total_savings_low | default(implied_total_saving_low) | default(total_savings_low) %}
+  {% set implied_total_savings_high_display = implied_total_savings_high | default(implied_total_saving_high) | default(total_savings_high) %}
+  {% set implied_annual_saving_display = implied_annual_saving | default(implied_annual_savings) | default(annual_saving) %}
+  {% set implied_annual_saving_low_display = implied_annual_saving_low | default(implied_annual_savings_low) | default(annual_saving_low) %}
+  {% set implied_annual_saving_high_display = implied_annual_saving_high | default(implied_annual_savings_high) | default(annual_saving_high) %}
   <div class="banner-box">
     <div class="banner-label">Current Rateable Value</div>
-    <div class="banner-value">&pound;{{ voa_rv | format_currency }}</div>
+    <div class="banner-value">&pound;{{ current_rv_display | format_currency }}</div>
   </div>
   <div class="banner-box banner-box-accent">
-    <div class="banner-label">Estimated Fair RV</div>
-    <div class="banner-value">&pound;{{ modelled_rv_low | format_currency }}&ndash;&pound;{{ modelled_rv_high | format_currency }}</div>
+    <div class="banner-label">Modelled Rateable Value</div>
+    <div class="banner-value">&pound;{{ modelled_rv_display | format_currency }}</div>
   </div>
   <div class="banner-box banner-box-accent">
-    <div class="banner-label">Potential Annual Saving</div>
-    <div class="banner-value">&pound;{{ annual_saving_low | format_currency }}&ndash;&pound;{{ annual_saving_high | format_currency }}</div>
+    <div class="banner-label">Implied Total Savings</div>
+    <div class="banner-value">{% if implied_total_savings is defined or implied_total_saving is defined or total_savings is defined %}&pound;{{ implied_total_savings_display | format_currency }}{% else %}&pound;{{ implied_total_savings_low_display | format_currency }}&ndash;&pound;{{ implied_total_savings_high_display | format_currency }}{% endif %}</div>
   </div>
   <div class="banner-box">
-    <div class="banner-label">Case Strength</div>
-    <div class="banner-value" style="color: {% if case_strength == 'High' %}#2E7D32{% elif case_strength == 'Medium' %}#D4956A{% else %}#7A8A9A{% endif %};">{{ case_strength }}</div>
+    <div class="banner-label">Comparables Analysed</div>
+    <div class="banner-value">{{ comp_count }}</div>
   </div>
 </div>
 
@@ -337,7 +345,10 @@ table { page-break-inside: avoid; }
   <div class="summary-text">
     Based on {{ comp_count }} comparable properties nearby, your current rateable value of &pound;{{ voa_rv | format_currency }} appears
     {% if voa_rv > modelled_rv_high %}
-    higher than similar units. This suggests you may be overpaying by &pound;{{ annual_saving_low | format_currency }}&ndash;&pound;{{ annual_saving_high | format_currency }} per year.
+    higher than similar units. Estimated annual saving:
+    {% if implied_annual_saving is defined or implied_annual_savings is defined or annual_saving is defined %}&pound;{{ implied_annual_saving_display | format_currency }}{% else %}&pound;{{ implied_annual_saving_low_display | format_currency }}&ndash;&pound;{{ implied_annual_saving_high_display | format_currency }}{% endif %}.
+    Implied total savings over the remaining rating period:
+    {% if implied_total_savings is defined or implied_total_saving is defined or total_savings is defined %}&pound;{{ implied_total_savings_display | format_currency }}{% else %}&pound;{{ implied_total_savings_low_display | format_currency }}&ndash;&pound;{{ implied_total_savings_high_display | format_currency }}{% endif %}.
     {% elif voa_rv < modelled_rv_low %}
     lower than similar units. Your property may be correctly assessed or undervalued.
     {% else %}
