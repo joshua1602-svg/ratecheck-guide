@@ -104,7 +104,7 @@ const Results = () => {
         {assessmentResult?.layout_adjustment_applied === false && (
           <button
             type="button"
-            onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+            onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
             className="mt-3 text-xs text-accent hover:underline"
           >
             Add layout details to refine your estimate →
@@ -127,7 +127,7 @@ const Results = () => {
               "Nearby comparable properties assessed at lower levels",
               "Clear recommendation on whether to challenge or monitor",
             ]}
-            ctaLabel="Get my Evidence Pack →"
+            ctaLabel="Get my Evidence Pack"
             variant="accent"
             onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
           />
