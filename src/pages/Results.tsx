@@ -93,32 +93,6 @@ const Results = () => {
     return null;
   };
 
-  const currentRateableValue = getNumber(
-    assessmentResult?.current_rateable_value,
-    assessmentResult?.current_rv,
-    assessmentResult?.voa_rv,
-    assessRequest?.property?.voa_rv
-  );
-  const modelledRateableValue = getNumber(
-    assessmentResult?.modelled_rateable_value,
-    assessmentResult?.modelled_rv,
-    assessmentResult?.adjusted_estimated_rv,
-    assessmentResult?.base_estimated_rv
-  );
-  const impliedTotalSavings = getNumber(
-    assessmentResult?.implied_total_saving_point,
-    assessmentResult?.implied_total_savings_point,
-    assessmentResult?.implied_total_saving,
-    assessmentResult?.implied_total_savings,
-    assessmentResult?.indicative_total_saving_point,
-    assessmentResult?.total_savings
-  );
-  const comparablesAnalysed = getNumber(
-    assessmentResult?.comparables_analysed,
-    assessmentResult?.comparables_analyzed,
-    assessmentResult?.comp_count,
-    ratedComps?.length
-  );
   const totalSavingsRange = getRange(
     {
       low: assessmentResult?.indicative_total_saving_low,
@@ -168,7 +142,7 @@ const Results = () => {
             {config.body}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            This is an initial indication based on available data, not a formal valuation.
+            This is an initial indication based on broad comparable evidence and limited property inputs. Your full Evidence Pack uses more refined comparable selection and property-specific analysis, so the valuation range may change.
           </p>
         </div>
 
@@ -179,31 +153,10 @@ const Results = () => {
               {currency.format(totalSavingsRange.low)}–{currency.format(totalSavingsRange.high)} over the current rating period
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
-              Based on available comparable evidence and current business rates assumptions. A full Evidence Pack provides the detailed breakdown and supporting analysis.
+              Based on broad comparable evidence and current business rates assumptions. Your full Evidence Pack refines this estimate using tighter comparable selection and property-specific analysis.
             </p>
           </div>
         )}
-
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="rounded-md border border-border bg-card px-3 py-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Current Rateable Value</p>
-            <p className="mt-1 text-sm font-semibold text-card-foreground">{currentRateableValue !== null ? currency.format(currentRateableValue) : "—"}</p>
-          </div>
-          <div className="rounded-md border border-border bg-card px-3 py-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Modelled Rateable Value</p>
-            <p className="mt-1 text-sm font-semibold text-card-foreground">{modelledRateableValue !== null ? currency.format(modelledRateableValue) : "—"}</p>
-          </div>
-          <div className="rounded-md border border-border bg-card px-3 py-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Implied Total Savings</p>
-            <p className="mt-1 text-sm font-semibold text-card-foreground">
-              {impliedTotalSavings !== null ? currency.format(impliedTotalSavings) : totalSavingsRange ? `${currency.format(totalSavingsRange.low)}–${currency.format(totalSavingsRange.high)}` : "—"}
-            </p>
-          </div>
-          <div className="rounded-md border border-border bg-card px-3 py-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Comparables Analysed</p>
-            <p className="mt-1 text-sm font-semibold text-card-foreground">{comparablesAnalysed !== null ? comparablesAnalysed.toLocaleString("en-GB") : "—"}</p>
-          </div>
-        </div>
 
         {/* Layout indicator */}
         {assessmentResult?.layout_adjustment_applied === true && (
@@ -226,17 +179,20 @@ const Results = () => {
         <h2 className="mt-10 text-2xl font-bold text-foreground">
           {config.sectionHeading}
         </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Your full Evidence Pack refines this initial screen using more detailed comparable analysis.
+        </p>
 
         <div className="mt-6">
           <ProductCard
             badge="MAIN NEXT STEP"
             title="Evidence Pack"
             price="£149"
-            description="See how your property compares in detail, which nearby properties appear lower, and whether there is a credible basis to challenge."
+            description="Refine this initial estimate using a tighter comparable set, fuller property-specific analysis, and a report designed to support review or challenge."
             features={[
-              "Detailed view of where your property sits vs local evidence",
-              "Nearby comparable properties assessed at lower levels",
-              "Clear recommendation on whether to challenge or monitor",
+              "Detailed breakdown of where your property sits versus local evidence",
+              "Comparable properties that may support a lower assessment",
+              "Clear basis for review, Check, or Challenge",
             ]}
             ctaLabel="Get my Evidence Pack"
             variant="accent"
