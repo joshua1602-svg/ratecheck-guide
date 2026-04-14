@@ -135,7 +135,7 @@ const Landing = () => {
           </h1>
 
           <p className="mt-5 text-center text-sm text-primary-foreground/80">
-            If your bill is fair, we'll tell you for free. If it's too high, we give you the data to fix it.
+            See how your property compares to others nearby — and whether there may be a case to reduce your rates.
           </p>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">

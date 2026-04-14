@@ -1,5 +1,4 @@
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
-import { useState } from "react";
 import BrandMark from "@/components/BrandMark";
 import ProductCard from "@/components/ProductCard";
 
@@ -11,56 +10,38 @@ interface VerdictConfig {
   heading: string;
   body: string;
   sectionHeading: string;
-  showEvidencePack: boolean;
-  assessmentCta: string;
-  assessmentDescription: string;
 }
 
 const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
   undervalued: {
-    badgeLabel: "OVERASSESSMENT LIKELIHOOD: LOW",
-    heading: "Your property does not appear over-assessed",
-    body: "Your current rateable value appears lower than the level indicated by comparable properties. This is unlikely to support a challenge for reduction.",
-    sectionHeading: "Want to be certain? Get a full assessment.",
-    showEvidencePack: false,
-    assessmentCta: "Get my full assessment →",
-    assessmentDescription: "Confirm your position with a full comparable analysis.",
+    badgeLabel: "POSITION: WITHIN TYPICAL RANGE",
+    heading: "Your rates sit within the typical range — but some nearby properties may be lower",
+    body: "Based on available data, your rateable value appears broadly consistent with similar properties nearby. However, some comparable properties may support a closer review.",
+    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
   },
   inline: {
-    badgeLabel: "OVERASSESSMENT LIKELIHOOD: LOW",
-    heading: "Your rates appear broadly in line",
-    body: "Your current rateable value appears broadly consistent with similar properties nearby on the available evidence.",
-    sectionHeading: "Want to be certain? Get a full assessment.",
-    showEvidencePack: false,
-    assessmentCta: "Get my full assessment →",
-    assessmentDescription: "Confirm your position with a full comparable analysis.",
+    badgeLabel: "POSITION: WITHIN TYPICAL RANGE",
+    heading: "Your rates sit within the typical range — but some nearby properties may be lower",
+    body: "Based on available data, your rateable value appears broadly consistent with similar properties nearby. However, some comparable properties may support a closer review.",
+    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
   },
   slight: {
-    badgeLabel: "OVERASSESSMENT LIKELIHOOD: LOW–MEDIUM",
-    heading: "Your rates may be slightly high",
-    body: "Your current rateable value appears marginally above similar properties nearby. There may be a reasonable case for review depending on the strength of comparable evidence.",
-    sectionHeading: "Next step: prepare your challenge.",
-    showEvidencePack: true,
-    assessmentCta: "Start my assessment →",
-    assessmentDescription: "Understand whether your valuation is worth challenging.",
+    badgeLabel: "POSITION: REVIEW RECOMMENDED",
+    heading: "Your property may warrant closer review",
+    body: "Some comparable evidence suggests there may be room to challenge, but the position is not yet definitive.",
+    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
   },
   over: {
     badgeLabel: "OVERASSESSMENT LIKELIHOOD: HIGH",
-    heading: "Your rates appear overassessed",
-    body: "Your current rateable value is notably above comparable properties nearby. The evidence suggests a reasonable case for challenge.",
-    sectionHeading: "Next step: prepare your challenge.",
-    showEvidencePack: true,
-    assessmentCta: "Start my assessment →",
-    assessmentDescription: "Understand whether your valuation is worth challenging.",
+    heading: "Your rates appear higher than similar properties nearby",
+    body: "Several comparable properties appear to be assessed at lower levels, which may support a challenge.",
+    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
   },
   insufficient: {
     badgeLabel: "INSUFFICIENT DATA",
     heading: "We couldn't find enough comparable data",
-    body: "There wasn't enough nearby comparable evidence to make a reliable assessment. This may improve as more data becomes available.",
-    sectionHeading: "Want to be certain? Get a full assessment.",
-    showEvidencePack: false,
-    assessmentCta: "Get my full assessment →",
-    assessmentDescription: "We'll run a deeper search for comparable evidence.",
+    body: "There wasn't enough nearby comparable evidence to make a reliable indication from the free check. A fuller evidence review may still identify relevant comparables.",
+    sectionHeading: "See the full picture — and whether there may be a case to reduce your rates",
   },
 };
 
@@ -78,53 +59,9 @@ function getVerdictTier(
   return overage < 0.15 ? "slight" : "over";
 }
 
-/* ── Accordion step header ─────────────────────────────── */
-const StepHeader = ({
-  step,
-  title,
-  price,
-  isOpen,
-  onClick,
-}: {
-  step: number;
-  title: string;
-  price: string;
-  isOpen: boolean;
-  onClick: () => void;
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className="flex w-full items-center justify-between rounded-t-lg border border-border bg-card px-5 py-4 text-left transition-colors hover:bg-card/80 focus:outline-none focus:ring-2 focus:ring-ring"
-    style={!isOpen ? { borderRadius: "0.5rem" } : undefined}
-  >
-    <div className="flex items-center gap-3">
-      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
-        {step}
-      </span>
-      <span className="text-sm font-semibold text-card-foreground">{title}</span>
-    </div>
-    <div className="flex items-center gap-3">
-      <span className="text-sm font-bold text-card-foreground">{price}</span>
-      <svg
-        className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-          clipRule="evenodd"
-        />
-      </svg>
-    </div>
-  </button>
-);
-
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [openStep, setOpenStep] = useState<1 | 2>(1);
   const state = location.state as { assessRequest?: any; assessmentResult: any; freeFormData: any; ratedComps?: any[] } | null;
   if (!state) return <Navigate to="/" replace />;
   const { assessRequest, assessmentResult, freeFormData, ratedComps = [] } = state;
@@ -153,7 +90,7 @@ const Results = () => {
             {config.body}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            This is an initial indication based on available data — not a formal valuation.
+            This is an initial indication based on available data, not a formal valuation.
           </p>
         </div>
 
@@ -179,87 +116,28 @@ const Results = () => {
           {config.sectionHeading}
         </h2>
 
-        {config.showEvidencePack ? (
-          /* Accordion two-step journey — slight and over tiers */
-          <div className="mt-6 space-y-3">
-            {/* Step 1 */}
-            <div>
-              <StepHeader step={1} title="Assess your case" price="£99" isOpen={openStep === 1} onClick={() => setOpenStep(1)} />
-              {openStep === 1 && (
-                <div className="rounded-b-lg border border-t-0 border-border">
-                  <ProductCard
-                    badge="STEP 1"
-                    title="Assess your case"
-                    price="£99"
-                    description="Understand whether your valuation is worth challenging. Get a clear, evidence-based view before proceeding."
-                    features={[
-                      "Estimated fair rateable value range",
-                      "Snapshot of comparable evidence",
-                      "Clear recommendation — challenge or monitor",
-                    ]}
-                    ctaLabel="Start my assessment →"
-                    variant="accent"
-                    onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-                    className="border-0 shadow-none rounded-t-none"
-                  />
-                </div>
-              )}
-            </div>
+        <div className="mt-6">
+          <ProductCard
+            badge="MAIN NEXT STEP"
+            title="Evidence Pack"
+            price="£149"
+            description="See how your property compares in detail, which nearby properties appear lower, and whether there is a credible basis to challenge."
+            features={[
+              "Detailed view of where your property sits vs local evidence",
+              "Nearby comparable properties assessed at lower levels",
+              "Clear recommendation on whether to challenge or monitor",
+            ]}
+            ctaLabel="Get my Evidence Pack →"
+            variant="accent"
+            onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
+          />
+        </div>
 
-            {/* Step 2 */}
-            <div>
-              <StepHeader step={2} title="Submit your challenge" price="£249" isOpen={openStep === 2} onClick={() => setOpenStep(2)} />
-              {openStep === 2 && (
-                <div className="rounded-b-lg border border-t-0 border-border">
-                  <ProductCard
-                    badge="STEP 2"
-                    title="Submit your challenge"
-                    price="£249"
-                    priceNote="£99 credited from Step 1"
-                    description="Everything you need to prepare and submit your challenge."
-                    features={[
-                      "Full comparable evidence set",
-                      "Adjustment analysis",
-                      "Pre-written challenge submission",
-                    ]}
-                    subtext="Your £99 assessment is fully credited toward your full challenge."
-                    ctaLabel="Continue to full challenge →"
-                    variant="primary"
-                    onClick={() => navigate("/intake?product=evidence", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-                    className="border-0 shadow-none rounded-t-none"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          /* Single-product layout — full width */
-          <div className="mt-6">
-            <ProductCard
-              badge="GET CERTAINTY"
-              title="Rates Assessment"
-              price="£99"
-              description={config.assessmentDescription}
-              features={[
-                "Estimated fair rateable value range",
-                "Snapshot of comparable evidence",
-                "Clear recommendation — challenge or monitor",
-              ]}
-              subtext="Understand your position with a full analysis."
-              ctaLabel={config.assessmentCta}
-              variant="accent"
-              onClick={() => navigate("/intake?product=report", { state: { assessRequest, assessmentResult, freeFormData, ratedComps } })}
-            />
-          </div>
-        )}
-
-        {/* Value reinforcement — only shown when there's a potential case */}
-        {config.showEvidencePack && (
-          <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
-            <div className="flex items-start gap-2">
-              <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-              </svg>
+        <div className="mt-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
+          <div className="flex items-start gap-2">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+            </svg>
               <span>A successful challenge may result in ongoing annual savings and potential backdated refunds.</span>
             </div>
             <div className="flex items-start gap-2">
@@ -269,7 +147,6 @@ const Results = () => {
               <span>Agents charge &gt;30% of your saving annually. Our pack gives you the tools to submit a Challenge yourself.</span>
             </div>
           </div>
-        )}
 
         {/* Trust Footer */}
         <div className="mt-8 flex flex-wrap justify-center gap-8 border-t border-border pt-8 text-xs text-muted-foreground">
