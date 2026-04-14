@@ -121,8 +121,8 @@ const Results = () => {
   );
   const totalSavingsRange = getRange(
     {
-      low: assessmentResult?.implied_total_saving_low,
-      high: assessmentResult?.implied_total_saving_high,
+      low: assessmentResult?.indicative_total_saving_low,
+      high: assessmentResult?.indicative_total_saving_high,
     },
     {
       low: assessmentResult?.indicative_total_saving_low,
