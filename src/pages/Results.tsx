@@ -107,8 +107,9 @@ const Results = () => {
   );
   const impliedTotalSavings = getNumber(
     assessmentResult?.implied_total_saving_point,
-    assessmentResult?.implied_total_savings,
+    assessmentResult?.implied_total_savings_point,
     assessmentResult?.implied_total_saving,
+    assessmentResult?.implied_total_savings,
     assessmentResult?.indicative_total_saving_point,
     assessmentResult?.total_savings
   );
@@ -119,25 +120,37 @@ const Results = () => {
     ratedComps?.length
   );
   const totalSavingsRange = getRange(
-    assessmentResult?.implied_total_saving_range,
-    assessmentResult?.implied_total_savings_range,
-    assessmentResult?.indicative_total_saving_range,
     {
-      low: assessmentResult?.implied_total_saving_low,
-      high: assessmentResult?.implied_total_saving_high,
-    },
-    {
-      low: assessmentResult?.implied_total_savings_low,
-      high: assessmentResult?.implied_total_savings_high,
+      low: assessmentResult?.indicative_total_saving_low,
+      high: assessmentResult?.indicative_total_saving_high,
     },
     {
       low: assessmentResult?.indicative_total_saving_low,
       high: assessmentResult?.indicative_total_saving_high,
     },
     {
+      low: assessmentResult?.implied_total_savings_low,
+      high: assessmentResult?.implied_total_savings_high,
+    },
+    {
       low: assessmentResult?.total_savings_low,
       high: assessmentResult?.total_savings_high,
-    }
+    },
+    {
+      low: assessmentResult?.implied_total_saving_range?.low,
+      high: assessmentResult?.implied_total_saving_range?.high,
+    },
+    {
+      low: assessmentResult?.indicative_total_saving_range?.low,
+      high: assessmentResult?.indicative_total_saving_range?.high,
+    },
+    {
+      low: assessmentResult?.implied_total_savings_range?.low,
+      high: assessmentResult?.implied_total_savings_range?.high,
+    },
+    assessmentResult?.implied_total_saving_range,
+    assessmentResult?.indicative_total_saving_range,
+    assessmentResult?.implied_total_savings_range
   );
 
   return (
