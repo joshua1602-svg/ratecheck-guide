@@ -175,21 +175,6 @@ const Results = () => {
         {/* Paid next step */}
         <h2 className="mt-6 text-2xl font-bold text-foreground">Next step: review your evidence</h2>
 
-        <div className="mt-3 rounded-md border border-accent/30 bg-accent/10 px-4 py-4 text-sm text-foreground space-y-3">
-          <div className="flex items-start gap-2">
-            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-            </svg>
-            <span>Agents charge &gt;30% of your saving annually — our pack gives you the tools to submit a Challenge yourself.</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <svg className="mt-0.5 h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-            </svg>
-            <span>A successful challenge may result in savings over the remaining rating period and potential backdated refunds.</span>
-          </div>
-        </div>
-
         <div className="mt-6">
           <ProductCard
             badge="MAIN NEXT STEP"
@@ -198,8 +183,12 @@ const Results = () => {
             description="Refine this initial estimate using a tighter comparable set, fuller property-specific analysis, and a report designed to support review or challenge."
             features={[
               "Detailed breakdown of where your property sits versus local evidence",
-              "Calibrated list of comparable properties that may support a lower assessment",
+              "Comparable properties that may support a lower assessment",
               "Clear basis for review, Check, or Challenge",
+            ]}
+            trustPoints={[
+              "Agents charge >30% of your saving annually — our pack gives you the tools to submit a Challenge yourself.",
+              "A successful challenge may result in savings over the remaining rating period and potential backdated refunds.",
             ]}
             ctaLabel="Get my Evidence Pack"
             variant="accent"

@@ -4,6 +4,7 @@ interface ProductCardProps {
   price: string;
   description: string;
   features: string[];
+  trustPoints?: string[];
   ctaLabel: string;
   variant: "accent" | "primary";
   onClick: () => void;
@@ -12,7 +13,7 @@ interface ProductCardProps {
   className?: string;
 }
 
-const ProductCard = ({ badge, title, price, description, features, ctaLabel, variant, onClick, subtext, priceNote, className }: ProductCardProps) => (
+const ProductCard = ({ badge, title, price, description, features, trustPoints, ctaLabel, variant, onClick, subtext, priceNote, className }: ProductCardProps) => (
   <div className={`flex flex-col rounded-lg border border-border bg-card p-6 shadow-sm ${className ?? ""}`}>
     <span className="mb-3 inline-block self-start rounded-sm bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
       {badge}
@@ -33,6 +34,16 @@ const ProductCard = ({ badge, title, price, description, features, ctaLabel, var
         </li>
       ))}
     </ul>
+    {trustPoints && trustPoints.length > 0 && (
+      <div className="mt-4 rounded-md border border-accent/30 bg-card px-4 py-4 text-sm text-card-foreground space-y-3">
+        {trustPoints.map((point, idx) => (
+          <div key={idx} className="flex items-start gap-2">
+            <span className="mt-0.5 text-accent">✓</span>
+            <span>{point}</span>
+          </div>
+        ))}
+      </div>
+    )}
     {subtext && (
       <p className="mt-3 text-xs text-muted-foreground italic">{subtext}</p>
     )}
