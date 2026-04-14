@@ -41,7 +41,7 @@ const verdictConfigs: Record<VerdictTier, VerdictConfig> = {
     badgeLabel: "INSUFFICIENT DATA",
     heading: "We couldn't find enough comparable data",
     body: "There wasn't enough nearby comparable evidence to make a reliable indication from the free check. A fuller evidence review may still identify relevant comparables.",
-    sectionHeading: "Next step: review your evidence",
+    sectionHeading: "Next step: confirm your position",
   },
 };
 
