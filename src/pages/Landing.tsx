@@ -149,6 +149,10 @@ const Landing = () => {
               </span>
             ))}
           </div>
+          <nav aria-label="Guides to checking and challenging business rates" className="mt-6 flex flex-wrap justify-center gap-4 text-center text-sm text-primary-foreground/90">
+            <a className="underline hover:text-primary-foreground" href="/guides/rateable-value-checker.html">Check your rateable value</a>
+            <a className="underline hover:text-primary-foreground" href="/guides/challenge-business-rates.html">How to challenge a valuation</a>
+          </nav>
         </div>
       </section>
 
@@ -213,12 +217,16 @@ const Landing = () => {
 
               <FormField
                 id="voaRv"
-                label="Approximate annual rates bill (£)"
+                label="Rateable value (£) — not annual rates bill"
                 type="number"
                 value={voaRv}
                 onChange={setVoaRv}
-                helperText="Found on your rates demand notice"
+                helperText="Check your official rateable value; do not enter the amount you pay in rates."
               />
+
+              <p className="text-xs text-muted-foreground -mt-3">
+                Unsure of your rateable value? <a className="underline" href="https://www.gov.uk/find-business-rates" target="_blank" rel="noopener noreferrer">Find it on GOV.UK</a>.
+              </p>
 
               <FormField
                 id="email"
